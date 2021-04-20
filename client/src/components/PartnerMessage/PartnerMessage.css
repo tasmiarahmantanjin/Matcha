@@ -1,0 +1,11 @@
+.PartnerMessage {
+  width: 45%;
+  background-color: transparent;
+  color: lightgray;
+  border: 1px solid lightgray;
+  padding: 10px;
+  margin-left: 5px;
+  text-align: center;
+  border-top-left-radius: 10%;
+  border-bottom-left-radius: 10%;
+}
