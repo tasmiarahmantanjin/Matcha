@@ -1,0 +1,12 @@
+// .sequelizerc
+// Important: https://sequelize.org/master/manual/migrations.html
+// Useful-Link: https://medium.com/@mazior_nyanyo/how-i-fixed-my-sequelize-command-not-found-error-e3ec651b3abc
+
+const path = require('path');
+
+module.exports = {
+  'config': path.resolve('./config', 'database.js'),
+  'models-path': path.resolve('models'),
+  'seeders-path': path.resolve('database', 'seeders'),
+  'migrations-path': path.resolve('database', 'migrations')
+};

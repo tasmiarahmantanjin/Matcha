@@ -1,3 +1,6 @@
+// I need this file to create some predefined user's so that we can use them as a admin or as a common friends 
+// This file has been created with the help following command: sequelize seed:create ---Name users
+
 'use strict';
 
 const bcrypt = require('bcrypt');

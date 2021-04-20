@@ -32,11 +32,24 @@ module.exports = {
       avatar: {
         type: Sequelize.STRING
       },
+
       /*
+      status: {
+        type: Sequelize.String,
+        enum: ['Pending', 'Active'],
+        default: 'Pending'
+      },
+      status: {
+        type: Sequelize.ENUM
+        values: ["pending", "active", "inactive"]
+        allowNull: false
+        defaultValue: "pending"
+      },
       confirmationCode: {
-        unique: true,
         type: Sequelize.STRING
+        unique: true,
       }, */
+
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
