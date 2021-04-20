@@ -5,7 +5,6 @@ const AuthService = {
         return API.post('/login', data)
             .then(({ data }) => {
                 setHeadersAndStorage(data)
-                // API.defaults.headers['Authorization'] = `Bearer ${data.token}`
                 return data
             })
             .catch(err => {
@@ -19,7 +18,6 @@ const AuthService = {
         return API.post('/register', data)
             .then(({ data }) => {
                 setHeadersAndStorage(data)
-                // API.defaults.headers['Authorization'] = `Bearer ${data.token}`
                 return data
             })
             .catch(err => {

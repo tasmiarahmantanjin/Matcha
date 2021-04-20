@@ -19,13 +19,19 @@ const Navbar = () => {
     const [lastName, setLastName] = useState(user.lastName)
     const [email, setEmail] = useState(user.email)
     const [gender, setGender] = useState(user.gender)
+
+    // SexPref, Bio & interest update
+    const [sexPref, setSexPref] = useState('')
+    const [bio, setBio] = useState('')
+    const [interest, setInterest] = useState('')
+
     const [password, setPassword] = useState('')
     const [avatar, setAvatar] = useState('')
 
     const submitForm = (e) => {
         e.preventDefault()
 
-        const form = { firstName, lastName, email, gender, avatar }
+        const form = { firstName, lastName, email, gender, sexPref, bio, interest, avatar }
         if (password.length > 0) form.password = password
 
         const formData = new FormData()
@@ -102,6 +108,41 @@ const Navbar = () => {
                                         <option value='others'>Others</option>
                                     </select>
                                 </div>
+
+                                {/* //! TODO need to add all the needed field and connect the updated data with database */}
+
+                                <p style={{color: "black"}}>Sexual Preference:</p>
+                                <div className='input-field mb-1'>
+                                    <select
+                                        onChange={e => setSexPref(e.target.value)}
+                                        // value={''}
+                                        required='required'
+                                    >
+                                        <option value='man'>Man</option>
+                                        <option value='women'>Women</option>
+                                        <option value='both'>Both</option>
+                                    </select>
+                                </div>
+
+                                <div className='input-field mb-1'>
+                                    <input
+                                        onChange={e => setBio(e.target.value)}
+                                        // value={''}
+                                        required='required'
+                                        type='text'
+                                        placeholder='Bio' />
+                                </div>
+
+                                <div className='input-field mb-1'>
+                                    <input
+                                        onChange={e => setInterest(e.target.value)}
+                                        // value={''}
+                                        required='required'
+                                        type='text'
+                                        placeholder='My Interests' />
+                                </div>
+
+                                {/* //! TODO end of newly added code */}
 
                                 <div className='input-field mb-2'>
                                     <input
