@@ -1,8 +1,8 @@
 const nodemailer = require("nodemailer");
-const config = require("../config/nodemailer.auth.config");
 const User = require('../models').User;
-const config = require('../config/app');
+const config = require('./app');
 
+const appUrl = config.appUrl
 const appEmail = config.appEmail;
 const appPass = config.appPass;
 
@@ -15,7 +15,8 @@ const transport = nodemailer.createTransport({
 });
 
 // Email Template
-module.exports.sendConfirmationEmail = (name, email, confirmationCode) => {
+// Need to fetch the registrationToken from database
+module.exports.sendRegistrationConfirmationEmail = (name, email, confirmationCode) => {
 	console.log("Check");
 	transport.sendMail({
 		from: user,
@@ -24,7 +25,7 @@ module.exports.sendConfirmationEmail = (name, email, confirmationCode) => {
 		html: `<h1>Email Confirmation</h1>
 			<h2>Hello ${name}</h2>
 			<p>Thank you for subscribing. Please confirm your email by clicking on the following link</p>
-			<a href=http://localhost:3001/confirm/${confirmationCode}> Click here</a>
+			<a ${appUrl}/confirm/${confirmationCode}> Click here</a>
 			</div>`,
 	}).catch(err => console.log(err));
 };

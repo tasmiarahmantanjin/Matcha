@@ -30,7 +30,7 @@ module.exports = {
         lastName: 'Rahman',
         userName: 'tasmiata',
         email: 'shakil@gmail.com',
-        password: 'secret',
+        password: bcrypt.hashSync('secret', 10),
         gender: 'male'
       },
       {
@@ -38,7 +38,7 @@ module.exports = {
         lastName: 'Rahman',
         userName: 'tasmiatan',
         email: 'tanjin@gmail.com',
-        password: 'secret',
+        password: bcrypt.hashSync('secret', 10),
         gender: 'female'
       }
     ])
