@@ -78,7 +78,7 @@ exports.register = async (req, res) => {
 		//4. generating RANDOM token for validation with crypto or jwt
 		const jwtToken = crypto.randomBytes(42).toString('hex');
 
-		//5. create & enter the new user info with generated token inside my database
+		//5. Create & Enter the new user info with generated token inside my database
 		const newUser = await pool.query("INSERT INTO users (first_name, last_name, user_name, email, gender, password, token) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *", [first_name, last_name, user_name, email, gender, bcryptPassword, jwtToken]);
 		res.json(newUser.rows[0]);
 

@@ -11,6 +11,12 @@ router.get('/home', (req, res) => {
 // @access  Public
 router.use('/', require('./auth'))
 
+// @route	POST localhost:5000/forgotPassword
+// @route	POST localhost:5000/resetPassword
+// @desc	Reset Password
+// @access	Public
+router.use('/', require('./resetPassword'))
+
 // @route	POST localhost:5000/users/update
 // @desc	API end-point for update User profile information
 // @access	Public

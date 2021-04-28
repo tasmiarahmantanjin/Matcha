@@ -38,13 +38,13 @@ exports.userFile = ((req, res, next) => {
 
 			fs.access(dest, (error) => {
 
-				// if doesn't exist
+				// If doesn't exist
 				if (error) {
 					return fs.mkdir(dest, (error) => {
 						cb(error, dest)
 					})
 				} else {
-					// it does exist
+					// If does exist
 					fs.readdir(dest, (error, files) => {
 						if (error) throw error
 
