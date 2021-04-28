@@ -8,7 +8,6 @@ exports.login = async (req, res) => {
 	// const { email, password } = req.body
 	const { userName, password } = req.body
 
-
 	try {
 		const secret = require('crypto').randomBytes(64).toString('hex')
 
@@ -30,7 +29,6 @@ exports.login = async (req, res) => {
 		}
 		*/
 		//! TEST CODE END
-
 
 		// check if user found
 		if (!user) return res.status(404).json({ message: 'User not found!' })

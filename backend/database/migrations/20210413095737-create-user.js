@@ -29,10 +29,26 @@ module.exports = {
       gender: {
         type: Sequelize.STRING
       },
+      sexualOrientation: {
+        type: Sequelize.STRING
+      },
       avatar: {
         type: Sequelize.STRING
       },
 
+      isVerified: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
+      token: {
+        type: Sequelize.STRING,
+      },
+      bio: {
+        type: Sequelize.STRING
+      },
+      interest: {
+        type: Sequelize.STRING
+      },
       /*
       status: {
         type: Sequelize.String,

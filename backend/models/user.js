@@ -24,6 +24,8 @@ module.exports = (sequelize, DataTypes) => {
     email: DataTypes.STRING,
     password: DataTypes.STRING,
     gender: DataTypes.STRING,
+    sexualOrientation: DataTypes.STRING,
+
     // need to modify following avatar section to get the default profile picture 
     avatar: {
       type: DataTypes.STRING,
@@ -38,7 +40,11 @@ module.exports = (sequelize, DataTypes) => {
         const id = this.getDataValue('id')
         return `${url}/user/${id}/${avatar}`
       }
-    }
+    },
+    isVerified: DataTypes.BOOLEAN,
+    token: DataTypes.STRING,
+    bio: DataTypes.STRING,
+    interest: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'User',
