@@ -17,7 +17,7 @@ const Register = ({ history }) => {
     const [last_name, setLast_name] = useState('')
     const [user_name, setUser_name] = useState('')
     const [email, setEmail] = useState('')
-    const [gender, setGender] = useState('')
+    const [gender, setGender] = useState('male')
     const [password, setPassword] = useState('')
 
     const submitForm = (e) => {

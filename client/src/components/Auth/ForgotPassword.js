@@ -1,10 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import loginImage from "../../assets/images/forgotPassword.svg";
 import { Link } from "react-router-dom";
 
 import './Auth.scss';
+import { useDispatch } from 'react-redux'
+// import the login action
+import { forgotPassword } from '../../store/actions/auth'
 
-const Login = () => {
+
+const ForgotPassword = ({ history }) => {
+  const [email, setEmail] = useState('')
+  
+  const dispatch = useDispatch()
+
+const submitForm = (e) => {
+  e.preventDefault()
+  // dispatch the event action
+  dispatch(forgotPassword({ email }, history))
+}
     return (
         <div id='auth-container'>
             <div id='auth-card'>
@@ -18,9 +31,12 @@ const Login = () => {
                         <h2>Oops! Forgot Your Password?</h2>
                         <p>Please Enter your email address!</p>
 
-                        <form>
+                        <form onSubmit={submitForm}>
                             <div className='input-field mb-1'>
-                                <input type="text" placeholder='Email'/>
+                                <input 
+                                onChange={e => setEmail(e.target.value)}
+                                required='required'
+                                type="text" value={email} placeholder='Email'/>
                             </div>
 
                             <button>Send Login Link</button>
@@ -34,4 +50,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default ForgotPassword
