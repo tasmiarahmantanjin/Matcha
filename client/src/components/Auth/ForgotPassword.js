@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 import './Auth.scss';
 import { useDispatch } from 'react-redux'
-// import the login action
+// import the forgotPassword action
 import { forgotPassword } from '../../store/actions/auth'
 
 
