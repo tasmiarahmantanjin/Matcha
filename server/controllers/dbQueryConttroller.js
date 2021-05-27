@@ -2,6 +2,7 @@ const pool = require('../config/database');
 
 exports.updateAccount = async (user_id, data) => {
 	const keys = Object.keys(data);
+  console.log(keys)
 	const info = keys.map((key, i) => `${key} = $${i + 1}`).join(', ');
 	const values = keys.map((key) => data[key]);
 	const res = await pool.query(

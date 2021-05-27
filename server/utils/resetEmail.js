@@ -1,12 +1,12 @@
-const nodemailer = require("nodemailer");
+const nodemailer = require('nodemailer')
 const {appEmail, appPass, appClientId, appClientSecret, appRefreshToken} = require('../config/app')
 
-const sendEmail = (email, token) => {
-  console.log(`Sending email to ${email}`)
+const resetEmail = (email, token) => {
+  console.log(`Sending email to ${email}`)  
 	const transporter = nodemailer.createTransport({
 		service: 'gmail',
 		auth: {
-      type: 'OAuth2',
+			type: 'OAuth2',
       user: appEmail,
       pass: appPass,
       clientId: appClientId,
@@ -14,12 +14,14 @@ const sendEmail = (email, token) => {
       refreshToken: appRefreshToken
 		}
 	})
+
 	const mailOptions = {
 		from: 'pontuslaandersson@gmail.com',
-		to: 'pontuslaandersson@gmail.com',
-		subject: 'Activate Your Matcha Account Now',
-		text: `Hello! Here is your account activation link. Please click the link to verify your account: http://localhost:5000/registrationVerify?token=${token}`
+		to: email,
+		subject: 'Reset Your Password',
+		text: `Forgot Your Password? That's okay! you can reset your password by clicking following link: http://localhost:3000/resetPassword?token=${token}`
 	}
+
 	transporter.sendMail(mailOptions, function (error, info) {
 		if (error) {
 			console.log(error)
@@ -29,4 +31,5 @@ const sendEmail = (email, token) => {
 	})
 }
 
-module.exports = sendEmail;
+module.exports = resetEmail
+

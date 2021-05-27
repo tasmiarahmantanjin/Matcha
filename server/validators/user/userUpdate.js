@@ -1,4 +1,6 @@
 // This file contains all the rules form userUpdate form validations
+
+// To-do: Make sure this matched with incoming data: first_name, last_name, email, gender, sex_orientation, bio, interest, avatar
 const { body } = require('express-validator')
 
 exports.rules = (() => {
