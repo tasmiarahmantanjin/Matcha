@@ -59,7 +59,7 @@ const findUserInfo = async (key, value, ...args) => {
 // @access  Public
 exports.register = async (req, res) => {
 	try {
-    console.log('Endpoint hit: register.')
+    //console.log('Endpoint hit: register.')
 		//1. De-structure the req.body(first_name, last_name, user_name, email, password, token)
 		const { first_name, last_name, user_name, email, gender, password, token } = req.body
 

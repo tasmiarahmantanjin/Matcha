@@ -33,7 +33,12 @@ exports.userFile = ((req, res, next) => {
 
 	const storage = multer.diskStorage({
 		destination: function (req, file, cb) {
-			const { id } = req.user
+      console.log(`Request body in image saver: `)
+      console.log(req.body);
+			const id = req.user.user_id
+      console.log(`id: ${id}`);
+      console.log(`User in image saver: `)
+      console.log(req.user);
 			const dest = `uploads/user/${id}`
 
 			fs.access(dest, (error) => {
@@ -60,8 +65,8 @@ exports.userFile = ((req, res, next) => {
 			})
 		},
 		filename: generateFileName
+    
 
 	})
-
-	return multer({storage, fileFilter}).single('avatar')
+	return multer({storage, fileFilter}).single('uploadAvatar')
 })()
