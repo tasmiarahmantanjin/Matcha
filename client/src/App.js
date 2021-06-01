@@ -2,6 +2,7 @@ import React from 'react';
 import Login from './components/Auth/Login'
 import Register from './components/Auth/Register'
 import ForgotPassword from './components/Auth/ForgotPassword'
+import ResetPassword from './components/Auth/ResetPassword'
 import Chat from './components/Chat/Chat'
 
 import ProtectedRoute from './components/Router/ProtectedRouter'
@@ -26,6 +27,7 @@ function App() {
                   <Route path='/login' component={Login} />
                   <Route path='/register' component={Register} />
                   <Route path='/forgotPassword' component={ForgotPassword} />
+                  <Route path='/resetPassword' component={ResetPassword} />
                   <Route render={() => <h1>404 page not found</h1>} />
               </Switch>
           </div>

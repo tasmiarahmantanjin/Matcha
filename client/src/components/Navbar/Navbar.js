@@ -13,6 +13,8 @@ const Navbar = () => {
     const dispatch = useDispatch()
     const user = useSelector(state => state.authReducer.user)
 
+    //console.log(user)
+
     const [showProfileOptions, setShowProfileOptions] = useState(false)
     const [showProfileModal, setShowProfileModal] = useState(false)
 
@@ -27,13 +29,16 @@ const Navbar = () => {
     const [interest, setInterest] = useState(user.interest)
 
     const [password, setPassword] = useState('')
-    const [avatar, setAvatar] = useState('')
+    const [avatar, setAvatar] = useState(user.avatar)
+    const [uploadAvatar, setUploadAvatar] = useState('')
 
+
+    //console.log(user)
     const submitForm = (e) => {
         e.preventDefault()
 
-        const form = { first_name, last_name, email, gender, sex_orientation, bio, interest, avatar }
-
+        const form = { first_name, last_name, email, gender, sex_orientation, bio, interest, uploadAvatar }
+        console.log(uploadAvatar)
         if (password.length > 0) form.password = password
 
         const formData = new FormData()
@@ -41,16 +46,16 @@ const Navbar = () => {
         for (const key in form) {
             formData.append(key, form[key])
         }
-
         dispatch(updateProfile(formData)).then(() => setShowProfileModal(false))
     }
 
     return (
         <div id='navbar' className='card-shadow'>
             <img width="100" height="80" src={logoImage} alt='Logo' />
+            <div>Find match</div>
 
             <div onClick={() => setShowProfileOptions(!showProfileOptions)} id='profile-menu'>
-                <img width="40" height="40" src={user.avatar} alt='Avatar' />
+                <img width="40" height="40" src={`http://localhost:5000/uploads/user/${user.user_id}/${avatar}`} alt='Avatar' />
                 <p>{user.user_name}</p>
                 <FontAwesomeIcon icon='caret-down' className='fa-icon' />
 
@@ -156,7 +161,7 @@ const Navbar = () => {
 
                                 <div className='input-field mb-2'>
                                     <input
-                                        onChange={e => setAvatar(e.target.files[0])}
+                                        onChange={e => setUploadAvatar(e.target.files[0])}
                                         type='file' />
                                 </div>
                             </form>

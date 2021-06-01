@@ -32,6 +32,7 @@ const AuthService = {
     },
 
     updateProfile: (data) => {
+      //console.log(`Data in updateProfile (authService): ${data}`)
         const headers = {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         }
@@ -41,11 +42,36 @@ const AuthService = {
                 return data
             })
             .catch(err => {
-                console.log("Auth service err", err);
+                console.log("Auth service err in updateProfile", err);
                 throw err
             })
     },
+
+    forgotPassword: (data) => {
+      return API.post('/forgotPassword', data)
+          .then(({ data }) => {
+              setHeadersAndStorage(data)
+              return data
+          })
+          .catch(err => {
+              console.log("Auth service (forgot password) err", err);
+              throw err
+          })
+    },
+
+    resetPassword: (data) => {
+      return API.post('/resetPassword', data)
+          .then(({ data }) => {
+              setHeadersAndStorage(data)
+              return data
+          })
+          .catch(err => {
+              console.log("Auth service (reset password) err", err);
+              throw err
+          })
+    },
 }
+
 
 const setHeadersAndStorage = ({ user, token }) => {
     API.defaults.headers['Authorization'] = `Bearer ${token}`
