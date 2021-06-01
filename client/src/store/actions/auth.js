@@ -1,6 +1,6 @@
 import AuthService from '../../services/authService'
 
-import { LOGIN, REGISTER, LOGOUT, UPDATE_PROFILE } from '../types/index'
+import { LOGIN, REGISTER, LOGOUT, UPDATE_PROFILE, PASSWORD_RESET } from '../types/index'
 
 export const login = (params, history) => dispatch => {
     return AuthService.login(params)
@@ -37,4 +37,27 @@ export const updateProfile = (params) => dispatch => {
         .catch(err => {
             throw err
         })
+}
+
+export const forgotPassword = (params, history) => dispatch => {
+  return AuthService.forgotPassword(params)
+  .then(data => {
+      dispatch({ type: PASSWORD_RESET, payload: data })
+      // Message saying email has been sent?
+      // Redirect to home.
+      history.push('/')
+  })
+  .catch(err => {
+  })
+}
+
+export const resetPassword = (params, history) => dispatch => {
+  return AuthService.resetPassword(params)
+  .then(data => {
+      dispatch({ type: PASSWORD_RESET, payload: data })
+      // Redirect to home.
+      history.push('/')
+  })
+  .catch(err => {
+  })
 }
