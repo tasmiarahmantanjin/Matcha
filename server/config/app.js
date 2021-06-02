@@ -1,6 +1,10 @@
 require('dotenv').config();
 
 module.exports = {
+  appDbHost: process.env.DB_HOST,
+  appDbUser: process.env.DB_USER,
+  appDbPass: process.env.DB_PASSWORD,
+  appDbDatabase: process.env.DB_DATABASE,
 	appKey: process.env.APP_KEY,
 	appPort: process.env.APP_PORT,
 	appUrl: process.env.APP_URL,

@@ -16,7 +16,7 @@ const sendEmail = (email, token) => {
 	})
 	const mailOptions = {
 		from: 'pontuslaandersson@gmail.com',
-		to: 'pontuslaandersson@gmail.com',
+		to: email,
 		subject: 'Activate Your Matcha Account Now',
 		text: `Hello! Here is your account activation link. Please click the link to verify your account: http://localhost:5000/registrationVerify?token=${token}`
 	}

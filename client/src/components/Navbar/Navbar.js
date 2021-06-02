@@ -32,6 +32,10 @@ const Navbar = () => {
     const [avatar, setAvatar] = useState(user.avatar)
     const [uploadAvatar, setUploadAvatar] = useState('')
 
+    const [tags, setTags] = React.useState([
+      /*'Tags',
+      'Input'*/
+    ])
 
     //console.log(user)
     const submitForm = (e) => {
@@ -48,6 +52,47 @@ const Navbar = () => {
         }
         dispatch(updateProfile(formData)).then(() => setShowProfileModal(false))
     }
+
+    // Hashtag code
+
+    const removeTag = (i) => {
+      const newTags = [ ...tags ];
+      newTags.splice(i, 1);
+  
+      // Call the defined function setTags which will replace tags with the new value.
+      setTags(newTags);
+    }
+
+    // Trims character from string; in this case hashtags from interests input
+    function trim(str, ch) {
+      var start = 0, 
+          end = str.length;
+      while(start < end && str[start] === ch)
+          ++start;
+      while(end > start && str[end - 1] === ch)
+          --end;
+      return (start > 0 || end < str.length) ? str.substring(start, end) : str;
+  }
+  
+    // Puts interest into array on enter press, and resets the input field.
+    const inputKeyDown = (e) => {
+      if (e.target.value === "#") {
+        return
+      }
+      const val = "#" + trim(e.target.value, '#')
+      if (e.key === 'Enter' && val !== "#") {
+        if (tags.find(tag => tag.toLowerCase() === val.toLowerCase())) {
+          return;
+        }
+        setTags([...tags, val]);
+        var inputTag = document.getElementById('input-tag')
+        inputTag.value = ''
+      } else if (e.key === 'Backspace' && val === "#") {
+        removeTag(tags.length - 1);
+      }
+    }
+
+    // End of hashtag code
 
     return (
         <div id='navbar' className='card-shadow'>
@@ -164,9 +209,20 @@ const Navbar = () => {
                                         onChange={e => setUploadAvatar(e.target.files[0])}
                                         type='file' />
                                 </div>
+                                <div className="input-tag">
+                        <ul className="input-tag__tags">
+                          { tags.map((tag, i) => (
+                            <li key={tag}>
+                              {tag}
+                              <button type="button" onClick={() => { removeTag(i); }}>+</button>
+                            </li>
+                          ))}
+                          <li className="input-tag__tags__input"><input id="input-tag" type="text" onKeyDown={inputKeyDown} placeholder="Interests (write one at a time and press enter...)" /*ref={c => { tagInput = c; }}*/ /></li>
+                        </ul>
+                      </div>
                             </form>
                         </Fragment>
-
+                        
                         <Fragment key='footer'>
                             <button className='btn-success' onClick={submitForm}>UPDATE</button>
                         </Fragment>
