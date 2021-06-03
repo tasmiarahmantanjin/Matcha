@@ -32,6 +32,8 @@
             }
 
             .modal-body {
+              overflow: scroll;
+              max-height: 500px;
                 padding: 20px;
                 background-color: white;
                 text-align: left;

@@ -179,7 +179,8 @@ const Navbar = () => {
                                         value={bio}
                                         // required='required'
                                         type='text'
-                                        placeholder='Bio' />
+                                        placeholder='Bio'
+                                        autoComplete="off" />
                                 </div>
 
                                 {/* //! TODO end of newly added code */}
@@ -190,9 +191,20 @@ const Navbar = () => {
                                         value={password}
                                         required='required'
                                         type='password'
-                                        placeholder='Password' />
+                                        placeholder='Password'
+                                        autoComplete="current-password" />
                                 </div>
-                                
+                                <div className='input-field mb-2'>
+                                <label htmlFor="country">Country:</label>
+                                  <select name="country" id="country">
+                                  <option>India</option>
+                                    <option>China</option>
+                                  </select>
+                                </div>
+                                <div className='input-field mb-2'>
+                                  <label htmlFor="birthdate">Birthdate:</label>
+                                  <input type="date" id="birthdate" name="birthdate"></input>
+                                </div>
                                 <div className='input-field mb-2'>
                                     <input
                                         onChange={e => setUploadAvatar(e.target.files[0])}
