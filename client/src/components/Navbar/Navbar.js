@@ -30,7 +30,7 @@ const Navbar = () => {
 
     const [password, setPassword] = useState('')
     const [avatar, setAvatar] = useState(user.avatar)
-    const [uploadAvatar, setUploadAvatar] = useState('')
+    const [uploadAvatar, setUploadAvatar] = useState(user.avatar)
 
     const [interest, setInterest] = React.useState(user.interest)
 
@@ -193,13 +193,6 @@ const Navbar = () => {
                                         type='password'
                                         placeholder='Password'
                                         autoComplete="current-password" />
-                                </div>
-                                <div className='input-field mb-2'>
-                                <label htmlFor="country">Country:</label>
-                                  <select name="country" id="country">
-                                  <option>India</option>
-                                    <option>China</option>
-                                  </select>
                                 </div>
                                 <div className='input-field mb-2'>
                                   <label htmlFor="birthdate">Birthdate:</label>

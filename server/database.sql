@@ -23,7 +23,7 @@ CREATE TABLE users (
 	sex_orientation varchar(255) DEFAULT NULL,
 	avatar varchar(255) DEFAULT NULL,
 	bio VARCHAR(1000),
-	interest VARCHAR(1000),
+	interest VARCHAR(255)[],
 	tags VARCHAR(255),
 	latitude float NULL ,
  	longitude float NULL ,

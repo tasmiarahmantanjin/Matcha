@@ -30,7 +30,10 @@ exports.update = async (req, res) => {
   //console.log(req.file.filename)
   try {
 		const {first_name, last_name, gender, sex_orientation, bio, interest, email, password } = req.body
-    const avatar = req.file.filename
+    let avatar = null
+    if (req.file) {
+      avatar = req.file.filename
+    }
 
 		//1. Find the user
 		const user = await findUserInfo('email', email);
@@ -49,7 +52,11 @@ exports.update = async (req, res) => {
     // It updates! However, frontend has problems with default options.
     // Transform interests into correct format
     let interest_arr = interest.split(",")
-    db.query("UPDATE users SET first_name = $1, last_name = $2, gender = $3, sex_orientation = $4, bio = $5, interest = $6, avatar = $7 WHERE email = $8", [first_name, last_name, gender, sex_orientation, bio, interest_arr, avatar, email]);
+    db.query("UPDATE users SET first_name = $1, last_name = $2, gender = $3, sex_orientation = $4, bio = $5, interest = $6 WHERE email = $7", [first_name, last_name, gender, sex_orientation, bio, interest_arr, email]);
+    if (avatar !== null) {
+      console.log('Updating avatar')
+      db.query("UPDATE users SET avatar = $1 WHERE email = $2", [avatar, email])
+    }
     
     
 		//return res.send(updatedUser)
