@@ -26,23 +26,20 @@ const Navbar = () => {
     // SexPref, Bio & interest update
     const [sex_orientation, setSex_orientation] = useState(user.sex_orientation)
     const [bio, setBio] = useState(user.bio)
-    const [interest, setInterest] = useState(user.interest)
+    //const [interest, setInterest] = useState(user.interest)
 
     const [password, setPassword] = useState('')
     const [avatar, setAvatar] = useState(user.avatar)
     const [uploadAvatar, setUploadAvatar] = useState('')
 
-    const [tags, setTags] = React.useState([
-      /*'Tags',
-      'Input'*/
-    ])
+    const [interest, setInterest] = React.useState(user.interest)
 
     //console.log(user)
     const submitForm = (e) => {
         e.preventDefault()
 
         const form = { first_name, last_name, email, gender, sex_orientation, bio, interest, uploadAvatar }
-        console.log(uploadAvatar)
+        console.log(interest)
         if (password.length > 0) form.password = password
 
         const formData = new FormData()
@@ -56,11 +53,11 @@ const Navbar = () => {
     // Hashtag code
 
     const removeTag = (i) => {
-      const newTags = [ ...tags ];
+      const newTags = [ ...interest ];
       newTags.splice(i, 1);
   
       // Call the defined function setTags which will replace tags with the new value.
-      setTags(newTags);
+      setInterest(newTags);
     }
 
     // Trims character from string; in this case hashtags from interests input
@@ -81,15 +78,16 @@ const Navbar = () => {
       }
       const val = "#" + trim(e.target.value, '#')
       if (e.key === 'Enter' && val !== "#") {
-        if (tags.find(tag => tag.toLowerCase() === val.toLowerCase())) {
+        if (interest.find(interest => interest.toLowerCase() === val.toLowerCase())) {
           return;
         }
-        setTags([...tags, val]);
+        setInterest([...interest, val]);
         var inputTag = document.getElementById('input-tag')
         inputTag.value = ''
       } else if (e.key === 'Backspace' && val === "#") {
-        removeTag(tags.length - 1);
+        removeTag(interest.length - 1);
       }
+      console.log(interest)
     }
 
     // End of hashtag code
@@ -184,15 +182,6 @@ const Navbar = () => {
                                         placeholder='Bio' />
                                 </div>
 
-                                <div className='input-field mb-1'>
-                                    <input
-                                        onChange={e => setInterest(e.target.value)}
-                                        value={interest}
-                                        // required='required'
-                                        type='text'
-                                        placeholder='My Interests' />
-                                </div>
-
                                 {/* //! TODO end of newly added code */}
 
                                 <div className='input-field mb-2'>
@@ -203,7 +192,7 @@ const Navbar = () => {
                                         type='password'
                                         placeholder='Password' />
                                 </div>
-
+                                
                                 <div className='input-field mb-2'>
                                     <input
                                         onChange={e => setUploadAvatar(e.target.files[0])}
@@ -211,7 +200,7 @@ const Navbar = () => {
                                 </div>
                                 <div className="input-tag">
                         <ul className="input-tag__tags">
-                          { tags.map((tag, i) => (
+                          { interest.map((tag, i) => (
                             <li key={tag}>
                               {tag}
                               <button type="button" onClick={() => { removeTag(i); }}>+</button>
@@ -236,3 +225,14 @@ const Navbar = () => {
 }
 
 export default Navbar
+
+/*
+<div className='input-field mb-1'>
+                                    <input
+                                        onChange={e => setInterest(e.target.value)}
+                                        value={interest}
+                                        // required='required'
+                                        type='text'
+                                        placeholder='My Interests' />
+                                </div>
+*/

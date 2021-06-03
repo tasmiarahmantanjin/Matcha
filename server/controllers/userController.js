@@ -47,7 +47,9 @@ exports.update = async (req, res) => {
 		//userWithToken.user.avatar = user.avatar
     //console.log('Now we would update user table with new data.')
     // It updates! However, frontend has problems with default options.
-    db.query("UPDATE users SET first_name = $1, last_name = $2, gender = $3, sex_orientation = $4, bio = $5, interest = $6, avatar = $7 WHERE email = $8", [first_name, last_name, gender, sex_orientation, bio, interest, avatar, email]);
+    // Transform interests into correct format
+    let interest_arr = interest.split(",")
+    db.query("UPDATE users SET first_name = $1, last_name = $2, gender = $3, sex_orientation = $4, bio = $5, interest = $6, avatar = $7 WHERE email = $8", [first_name, last_name, gender, sex_orientation, bio, interest_arr, avatar, email]);
     
     
 		//return res.send(updatedUser)
