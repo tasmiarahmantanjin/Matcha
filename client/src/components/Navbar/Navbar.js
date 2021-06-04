@@ -32,13 +32,14 @@ const Navbar = () => {
     const [avatar, setAvatar] = useState(user.avatar)
     const [uploadAvatar, setUploadAvatar] = useState(user.avatar)
 
-    const [interest, setInterest] = React.useState(user.interest)
+    const [interest, setInterest] = useState(user.interest)
+    const [birthdate, setBirthdate] = useState(user.birthdate/* || ''*/)
 
     //console.log(user)
     const submitForm = (e) => {
         e.preventDefault()
 
-        const form = { first_name, last_name, email, gender, sex_orientation, bio, interest, uploadAvatar }
+        const form = { first_name, last_name, email, gender, sex_orientation, bio, interest, birthdate, uploadAvatar }
         console.log(interest)
         if (password.length > 0) form.password = password
 
@@ -196,7 +197,10 @@ const Navbar = () => {
                                 </div>
                                 <div className='input-field mb-2'>
                                   <label htmlFor="birthdate">Birthdate:</label>
-                                  <input type="date" id="birthdate" name="birthdate"></input>
+                                  <input type="date" id="birthdate"
+                                  onChange={e => setBirthdate(e.target.value)}
+                                  name="birthdate"
+                                  value={birthdate}></input>
                                 </div>
                                 <div className='input-field mb-2'>
                                     <input
