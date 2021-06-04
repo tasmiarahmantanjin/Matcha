@@ -33,9 +33,23 @@ const Navbar = () => {
     const [uploadAvatar, setUploadAvatar] = useState(user.avatar)
 
     const [interest, setInterest] = useState(user.interest)
-    const [birthdate, setBirthdate] = useState(user.birthdate/* || ''*/)
-
+    const [birthdate, setBirthdate] = useState(formatDate(new Date(user.birthdate)))
+    console.log(`Birthdate: ${birthdate}`);
     //console.log(user)
+
+    function formatDate(date) {
+      var d = new Date(date),
+          month = '' + (d.getMonth() + 1),
+          day = '' + d.getDate(),
+          year = d.getFullYear();
+  
+      if (month.length < 2) 
+          month = '0' + month;
+      if (day.length < 2) 
+          day = '0' + day;
+  
+      return [year, month, day].join('-');
+  }
     const submitForm = (e) => {
         e.preventDefault()
 
@@ -200,7 +214,8 @@ const Navbar = () => {
                                   <input type="date" id="birthdate"
                                   onChange={e => setBirthdate(e.target.value)}
                                   name="birthdate"
-                                  value={birthdate}></input>
+                                  value={birthdate}>
+                                  </input>
                                 </div>
                                 <div className='input-field mb-2'>
                                     <input
