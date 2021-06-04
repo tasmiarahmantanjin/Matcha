@@ -40,7 +40,8 @@ const Login = ({ history }) => {
                                     value={user_name}
                                     required='required'
                                     type='text'
-                                    placeholder='User Name' />
+                                    placeholder='User Name'
+                                    autoComplete='username'/>
                             </div>
 
                             <div className='input-field mb-2'>
@@ -49,7 +50,8 @@ const Login = ({ history }) => {
                                     value={password}
                                     required='required'
                                     type='password'
-                                    placeholder='Password' />
+                                    placeholder='Password'
+                                    autoComplete='current-password' />
                             </div>
 
                             <button>LOGIN</button>
