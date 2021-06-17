@@ -41,6 +41,7 @@ exports.login = async (req, res) => {
 		//4. Generate auth token
 		const userWithToken = generateToken(user)
 		userWithToken.user.avatar = user.avatar
+    console.log(userWithToken)
 
 		return res.send(userWithToken)
 	} catch (e) {
