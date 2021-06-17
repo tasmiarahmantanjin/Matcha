@@ -34,7 +34,8 @@ CREATE TABLE users (
 	birthdate DATE DEFAULT NULL,
 	fame INTEGER DEFAULT 100,
 	last_online TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	online SMALLINT NOT NULL DEFAULT 0
+	online SMALLINT NOT NULL DEFAULT 0,
+  sexual_orientation VARCHAR(255)[]
 );
 
 --Insert predifined users for admin use
