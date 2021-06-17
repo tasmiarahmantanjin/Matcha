@@ -4,6 +4,8 @@ import Register from './components/Auth/Register'
 import ForgotPassword from './components/Auth/ForgotPassword'
 import ResetPassword from './components/Auth/ResetPassword'
 import Chat from './components/Chat/Chat'
+import MatchesPage from './components/MatchesPage/MatchesPage'
+
 
 import ProtectedRoute from './components/Router/ProtectedRouter'
 
@@ -25,6 +27,7 @@ function App() {
               <Switch>
                   <ProtectedRoute exact path='/' component={Chat} />
                   <Route path='/login' component={Login} />
+                  <Route path='/matches' component={MatchesPage} />
                   <Route path='/register' component={Register} />
                   <Route path='/forgotPassword' component={ForgotPassword} />
                   <Route path='/resetPassword' component={ResetPassword} />

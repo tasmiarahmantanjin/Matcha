@@ -1,6 +1,6 @@
 import AuthService from '../../services/authService'
 
-import { LOGIN, REGISTER, LOGOUT, UPDATE_PROFILE, PASSWORD_RESET } from '../types/index'
+import { LOGIN, REGISTER, LOGOUT, UPDATE_PROFILE, PASSWORD_RESET, GET_MATCHES } from '../types/index'
 
 export const login = (params, history) => dispatch => {
     return AuthService.login(params)
@@ -38,6 +38,19 @@ export const updateProfile = (params) => dispatch => {
             throw err
         })
 }
+
+
+export const getMatches = (params) => dispatch => {
+  //console.log(`Data in auth.js: ${params.get('ageRangeMax')}`) // Form data is still available here.
+    return AuthService.getMatches(params)
+        .then(data => {
+            dispatch({ type: GET_MATCHES, payload: data })
+        })
+        .catch(err => {
+            throw err
+        })
+}
+
 
 export const forgotPassword = (params, history) => dispatch => {
   return AuthService.forgotPassword(params)

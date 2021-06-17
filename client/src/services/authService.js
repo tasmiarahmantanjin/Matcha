@@ -47,6 +47,26 @@ const AuthService = {
             })
     },
 
+    
+    getMatches: (data) => {
+      //console.log(`Data in getMatches (authService): ${data}`)
+      //console.log(`Data in authService: ${data.get('ageRangeMax')}`) // Form data is still available here; header problem?
+      /*const headers = {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    }*/
+        return API.post('/matches/match', data/*, headers*/)
+            .then(({ data }) => {
+              //console.log(data)
+                //setHeadersAndStorage(data)
+                return data
+            })
+            .catch(err => {
+                console.log("Auth service err", err);
+                throw err
+            })
+    },
+    
+
     forgotPassword: (data) => {
       return API.post('/forgotPassword', data)
           .then(({ data }) => {

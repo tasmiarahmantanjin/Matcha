@@ -24,7 +24,7 @@ const Navbar = () => {
     const [gender, setGender] = useState(user.gender)
 
     // SexPref, Bio & interest update
-    const [sex_orientation, setSex_orientation] = useState(user.sex_orientation)
+    const [sexual_orientation, setSexual_orientation] = useState(user.sexual_orientation)
     const [bio, setBio] = useState(user.bio)
     //const [interest, setInterest] = useState(user.interest)
 
@@ -34,8 +34,22 @@ const Navbar = () => {
 
     const [interest, setInterest] = useState(user.interest)
     const [birthdate, setBirthdate] = useState(formatDate(new Date(user.birthdate)))
-    console.log(`Birthdate: ${birthdate}`);
+    //console.log(`Birthdate: ${birthdate}`);
     //console.log(user)
+    const [female, setFemale] = useState(inArray('female'))
+    const [male, setMale] = useState(inArray('male'))
+    const [other, setOther] = useState(inArray('other'))
+    console.log(`female = ${female}`)
+    console.log(`male = ${male}`)
+    console.log(`other = ${other}`)
+
+
+    //var male = inArray('male')
+    //var female = inArray('female')
+    //var other = inArray('other')
+    var checked = sexual_orientation;
+    //console.log(checked)
+
 
     function formatDate(date) {
       var d = new Date(date),
@@ -43,9 +57,9 @@ const Navbar = () => {
           day = '' + d.getDate(),
           year = d.getFullYear();
   
-      if (month.length < 2) 
+      if (month.length < 2)
           month = '0' + month;
-      if (day.length < 2) 
+      if (day.length < 2)
           day = '0' + day;
   
       return [year, month, day].join('-');
@@ -53,8 +67,8 @@ const Navbar = () => {
     const submitForm = (e) => {
         e.preventDefault()
 
-        const form = { first_name, last_name, email, gender, sex_orientation, bio, interest, birthdate, uploadAvatar }
-        console.log(interest)
+        const form = { first_name, last_name, email, gender, sexual_orientation, bio, interest, birthdate, uploadAvatar }
+        //console.log(interest)
         if (password.length > 0) form.password = password
 
         const formData = new FormData()
@@ -107,10 +121,60 @@ const Navbar = () => {
 
     // End of hashtag code
 
+
+    // Checkbox code
+    function getSexOrientation(checkmark) {
+        if (!checked.includes(checkmark)/* && (checkmark === 'male' || checkmark === 'female' || checkmark === 'other')*/) {
+          checked.push(checkmark)
+          if (checkmark === 'female'){
+            setFemale(true)
+          }
+          if (checkmark === 'male'){
+            setMale(true)
+          }
+          if (checkmark === 'other'){
+            setOther(true)
+          }
+         } else {
+            for (var j = 0; j < checked.length; j++){                            
+              if ( checked[j] === checkmark) { 
+                //console.log(`Removing ${checkmark} from array: ${checked}.`)
+                  checked.splice(j, 1); 
+                  j--; 
+              }
+              if (checkmark === 'female'){
+                setFemale(false)
+              }
+              if (checkmark === 'male'){
+                setMale(false)
+              }
+              if (checkmark === 'other'){
+                setOther(false)
+              }
+          }
+        }
+        //if (checkmark === 'male' ) checked.push(checkmark) LOOP!
+        //if (checkmark === 'other' ) checked.push(checkmark)
+      //checked.push(checkmark)
+      //console.log(checked)
+      setSexual_orientation(checked)
+  }
+
+    function inArray(option) {
+      if (sexual_orientation.includes(option)){
+        return true
+      }
+      else {
+        return false
+      }
+    }
+
+    // End of checkbox code
+
     return (
         <div id='navbar' className='card-shadow'>
             <img width="100" height="80" src={logoImage} alt='Logo' />
-            <div>Find match</div>
+            <div><a href="http://localhost:3000/matches">Find match</a></div>
 
             <div onClick={() => setShowProfileOptions(!showProfileOptions)} id='profile-menu'>
                 <img width="40" height="40" src={`http://localhost:5000/uploads/user/${user.user_id}/${avatar}`} alt='Avatar' />
@@ -163,6 +227,7 @@ const Navbar = () => {
                                 </div>
 
                                 <div className='input-field mb-1'>
+                                <h3>I am ...</h3>
                                     <select
                                         onChange={e => setGender(e.target.value)}
                                         value={gender}
@@ -177,15 +242,10 @@ const Navbar = () => {
                                 {/* //! TODO need to add all the needed field and connect the updated data with database */}
 
                                 <div className='input-field mb-1'>
-                                    <select
-                                        onChange={e => setSex_orientation(e.target.value)}
-                                        value={sex_orientation}
-                                        required='required'
-                                    >
-                                        <option value='male'>Male</option>
-                                        <option value='female'>Female</option>
-                                        <option value='others'>Others</option>
-                                    </select>
+                                  <h3>Looking for...</h3>
+                                    <label htmlFor="sex-or-male">Male</label><input type="checkbox" value="male" id="sex-or-male" name="sex-or-male" checked={male} onChange={e => getSexOrientation(e.target.value)}/>
+                                    <label htmlFor="sex-or-female">Female</label><input type="checkbox" value="female" id="sex-or-female" name="sex-or-female" checked={female} onChange={e => getSexOrientation(e.target.value)}/>
+                                    <label htmlFor="sex-or-other">Other</label><input type="checkbox" value="other" id="sex-or-other" name="sex-or-other" checked={other} onChange={e => getSexOrientation(e.target.value)}/>
                                 </div>
 
                                 <div className='input-field mb-1'>
@@ -249,14 +309,3 @@ const Navbar = () => {
 }
 
 export default Navbar
-
-/*
-<div className='input-field mb-1'>
-                                    <input
-                                        onChange={e => setInterest(e.target.value)}
-                                        value={interest}
-                                        // required='required'
-                                        type='text'
-                                        placeholder='My Interests' />
-                                </div>
-*/
