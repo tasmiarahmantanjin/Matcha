@@ -26,12 +26,12 @@ const findUserInfo = async (key, value, ...args) => {
 };*/
 
 exports.match = async (req, res) => {
-  console.log('Request.body in matchesController:')
+  //console.log('Request.body in matchesController:')
   //console.log(req.body)
   try {
 		const { ageRangeMax, ageRangeMin, distance, gender, sexual_orientation, interest } = req.body
     let interestArr = interest.split(",")
-    console.log(interestArr);
+    //console.log(interestArr);
 
 		//1. Find the user
 		//const user = await findUserInfo('email', email);
