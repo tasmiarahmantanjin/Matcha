@@ -1,4 +1,4 @@
-import { LOGIN, REGISTER, LOGOUT, UPDATE_PROFILE, PASSWORD_RESET, GET_MATCHES } from '../types/index'
+import { LOGIN, REGISTER, LOGOUT, UPDATE_PROFILE, PASSWORD_RESET, GET_MATCHES, GET_PROFILE, LIKE_USER, UNLIKE_USER } from '../types/index'
 
 const initialState = {
     // to store the token & user into localStorage to solve the refresh problem
@@ -59,6 +59,24 @@ const authReducer = (state = initialState, action) => {
             return {
                 ...state,
                 matches: payload,
+            }
+        case LIKE_USER:
+            // console.log(payload);
+            return {
+                ...state,
+                profile_id: payload,
+            }
+        case UNLIKE_USER:
+              // console.log(payload);
+              return {
+                  ...state,
+                  profile_id: payload,
+              }
+        case GET_PROFILE:
+            // console.log(payload);
+            return {
+                ...state,
+                profile: payload,
             }
 
         default: {

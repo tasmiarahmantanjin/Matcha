@@ -3,6 +3,8 @@ const generateToken = require('../utils/generateToken')
 const sendEmail = require('../utils/email')
 const { getLocation } = require('../utils/location')
 const { updateAccount } = require('./authControllerHelper');
+const { updateTime } = require('./authControllerHelper');
+
 
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
@@ -37,6 +39,9 @@ exports.login = async (req, res) => {
 		// Once login user will be in online
 		location.online = 1;
 		await updateAccount(user.user_id, location)
+    const time = new Date().toISOString().slice(0, 19).replace('T', ' ')
+    console.log(time)
+    await updateTime(user.user_id, time)
 
 		//4. Generate auth token
 		const userWithToken = generateToken(user)
@@ -106,3 +111,36 @@ exports.registrationVerify = ('/registrationVerify', (req, resp) => {
 			}
 		})
 })
+
+// @route   POST /logout
+// @desc    Logout as a user
+// @access  Private
+exports.logout = async (req, res) => {
+	try {
+    console.log(`User ID: `)
+    console.log(req.body);
+		const { user_id } = req.body
+		//1. Find the user
+		const user = await findUserInfo('user_id', user_id);
+    console.log(user.online)
+		//2. Check if user found
+		if (!user) return res.status(404).json({ message: 'User not found!' })
+		if (user.online === 0) return res.status(404).json({ message: 'User already logged out!' })
+
+
+    console.log('Here we log out user.');
+		//!TODO: NEED TO SET THE USER ONLINE ONCE LOGIN & get the user location
+		//const location = await getLocation(req);
+		// Once login user will be in online
+		//online = 0;
+		await pool.query(
+      `UPDATE users SET online = 0 WHERE user_id = $1`, [user_id]);
+    const time = new Date().toISOString().slice(0, 19).replace('T', ' ')
+    console.log(time)
+    await updateTime(user_id, time)
+
+		return res.sendStatus(200)
+	} catch (e) {
+		return res.status(500).json({ message: e.message })
+	}
+}

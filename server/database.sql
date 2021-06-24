@@ -33,9 +33,16 @@ CREATE TABLE users (
 	-- longitude DOUBLE PRECISION,
 	birthdate DATE DEFAULT NULL,
 	fame INTEGER DEFAULT 100,
-	last_online TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	last_online TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 	online SMALLINT NOT NULL DEFAULT 0,
   sexual_orientation VARCHAR(255)[]
+);
+
+CREATE TABLE likes
+(
+    like_id uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+    user_id character varying(255) NOT NULL,
+    liked_user character varying(255) NOT NULL
 );
 
 --Insert predifined users for admin use

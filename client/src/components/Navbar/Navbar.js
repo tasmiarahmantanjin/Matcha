@@ -39,9 +39,9 @@ const Navbar = () => {
     const [female, setFemale] = useState(inArray('female'))
     const [male, setMale] = useState(inArray('male'))
     const [other, setOther] = useState(inArray('other'))
-    console.log(`female = ${female}`)
-    console.log(`male = ${male}`)
-    console.log(`other = ${other}`)
+    //console.log(`female = ${female}`)
+    //console.log(`male = ${male}`)
+    //console.log(`other = ${other}`)
 
 
     //var male = inArray('male')
@@ -171,9 +171,25 @@ const Navbar = () => {
 
     // End of checkbox code
 
+    // Start of logout function
+function logOut() {
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ user_id: user.user_id })
+};
+//console.log(requestOptions.body)
+fetch('http://localhost:5000/logout', requestOptions)
+    /*.then(response =>{
+      console.log('Response: ')
+      console.log(response)}
+    )*/
+  dispatch(logout())
+    }
+    
     return (
         <div id='navbar' className='card-shadow'>
-            <img width="100" height="80" src={logoImage} alt='Logo' />
+            <a  href="http://localhost:3000" ><img width="100" height="80" src={logoImage} alt='Logo'/></a>
             <div><a href="http://localhost:3000/matches">Find match</a></div>
 
             <div onClick={() => setShowProfileOptions(!showProfileOptions)} id='profile-menu'>
@@ -185,7 +201,7 @@ const Navbar = () => {
                     showProfileOptions &&
                     <div id='profile-options'>
                         <p onClick={() => setShowProfileModal(true)}>Update profile</p>
-                        <p onClick={() => dispatch(logout())}>Logout</p>
+                        <p onClick={() => logOut()}>Logout</p>
                     </div>
                 }
 
