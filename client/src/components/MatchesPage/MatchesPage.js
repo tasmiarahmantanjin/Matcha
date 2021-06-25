@@ -28,7 +28,7 @@ const MatchesPage = () => {
   if (matches !== undefined) {
     matchList = matches.rows.map(match => {
               dist = getDistanceFromLatLonInKm(match.latitude, match.longitude, user.latitude, user.longitude)
-              if (dist <= distance) {
+              if (dist <= distance && !user.blocked_users.includes(match.user_id)) {
                 return <Match key={match.user_id}
               person={match}
               user={user}

@@ -104,6 +104,7 @@ const blockButtonClickHandler = ( ) => {
   formData.append('user_id', user.user_id)
   const values = Object.fromEntries(formData.entries())
   dispatch(blockUser(values))
+  // add block to user data?
   // Redirect to home.
 }
 

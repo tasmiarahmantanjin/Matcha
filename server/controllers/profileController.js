@@ -109,13 +109,14 @@ exports.getUserById = async (req, res) => {
             const { user_id, profile_id } = req.body
       
           console.log(`Now we insert block from ${user_id} to ${profile_id}`)
-          const results = await db.query("UPDATE users SET blocked_users = array_append(blocked_users, $2)  WHERE user_id = $1", [user_id, profile_id]);
+          const results = await db.query("UPDATE users SET blocked_users = array_append(blocked_users, $2)  WHERE user_id = $1 RETURNING *", [user_id, profile_id]);
           console.log(results)
           
           // To-do: insert notification.
       
-            
-            return res.sendStatus(200)
+          const user = await findUserInfo('user_id', user_id);
+          console.log(user)
+            return res.send(user)
             //return res.status(200)
           } catch (e) {
             return res.status(500).json({ message: e.message })

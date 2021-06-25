@@ -131,6 +131,7 @@ const AuthService = {
             .then(({ data }) => {
               //console.log(data)
                 //setHeadersAndStorage(data)
+                localStorage.setItem('user', JSON.stringify(data))
                 return data
             })
             .catch(err => {
