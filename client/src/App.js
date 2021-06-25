@@ -5,7 +5,7 @@ import ForgotPassword from './components/Auth/ForgotPassword'
 import ResetPassword from './components/Auth/ResetPassword'
 import Chat from './components/Chat/Chat'
 import MatchesPage from './components/MatchesPage/MatchesPage'
-
+import ProfilePage from './components/ProfilePage/ProfilePage'
 
 import ProtectedRoute from './components/Router/ProtectedRouter'
 
@@ -31,6 +31,12 @@ function App() {
                   <Route path='/register' component={Register} />
                   <Route path='/forgotPassword' component={ForgotPassword} />
                   <Route path='/resetPassword' component={ResetPassword} />
+                  <Route path="/users/:id" render={({match}) => (
+          <ProfilePage
+            
+            id={match.params.id}
+          />
+)}/>
                   <Route render={() => <h1>404 page not found</h1>} />
               </Switch>
           </div>

@@ -69,9 +69,9 @@ exports.getUserById = async (req, res) => {
       try {
         const { user_id, profile_id } = req.body
   
-        console.log(`Now we get like from ${user_id} to ${profile_id}`)
+      //console.log(`Now we get like from ${user_id} to ${profile_id}`)
       const results = await db.query(`SELECT * FROM likes WHERE user_id = $1 AND liked_user = $2`, [user_id, profile_id]);
-      console.log(results)
+      //console.log(results)
       
       // To-do: insert notification.
 
@@ -81,7 +81,7 @@ exports.getUserById = async (req, res) => {
       } catch (e) {
         return res.status(500).json({ message: e.message })
       }
-      }
+    }
 
       exports.unlikeUser = async (req, res) => {
         console.log('Request.body in profileController.unlikeUser:')
@@ -100,5 +100,44 @@ exports.getUserById = async (req, res) => {
         } catch (e) {
           return res.status(500).json({ message: e.message })
         }
-        }
+      }
  
+        exports.blockUser = async (req, res) => {
+          console.log('Request.body in profileController.blockUser:')
+          console.log(req.body)
+          try {
+            const { user_id, profile_id } = req.body
+      
+          console.log(`Now we insert block from ${user_id} to ${profile_id}`)
+          const results = await db.query("UPDATE users SET blocked_users = array_append(blocked_users, $2)  WHERE user_id = $1", [user_id, profile_id]);
+          console.log(results)
+          
+          // To-do: insert notification.
+      
+            
+            return res.sendStatus(200)
+            //return res.status(200)
+          } catch (e) {
+            return res.status(500).json({ message: e.message })
+          }
+        }
+
+          exports.reportUser = async (req, res) => {
+            console.log('Request.body in profileController.reportUser:')
+            console.log(req.body)
+            try {
+              const { user_id, profile_id } = req.body
+        
+            console.log(`Now we insert report from ${user_id} to ${profile_id}`)
+            const results = await db.query("INSERT INTO fake_account_reports (user_id, reported_user) VALUES ($1, $2) RETURNING *", [user_id, profile_id]);
+            //console.log(results)
+            
+            // To-do: insert notification.
+        
+              
+              return res.sendStatus(200)
+              //return res.status(200)
+            } catch (e) {
+              return res.status(500).json({ message: e.message })
+            }
+          }

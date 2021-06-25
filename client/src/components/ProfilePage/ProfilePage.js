@@ -11,6 +11,9 @@ import { useDispatch } from 'react-redux'
 import { getUser } from '../../store/actions/auth'
 import { likeUser } from '../../store/actions/auth'
 import { unlikeUser } from '../../store/actions/auth'
+import { blockUser } from '../../store/actions/auth'
+import { reportUser } from '../../store/actions/auth'
+
 
 //import { getUserById } from '../../../../server/controllers/profileController';
 
@@ -63,7 +66,7 @@ useEffect(() => {
 //console.log(`Data now in profile: `) 
 //console.log(profile);
 
-const likeButtonClickHandler = ( id ) => {
+const likeButtonClickHandler = ( ) => {
   //console.log(`Like button clicked. ${user.first_name.charAt(0).toUpperCase() + user.first_name.slice(1)} likes ${profile.first_name.charAt(0).toUpperCase() + profile.first_name.slice(1)}.`)
   const formData = new FormData()
 
@@ -76,7 +79,7 @@ const likeButtonClickHandler = ( id ) => {
   setLiked(1)
 }
 
-const unlikeButtonClickHandler = ( id ) => {
+const unlikeButtonClickHandler = ( ) => {
   //console.log(`Unlike button clicked. ${user.first_name.charAt(0).toUpperCase() + user.first_name.slice(1)} unliked ${profile.first_name.charAt(0).toUpperCase() + profile.first_name.slice(1)}.`)
   const formData = new FormData()
 
@@ -88,54 +91,92 @@ const unlikeButtonClickHandler = ( id ) => {
   dispatch(unlikeUser(values))
   setLiked()
 }
-const date1 = new Date(Date.UTC(2021, 4, 11, 0, 0, 0));
-const date2 = new Date(Date.UTC(2021, 4, 12, 0, 0, 0));
-const diffInMilliseconds = date2 - date1;
-const diffInHours = diffInMilliseconds / 1000 / 60 / 60;
-//console.log(diffInHours); // 24
 
+const blockButtonClickHandler = ( ) => {
+  // ask confirmation
+  var confirm = window.confirm("Are you sure you want to block " + profile.first_name.charAt(0).toUpperCase() + profile.first_name.slice(1) + "? You will no longer be able to see them in your matches, nor receive messages from them. They will also be unable to see your profile.");
+  if (confirm === true){
+    console.log(`${user.first_name.charAt(0).toUpperCase() + user.first_name.slice(1)} blocked ${profile.first_name.charAt(0).toUpperCase() + profile.first_name.slice(1)}.`)
+  }
+  const formData = new FormData()
 
-var profileToShow
-var online
-var d = new Date();
-let now = Math.floor(Date.now() / 1000)
+  formData.append('profile_id', profile.user_id)
+  formData.append('user_id', user.user_id)
+  const values = Object.fromEntries(formData.entries())
+  dispatch(blockUser(values))
+  // Redirect to home.
+}
+
+const reportButtonClickHandler = ( ) => {
+  // ask confirmation
+  var confirm = window.confirm("Your are about to report " + profile.first_name.charAt(0).toUpperCase() + profile.first_name.slice(1) + " as a fake account. Do you wish to proceed?");
+  if (confirm === true){
+    console.log(`${user.first_name.charAt(0).toUpperCase() + user.first_name.slice(1)} reported ${profile.first_name.charAt(0).toUpperCase() + profile.first_name.slice(1)} as a fake account.`)
+  }
+  const formData = new FormData()
+
+  formData.append('profile_id', profile.user_id)
+  formData.append('user_id', user.user_id)
+  const values = Object.fromEntries(formData.entries())
+  dispatch(reportUser(values))
+  // Redirect to home.
+}
+
+var likeButton
+  if (liked === undefined) {
+    likeButton = <div><button onClick={likeButtonClickHandler}>Like</button></div>
+  }
+  if (liked !== undefined) {
+    likeButton = <div><button onClick={unlikeButtonClickHandler}>Unlike</button></div>
+  }
+
+var d = new Date(); // Get current datetime.
 console.log(`d: ${d}`)
-//var now = d.getTime();
-console.log(`now: ${now}`)
-//var nowUtc = new Date(Date.UTC(now));
-//now.toUTCString();
-//console.log(`Date to UTC: ${now}`)
 
 function timeDiffCalc(dateFuture, dateNow) {
   let diffInMilliSeconds = Math.abs(dateFuture - dateNow) / 1000;
-
   // calculate days
   const days = Math.floor(diffInMilliSeconds / 86400);
   diffInMilliSeconds -= days * 86400;
   //console.log('calculated days', days);
-
   // calculate hours
   const hours = Math.floor(diffInMilliSeconds / 3600) % 24;
   diffInMilliSeconds -= hours * 3600;
   //console.log('calculated hours', hours);
-
   // calculate minutes
   const minutes = Math.floor(diffInMilliSeconds / 60) % 60;
   diffInMilliSeconds -= minutes * 60;
   //console.log('minutes', minutes);
-
   let difference = '';
   if (days > 0) {
     difference += (days === 1) ? `${days} day, ` : `${days} days, `;
   }
-
   difference += (hours === 0 || hours === 1) ? `${hours} hour, ` : `${hours} hours, `;
-
   difference += (minutes === 0 || hours === 1) ? `${minutes} minutes` : `${minutes} minutes`; 
-
   return difference;
 }
 
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2-lat1);  // deg2rad below
+  var dLon = deg2rad(lon2-lon1); 
+  var a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+    ; 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = R * c; // Distance in km
+  var rounded = Math.round(d * 10) / 10 // Distance rounded to one decimal
+  return rounded;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180)
+}
+
+var profileToShow
+var online
 var dateLastSeen
   if (profile !== undefined) {
     console.log(profile)
@@ -150,47 +191,22 @@ var dateLastSeen
                 <img width="150" height="150" src={`http://localhost:5000/uploads/user/${profile.user_id}/${profile.avatar}`} alt='profile_avatar' />
                 {online}
           <h2>{profile.first_name.charAt(0).toUpperCase() + profile.first_name.slice(1)} {profile.last_name.charAt(0).toUpperCase() + profile.last_name.slice(1)}</h2>
+          {likeButton}
           <p>{profile.gender} located {getDistanceFromLatLonInKm(profile.latitude, profile.longitude, user.latitude, user.longitude)} km away.</p>
           {profile.interest.map(interest_sing => 
                   <li key={interest_sing}> {interest_sing}
                   </li>
           )}
-          <p>SEXUAL PREFERENCES</p>
+          <div><p>Looking for...</p> 
+          <ul>{profile.sexual_orientation.map(orientation => 
+                  <li key={orientation}> {orientation}
+                  </li>
+          )}</ul></div>
           <p>Fame rating: {profile.fame}</p>
-          <p>ONLINE STATUS</p>
-          <p>LAST ONLINE</p>
-          <p>BLOCK</p>
-          <p>REPORT FAKE ACCOUNT</p>
+          <div><button onClick={blockButtonClickHandler}>Block</button></div>
+          <div><button onClick={reportButtonClickHandler}>Report fake account</button></div>
           </div>
     
-  }
-
-  var likeButton
-  if (liked === undefined) {
-    likeButton = <div><button onClick={likeButtonClickHandler}>Like</button></div>
-  }
-  if (liked !== undefined) {
-    likeButton = <div><button onClick={unlikeButtonClickHandler}>Unlike</button></div>
-  }
-  //console.log(`liked = ${liked}`)
-
-  function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-    var R = 6371; // Radius of the earth in km
-    var dLat = deg2rad(lat2-lat1);  // deg2rad below
-    var dLon = deg2rad(lon2-lon1); 
-    var a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
-      Math.sin(dLon/2) * Math.sin(dLon/2)
-      ; 
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-    var d = R * c; // Distance in km
-    var rounded = Math.round(d * 10) / 10 // Distance rounded to one decimal
-    return rounded;
-  }
-  
-  function deg2rad(deg) {
-    return deg * (Math.PI/180)
   }
 
   /*const submitForm = (e) => {
@@ -216,7 +232,7 @@ var dateLastSeen
                 <Navbar />
             </div>
             {profileToShow}
-            {likeButton}
+            
         </div>
     );
 }

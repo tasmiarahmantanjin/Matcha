@@ -10,6 +10,9 @@ CREATE TYPE sex_orientation AS ENUM ('man', 'woman', 'both');
 CREATE EXTENSION postgis;
 CREATE EXTENSION postgis_topology;
 
+-- Run ALTER TABLE users ALTER last_online TYPE timestamptz USING last_online AT TIME ZONE 'UTC';
+-- and  ALTER TABLE users ADD COLUMN blocked_users VARCHAR(255)[]; to modify tables to work with new version.
+
 CREATE TABLE users (
 	user_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
 	first_name VARCHAR(50) NOT NULL,
@@ -35,7 +38,8 @@ CREATE TABLE users (
 	fame INTEGER DEFAULT 100,
 	last_online TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 	online SMALLINT NOT NULL DEFAULT 0,
-  sexual_orientation VARCHAR(255)[]
+  sexual_orientation VARCHAR(255)[],
+  blocked_users VARCHAR(255)[]
 );
 
 CREATE TABLE likes
@@ -43,6 +47,14 @@ CREATE TABLE likes
     like_id uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
     user_id character varying(255) NOT NULL,
     liked_user character varying(255) NOT NULL
+);
+
+CREATE TABLE fake_account_reports 
+(
+    report_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id VARCHAR(255) NOT NULL,
+    reported_user VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 --Insert predifined users for admin use

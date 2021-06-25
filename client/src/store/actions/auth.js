@@ -1,6 +1,6 @@
 import AuthService from '../../services/authService'
 
-import { LOGIN, REGISTER, LOGOUT, UPDATE_PROFILE, PASSWORD_RESET, GET_MATCHES, LIKE_USER, UNLIKE_USER } from '../types/index'
+import { LOGIN, REGISTER, LOGOUT, UPDATE_PROFILE, PASSWORD_RESET, GET_MATCHES, LIKE_USER, UNLIKE_USER,  BLOCK_USER, REPORT_USER } from '../types/index'
 
 export const login = (params, history) => dispatch => {
     return AuthService.login(params)
@@ -84,7 +84,27 @@ export const getUser = (params) => dispatch => {
         })
 }
 
+export const blockUser = (params) => dispatch => {
+  //console.log(`Data in auth.js: ${params.get('ageRangeMax')}`) // Form data is still available here.
+    return AuthService.blockUser(params)
+        .then(data => {
+            dispatch({ type: BLOCK_USER, payload: data })
+        })
+        .catch(err => {
+            throw err
+        })
+}
 
+export const reportUser = (params) => dispatch => {
+  //console.log(`Data in auth.js: ${params.get('ageRangeMax')}`) // Form data is still available here.
+    return AuthService.reportUser(params)
+        .then(data => {
+            dispatch({ type: REPORT_USER, payload: data })
+        })
+        .catch(err => {
+            throw err
+        })
+}
 
 export const forgotPassword = (params, history) => dispatch => {
   return AuthService.forgotPassword(params)

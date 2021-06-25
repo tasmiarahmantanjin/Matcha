@@ -84,6 +84,21 @@ router.post('/unlike', function(req, res){
   return(unlikeUser(req, res))
 })
 //router.use('/like', require('./profile'))
+const { blockUser } = require('../controllers/profileController')
+router.post('/block', function(req, res){
+  //console.log(`Request body in router/index for like user: `)
+  //console.log(req.body)
+  //console.log('Endpoint hit: Like')
+  return(blockUser(req, res))
+})
+
+const { reportUser } = require('../controllers/profileController')
+router.post('/report', function(req, res){
+  //console.log(`Request body in router/index for like user: `)
+  //console.log(req.body)
+  //console.log('Endpoint hit: Like')
+  return(reportUser(req, res))
+})
 
 //const { isOnline } = require('../middleware/isOnline')
 //const pool = require('../config/database');

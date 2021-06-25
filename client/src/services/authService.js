@@ -68,7 +68,7 @@ const AuthService = {
     },
 
     likeUser: (data) => {
-      //console.log(`Data in getMatches (authService): ${data}`)
+      console.log(`Data in likeUser (authService): ${data}`)
       //console.log(`Data in authService: ${data.get('ageRangeMax')}`) // Form data is still available here; header problem?
       /*const headers = {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -86,7 +86,7 @@ const AuthService = {
     },
 
     unlikeUser: (data) => {
-      //console.log(`Data in getMatches (authService): ${data}`)
+      console.log(`Data in unlikeUser (authService): ${data}`)
       //console.log(`Data in authService: ${data.get('ageRangeMax')}`) // Form data is still available here; header problem?
       /*const headers = {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -104,12 +104,48 @@ const AuthService = {
     },
 
     getProfile: (data) => {
-      console.log(`Data in getProfile (authService): ${data.id}`)
+      //console.log(`Data in getProfile (authService): ${data.id}`)
       //console.log(`Data in authService: ${data.get('ageRangeMax')}`) // Form data is still available here; header problem?
       /*const headers = {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     }*/
         return API.get(`/profile/${data.id}}`/*, data, headers*/)
+            .then(({ data }) => {
+              //console.log(data)
+                //setHeadersAndStorage(data)
+                return data
+            })
+            .catch(err => {
+                console.log("Auth service err", err);
+                throw err
+            })
+    },
+
+    blockUser: (data) => {
+      console.log(`Data in blockUser (authService): ${data}`)
+      //console.log(`Data in authService: ${data.get('ageRangeMax')}`) // Form data is still available here; header problem?
+      /*const headers = {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    }*/
+        return API.post('/block', data/*, headers*/)
+            .then(({ data }) => {
+              //console.log(data)
+                //setHeadersAndStorage(data)
+                return data
+            })
+            .catch(err => {
+                console.log("Auth service err", err);
+                throw err
+            })
+    },
+
+    reportUser: (data) => {
+      console.log(`Data in reportUser (authService): ${data}`)
+      //console.log(`Data in authService: ${data.get('ageRangeMax')}`) // Form data is still available here; header problem?
+      /*const headers = {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    }*/
+        return API.post('/report', data/*, headers*/)
             .then(({ data }) => {
               //console.log(data)
                 //setHeadersAndStorage(data)
