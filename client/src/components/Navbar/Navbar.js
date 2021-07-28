@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react'
+import React, { useState, Fragment, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { logout } from '../../store/actions/auth'
@@ -39,15 +39,39 @@ const Navbar = () => {
     const [female, setFemale] = useState(false)
     const [male, setMale] = useState(false)
     const [other, setOther] = useState(false)
+    const [interestArr, setInterestArr] = useState([])
 
     //const [female, setFemale] = useState(inArray('female'))
     //const [male, setMale] = useState(inArray('male'))
     //const [other, setOther] = useState(inArray('other'))
-    if (sexual_orientation) {
-      female = setFemale(inArray('female'))
-      male = setMale(inArray('male'))
-      other = setOther(inArray('other'))
+
+    
+
+    useEffect(() => {
+      if (sexual_orientation) {
+        if (inArray('female')) {
+          console.log('Female preference detected.')
+          setFemale(true)
+        }
+        if (inArray('male')) {
+          console.log('Male preference detected.')
+          setMale(true)
+        }
+        if (inArray('other')) {
+          console.log('Other preference detected.')
+          setOther(true)
+        }
+        
+      }
+  // empty dependency array means this effect will only run once (like componentDidMount in classes)
+  }, []);
+
+  useEffect(() => {
+    if (interest) {
+     setInterestArr(interest)
     }
+// empty dependency array means this effect will only run once (like componentDidMount in classes)
+}, []);
     
     //console.log(`female = ${female}`)
     //console.log(`male = ${male}`)
@@ -57,7 +81,10 @@ const Navbar = () => {
     //var male = inArray('male')
     //var female = inArray('female')
     //var other = inArray('other')
-    var checked = sexual_orientation;
+    var checked = []
+    if (sexual_orientation !== null){
+      checked = sexual_orientation;
+    }
     //console.log(checked)
 
 
@@ -92,11 +119,11 @@ const Navbar = () => {
     // Hashtag code
 
     const removeTag = (i) => {
-      const newTags = [ ...interest ];
+      const newTags = [ ...interestArr ];
       newTags.splice(i, 1);
   
       // Call the defined function setTags which will replace tags with the new value.
-      setInterest(newTags);
+      setInterestArr(newTags);
     }
 
     // Trims character from string; in this case hashtags from interests input
@@ -112,21 +139,27 @@ const Navbar = () => {
   
     // Puts interest into array on enter press, and resets the input field.
     const inputKeyDown = (e) => {
+      console.log('Key pressed');
       if (e.target.value === "#") {
         return
       }
       const val = "#" + trim(e.target.value, '#')
       if (e.key === 'Enter' && val !== "#") {
-        if (interest.find(interest => interest.toLowerCase() === val.toLowerCase())) {
+        if (interestArr.find(interest => interest.toLowerCase() === val.toLowerCase())) {
           return;
         }
-        setInterest([...interest, val]);
+        setInterestArr([...interestArr, val]);
+        setInterest(interestArr)
         var inputTag = document.getElementById('input-tag')
         inputTag.value = ''
       } else if (e.key === 'Backspace' && val === "#") {
-        removeTag(interest.length - 1);
+        removeTag(interestArr.length - 1);
+        setInterest(interestArr)
       }
+      console.log(interestArr)
       console.log(interest)
+      
+      return 
     }
 
     // End of hashtag code
@@ -134,7 +167,7 @@ const Navbar = () => {
 
     // Checkbox code
     function getSexOrientation(checkmark) {
-        if (!checked.includes(checkmark)/* && (checkmark === 'male' || checkmark === 'female' || checkmark === 'other')*/) {
+        if (checked && !checked.includes(checkmark)/* && (checkmark === 'male' || checkmark === 'female' || checkmark === 'other')*/) {
           checked.push(checkmark)
           if (checkmark === 'female'){
             setFemale(true)
