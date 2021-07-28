@@ -25,15 +25,22 @@ const MatchesPage = () => {
   //const [matches, setMatches] = useState([])
   var matchList
   let dist
+  let age
   if (matches !== undefined) {
     matchList = matches.rows.map(match => {
               dist = getDistanceFromLatLonInKm(match.latitude, match.longitude, user.latitude, user.longitude)
-              if (dist <= distance && !user.blocked_users.includes(match.user_id)) {
+              var age = new Date(new Date() - new Date(match.birthdate)).getFullYear() - 1970;
+              //console.log(`age for ${match.first_name}(${match.birthdate}: ${age} years old)`)
+              if (dist <= distance && !user.blocked_users.includes(match.user_id) && age >= ageRangeMin && age <= ageRangeMax) {
                 return <Match key={match.user_id}
               person={match}
               user={user}
               distance={dist}
+              age={age}
               />}
+              else {
+                return null
+              }
             }
             )
   }

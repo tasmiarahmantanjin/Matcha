@@ -57,6 +57,22 @@ CREATE TABLE fake_account_reports
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE conversations
+(
+    id uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+    user_one_id character varying(255) NOT NULL,
+    user_two_id character varying(255) NOT NULL
+);
+
+CREATE TABLE messages
+(
+    id uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+    sender_id character varying(255) NOT NULL,
+    conversation_id character varying(255) NOT NULL,
+    message_text text,
+    timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 --Insert predifined users for admin use
 INSERT INTO users (first_name, last_name, user_name, email, password, verified, gender, orientation, tags, latitude, longitude, birthdate, fame, sexual_orientation)
 VALUES 

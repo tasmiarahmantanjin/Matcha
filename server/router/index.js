@@ -100,6 +100,24 @@ router.post('/report', function(req, res){
   return(reportUser(req, res))
 })
 
+
+// For chat conversations
+const { getConversationById } = require('../controllers/conversationController')
+router.post('/conversation', function(req, res){
+  //console.log(`Request body in router/index: `)
+  //console.log(req.body)
+  //console.log('Endpoint hit: Profile')
+  return(getConversationById(req, res))
+})
+
+const { getMessagesByConversation } = require('../controllers/conversationController')
+router.post('/messages', function(req, res){
+  //console.log(`Request body in router/index: `)
+  //console.log(req.body)
+  //console.log('Endpoint hit: Profile')
+  return(getMessagesByConversation(req, res))
+})
+
 //const { isOnline } = require('../middleware/isOnline')
 //const pool = require('../config/database');
 const { logout } = require('../controllers/authController')

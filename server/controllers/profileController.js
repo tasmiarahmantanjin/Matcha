@@ -31,10 +31,7 @@ exports.getUserById = async (req, res) => {
 		const { profile_id } = req.body
     
     const results = await db.query(`SELECT * FROM users WHERE user_id = $1`, [profile_id]);
-    console.log(results)
-
-    // To-do: insert notification.
-
+    //console.log(results)
     
 		return res.send(results)
 		//return res.status(200)

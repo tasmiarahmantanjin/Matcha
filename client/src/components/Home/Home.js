@@ -1,23 +1,19 @@
 import React from 'react'
+
+// import useSelector to connect the store with the component
 import { useSelector} from 'react-redux'
-// import useSocket from './hooks/socketConnect'
-// import Navbar from './components/Navbar/Navbar'
-// import { fetchChats } from '../../store/actions/chat'
-// import FriendList from './components/FriendList/FriendList'
-// import Messenger from './components/Messenger/Messenger'
-// import './Chat.scss'
+import Navbar from '../Navbar/Navbar'
 
 const Home = () => {
 
-    // const dispatch = useDispatch()
     const user = useSelector(state => state.authReducer.user)
 
     return (
         <div id='chat-container'>
             <div id='chat-wrap'>
-				<h1>Welcome Home: {user.first_name}</h1>
-				<p>This means our redux store is working</p>
+                <Navbar />
             </div>
+            <h1>Welcome, {user.first_name}</h1>
         </div>
     );
 }

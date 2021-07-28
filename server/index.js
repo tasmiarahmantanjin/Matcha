@@ -4,6 +4,7 @@ const router = require('./router')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const app = express()
+const chat = require('./utils/chat.js')
 // const http = require('http')
 
 // parse application/x-www-form-urlencoded: Parse URL-encoded bodies

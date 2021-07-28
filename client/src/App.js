@@ -4,6 +4,7 @@ import Register from './components/Auth/Register'
 import ForgotPassword from './components/Auth/ForgotPassword'
 import ResetPassword from './components/Auth/ResetPassword'
 import Chat from './components/Chat/Chat'
+import Home from './components/Home/Home'
 import MatchesPage from './components/MatchesPage/MatchesPage'
 import ProfilePage from './components/ProfilePage/ProfilePage'
 
@@ -25,18 +26,22 @@ function App() {
       <Router>
           <div className="App">
               <Switch>
-                  <ProtectedRoute exact path='/' component={Chat} />
+                  <ProtectedRoute exact path='/' component={Home} />
                   <Route path='/login' component={Login} />
                   <Route path='/matches' component={MatchesPage} />
                   <Route path='/register' component={Register} />
                   <Route path='/forgotPassword' component={ForgotPassword} />
                   <Route path='/resetPassword' component={ResetPassword} />
                   <Route path="/users/:id" render={({match}) => (
-          <ProfilePage
-            
-            id={match.params.id}
-          />
-)}/>
+                    <ProfilePage
+                        id={match.params.id}
+                      />
+                  )}/>
+                  <Route path="/conversations/:id" render={({match}) => (
+                    <Chat
+                        id={match.params.id}
+                      />
+                  )}/>
                   <Route render={() => <h1>404 page not found</h1>} />
               </Switch>
           </div>
