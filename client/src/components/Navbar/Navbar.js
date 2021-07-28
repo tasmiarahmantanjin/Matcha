@@ -120,10 +120,11 @@ const Navbar = () => {
 
     const removeTag = (i) => {
       const newTags = [ ...interestArr ];
-      newTags.splice(i, 1);
+      newTags.splice(i, 1)
   
       // Call the defined function setTags which will replace tags with the new value.
       setInterestArr(newTags);
+      setInterest(interestArr)
     }
 
     // Trims character from string; in this case hashtags from interests input
@@ -131,30 +132,38 @@ const Navbar = () => {
       var start = 0, 
           end = str.length;
       while(start < end && str[start] === ch)
-          ++start;
+          ++start
       while(end > start && str[end - 1] === ch)
-          --end;
-      return (start > 0 || end < str.length) ? str.substring(start, end) : str;
+          --end
+      return (start > 0 || end < str.length) ? str.substring(start, end) : str
   }
   
-    // Puts interest into array on enter press, and resets the input field.
-    const inputKeyDown = (e) => {
-      console.log('Key pressed');
+    // Puts interest into array on enter press, and resets the input field. // 
+    const inputKeyDown = (e) => { // Doesn't update the displayed array correctly; appears to be one interest behind.
+      //console.log('Key pressed');
+      // If hashtag is input, no update it made
       if (e.target.value === "#") {
+        console.log('Hashtag detected');
         return
       }
       const val = "#" + trim(e.target.value, '#')
+      console.log(`val = ${val}`)
       if (e.key === 'Enter' && val !== "#") {
-        if (interestArr.find(interest => interest.toLowerCase() === val.toLowerCase())) {
-          return;
+        if (interest && interestArr.find(interest => interest.toLowerCase() === val.toLowerCase())) {
+          console.log('Duplicate detected.');
+          return
         }
+        console.log(val)
         setInterestArr([...interestArr, val]);
-        setInterest(interestArr)
+        setInterest([...interestArr, val])
+        console.log('InterestArr:')
+        console.log(interestArr)
+        console.log('Interest:')
+        console.log(interest)
         var inputTag = document.getElementById('input-tag')
         inputTag.value = ''
       } else if (e.key === 'Backspace' && val === "#") {
         removeTag(interestArr.length - 1);
-        setInterest(interestArr)
       }
       console.log(interestArr)
       console.log(interest)
