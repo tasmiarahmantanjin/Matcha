@@ -24,21 +24,31 @@ const Navbar = () => {
     const [gender, setGender] = useState(user.gender)
 
     // SexPref, Bio & interest update
-    const [sexual_orientation, setSexual_orientation] = useState(user.sexual_orientation)
-    const [bio, setBio] = useState(user.bio)
+    const [sexual_orientation, setSexual_orientation] = useState(user.sexual_orientation) // null
+    const [bio, setBio] = useState(user.bio) // null
     //const [interest, setInterest] = useState(user.interest)
 
     const [password, setPassword] = useState('')
     const [avatar, setAvatar] = useState(user.avatar)
     const [uploadAvatar, setUploadAvatar] = useState(user.avatar)
 
-    const [interest, setInterest] = useState(user.interest)
-    const [birthdate, setBirthdate] = useState(formatDate(new Date(user.birthdate)))
+    const [interest, setInterest] = useState(user.interest) // null
+    const [birthdate, setBirthdate] = useState(formatDate(new Date(user.birthdate))) // null
     //console.log(`Birthdate: ${birthdate}`);
     //console.log(user)
-    const [female, setFemale] = useState(inArray('female'))
-    const [male, setMale] = useState(inArray('male'))
-    const [other, setOther] = useState(inArray('other'))
+    const [female, setFemale] = useState(false)
+    const [male, setMale] = useState(false)
+    const [other, setOther] = useState(false)
+
+    //const [female, setFemale] = useState(inArray('female'))
+    //const [male, setMale] = useState(inArray('male'))
+    //const [other, setOther] = useState(inArray('other'))
+    if (sexual_orientation) {
+      female = setFemale(inArray('female'))
+      male = setMale(inArray('male'))
+      other = setOther(inArray('other'))
+    }
+    
     //console.log(`female = ${female}`)
     //console.log(`male = ${male}`)
     //console.log(`other = ${other}`)
@@ -300,7 +310,7 @@ fetch('http://localhost:5000/logout', requestOptions)
                                 </div>
                                 <div className="input-tag">
                         <ul className="input-tag__tags">
-                          { interest.map((tag, i) => (
+                          { interest && interest.map((tag, i) => ( // ALWAYS DO THIS!
                             <li key={tag}>
                               {tag}
                               <button type="button" onClick={() => { removeTag(i); }}>+</button>
