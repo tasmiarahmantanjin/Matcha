@@ -24,16 +24,17 @@ const Navbar = () => {
     const [gender, setGender] = useState(user.gender)
 
     // SexPref, Bio & interest update
-    const [sexual_orientation, setSexual_orientation] = useState(user.sexual_orientation) // null
-    const [bio, setBio] = useState(user.bio) // null
+    const [sexual_orientation, setSexual_orientation] = useState(user.sexual_orientation)
+    const [bio, setBio] = useState(user.bio)
+    const [bioInitial, setBioInitial] = useState('')
     //const [interest, setInterest] = useState(user.interest)
 
     const [password, setPassword] = useState('')
     const [avatar, setAvatar] = useState(user.avatar)
     const [uploadAvatar, setUploadAvatar] = useState(user.avatar)
 
-    const [interest, setInterest] = useState(user.interest) // null
-    const [birthdate, setBirthdate] = useState(formatDate(new Date(user.birthdate))) // null
+    const [interest, setInterest] = useState(user.interest)
+    const [birthdate, setBirthdate] = useState(formatDate(new Date(user.birthdate)))
     //console.log(`Birthdate: ${birthdate}`);
     //console.log(user)
     const [female, setFemale] = useState(false)
@@ -70,6 +71,13 @@ const Navbar = () => {
     if (interest) {
      setInterestArr(interest)
     }
+// empty dependency array means this effect will only run once (like componentDidMount in classes)
+}, []);
+
+useEffect(() => {
+  if (bio) {
+   setBioInitial(bio)
+  }
 // empty dependency array means this effect will only run once (like componentDidMount in classes)
 }, []);
     
@@ -319,7 +327,7 @@ fetch('http://localhost:5000/logout', requestOptions)
                                 <div className='input-field mb-1'>
                                     <input
                                         onChange={e => setBio(e.target.value)}
-                                        value={bio}
+                                        value={bioInitial}
                                         // required='required'
                                         type='text'
                                         placeholder='Bio'
