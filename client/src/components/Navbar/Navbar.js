@@ -26,7 +26,7 @@ const Navbar = () => {
     // SexPref, Bio & interest update
     const [sexual_orientation, setSexual_orientation] = useState(user.sexual_orientation)
     const [bio, setBio] = useState(user.bio)
-    const [bioInitial, setBioInitial] = useState('')
+    //const [bioInitial, setBioInitial] = useState('')
     //const [interest, setInterest] = useState(user.interest)
 
     const [password, setPassword] = useState('')
@@ -75,8 +75,8 @@ const Navbar = () => {
 }, []);
 
 useEffect(() => {
-  if (bio) {
-   setBioInitial(bio)
+  if (!bio) {
+   setBio('')
   }
 // empty dependency array means this effect will only run once (like componentDidMount in classes)
 }, []);
@@ -327,7 +327,7 @@ fetch('http://localhost:5000/logout', requestOptions)
                                 <div className='input-field mb-1'>
                                     <input
                                         onChange={e => setBio(e.target.value)}
-                                        value={bioInitial}
+                                        value={bio}
                                         // required='required'
                                         type='text'
                                         placeholder='Bio'
