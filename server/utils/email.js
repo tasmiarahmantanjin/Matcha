@@ -6,16 +6,18 @@ const sendEmail = (email, token) => {
 	const transporter = nodemailer.createTransport({
 		service: 'gmail',
 		auth: {
-      type: 'OAuth2',
-      user: appEmail,
-      pass: appPass,
-      clientId: appClientId,
-      clientSecret: appClientSecret,
-      refreshToken: appRefreshToken
+			// user: 'hive.web.branch',
+			// pass: 'hive.web.branch93'
+			//   type: 'OAuth2',
+			user: appEmail,
+			pass: appPass,
+			//   clientId: appClientId,
+			//   clientSecret: appClientSecret,
+			//   refreshToken: appRefreshToken
 		}
 	})
 	const mailOptions = {
-		from: 'pontuslaandersson@gmail.com',
+		from: 'hive.web.branch@gmail.com',
 		to: email,
 		subject: 'Activate Your Matcha Account Now',
 		text: `Hello! Here is your account activation link. Please click the link to verify your account: http://localhost:5000/registrationVerify?token=${token}`

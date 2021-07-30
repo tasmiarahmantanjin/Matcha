@@ -12,8 +12,8 @@ const Login = ({ history }) => {
 
     const dispatch = useDispatch()
 
-    const [user_name, setUser_name] = useState('admin')
-    const [password, setPassword] = useState('1234aA')
+    const [user_name, setUser_name] = useState('shakil')
+    const [password, setPassword] = useState('OdvhutTanjin93')
 
     const submitForm = (e) => {
         e.preventDefault()

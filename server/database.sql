@@ -5,7 +5,7 @@ CREATE TYPE gender AS ENUM ('female', 'male', 'others');
 -- CREATE TYPE orientation AS ENUM ('f', 'm', 'o', 'fm', 'fo', 'mo', 'fmo');
 CREATE TYPE notification_type AS ENUM ('message', 'like', 'unlike', 'visit');
 CREATE TYPE sex_orientation AS ENUM ('man', 'woman', 'both');
---set uuid extenstion & other needed extension
+-- set uuid extenstion & other needed extension
 -- https://thecodersblog.com/PostgreSQL-PostGIS-installation/
 CREATE EXTENSION postgis;
 CREATE EXTENSION postgis_topology;
@@ -38,8 +38,8 @@ CREATE TABLE users (
 	fame INTEGER DEFAULT 100,
 	last_online TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 	online SMALLINT NOT NULL DEFAULT 0,
-  sexual_orientation VARCHAR(255)[],
-  blocked_users VARCHAR(255)[]
+    sexual_orientation VARCHAR(255)[],
+    blocked_users VARCHAR(255)[]
 );
 
 CREATE TABLE likes
@@ -73,8 +73,23 @@ CREATE TABLE messages
     timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE notifications (
+	id uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+	user_id uuid NOT NULL,
+	from_id uuid NOT NULL,
+	read SMALLINT NOT NULL DEFAULT '0',
+	notification TEXT,
+	date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY(user_id)
+		REFERENCES users(user_id)
+		ON DELETE CASCADE,
+	FOREIGN KEY(from_id)
+		REFERENCES users(user_id)
+		ON DELETE CASCADE
+);
+
 --Insert predifined users for admin use
-INSERT INTO users (first_name, last_name, user_name, email, password, verified, gender, orientation, tags, latitude, longitude, birthdate, fame, sexual_orientation)
+INSERT INTO users (first_name, last_name, user_name, email, verified, password, gender, sex_orientation, tags, latitude, longitude, birthdate, fame, sexual_orientation)
 VALUES 
 ('hille', 'haa', 'hille', 'hille@h', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'female', 'fo', '#hot', 60.1695, 24.9354, '1987-02-1', 100, '{female,other}'),
 ('liina', 'lol', 'liina', 'liina@h', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'female', 'fmo', '#hot', 60.1695, 24.9354, '1984-02-1', 100, '{female,male,other}'),

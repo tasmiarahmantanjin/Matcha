@@ -8,7 +8,7 @@ const AuthService = {
                 return data
             })
             .catch(err => {
-                console.log("Auth service err", err);
+                console.log("Auth service err in Login", err);
                 throw err
             })
     },
@@ -20,7 +20,7 @@ const AuthService = {
                 return data
             })
             .catch(err => {
-                console.log("Auth service err", err);
+                console.log("Auth service err in Register", err);
                 throw err
             })
     },
@@ -62,7 +62,7 @@ const AuthService = {
                 return data
             })
             .catch(err => {
-                console.log("Auth service err", err);
+                console.log("Auth service (get matches) err", err);
                 throw err
             })
     },
@@ -80,7 +80,7 @@ const AuthService = {
                 return data
             })
             .catch(err => {
-                console.log("Auth service err", err);
+                console.log("Auth service (like user) err", err);
                 throw err
             })
     },
@@ -98,7 +98,7 @@ const AuthService = {
                 return data
             })
             .catch(err => {
-                console.log("Auth service err", err);
+                console.log("Auth service (unlike user) err", err);
                 throw err
             })
     },
@@ -116,7 +116,7 @@ const AuthService = {
                 return data
             })
             .catch(err => {
-                console.log("Auth service err", err);
+                console.log("Auth service (get profile) err", err);
                 throw err
             })
     },
@@ -135,7 +135,7 @@ const AuthService = {
                 return data
             })
             .catch(err => {
-                console.log("Auth service err", err);
+                console.log("Auth service (block user) err", err);
                 throw err
             })
     },
@@ -153,7 +153,7 @@ const AuthService = {
                 return data
             })
             .catch(err => {
-                console.log("Auth service err", err);
+                console.log("Auth service (report user) err", err);
                 throw err
             })
     },

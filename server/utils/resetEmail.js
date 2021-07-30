@@ -6,17 +6,17 @@ const resetEmail = (email, token) => {
 	const transporter = nodemailer.createTransport({
 		service: 'gmail',
 		auth: {
-			type: 'OAuth2',
-      user: appEmail,
-      pass: appPass,
-      clientId: appClientId,
-      clientSecret: appClientSecret,
-      refreshToken: appRefreshToken
+			// type: 'OAuth2',
+			user: appEmail,
+			pass: appPass,
+			// clientId: appClientId,
+			// clientSecret: appClientSecret,
+			// refreshToken: appRefreshToken
 		}
 	})
 
 	const mailOptions = {
-		from: 'pontuslaandersson@gmail.com',
+		from: 'hive.web.branch@gmail.com',
 		to: email,
 		subject: 'Reset Your Password',
 		text: `Forgot Your Password? That's okay! you can reset your password by clicking following link: http://localhost:3000/resetPassword?token=${token}`
