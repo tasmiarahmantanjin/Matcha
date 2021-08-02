@@ -14,11 +14,6 @@ router.get('/profile/:id', function (req, res) {
   res.send(req.params)
 })
 
-/*router.post('/matches', (req, res) => {
-  console.log('Endpoint hit: matches')
-	return res.send('Matches is working, kinda.');
-})*/
-
 // @route   POST localhost:5000/login
 // @route   POST localhost:5000/registration
 // @route   GET localhost:5000/registrationVerify
@@ -37,6 +32,13 @@ router.use('/', require('./resetPassword'))
 // @access	Public
 router.use('/users', require('./user'))
 
+// @route	POST localhost:5000/notifications
+// @route	GET localhost:5000/notifications
+// @route	PATCH localhost:5000/notifications
+// @desc	API end-point for notifications
+// @access	Private
+router.use('/notification', require('./notification'))
+
 
 /*router.post('/matches', function(req, res){
   console.log(`Request body in router/index: `)
@@ -45,7 +47,7 @@ router.use('/users', require('./user'))
 })*/
 // @route	POST localhost:5000/matches
 // @desc	API end-point for getting matches
-// @access	Public
+// @access	Private
 router.use('/matches', require('./matches'))
 const { getUserById } = require('../controllers/profileController')
 router.post('/profile', function(req, res){
@@ -100,7 +102,6 @@ router.post('/report', function(req, res){
   return(reportUser(req, res))
 })
 
-
 // For chat conversations
 const { getConversationById } = require('../controllers/conversationController')
 router.post('/conversation', function(req, res){
@@ -127,8 +128,5 @@ router.post("/logout", function(req, res){
   console.log('Endpoint hit: Logout')
     return(logout(req, res))
 })
-
-// route for verifyUserRegistration
-// router.use('/registrationVerify', require('./registrationVerify'))
 
 module.exports = router;
