@@ -11,14 +11,15 @@ services:
       - ./server/:/usr/src/app
       - /usr/src/app/node_modules
     ports:
-      - "5001:5000"
+      - "5000:5000"
     depends_on:
       - db
     env_file: ./server/.env
     environment:
-      - NODE_ENV=development
+      # - NODE_ENV=development
+      DATABASE_URL: postgres://postgres:123456@db:5432/login_matcha
     networks:
-      - app-network
+      - default
 
   client:
     build:
@@ -33,25 +34,28 @@ services:
     depends_on:
       - server
     ports:
-      - "3002:3000"
+      - "3000:3000"
     networks:
-      - app-network
+      - default
 
   db:
-    image: postgres
+    image: postgres:10.4
+    build:
+      context: ./db
+      dockerfile: Dockerfile
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "123456"
+      POSTGRES_DB: "login_matcha"
     volumes:
       - data-volume:/data/db
     ports:
-      - "54321:5432"
+      - "5433:5432"
     networks:
-      - app-network
+      - default
 
 networks:
-    app-network:
-        driver: bridge
+    app-default:
 
 volumes:
     data-volume:
