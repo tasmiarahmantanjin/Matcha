@@ -56,4 +56,20 @@ exports.getConversationById = async (req, res) => {
     }
     }
 
+    exports.insertMessageIntoConversation = async (message) => {
+      console.log('Message in insertMessageIntoConversation:')
+      console.log(message)
+      try {
+        const { message_text, sender_id, timestamp, conversation, partner } = message
+        
+        const results = await db.query(`INSERT INTO messages(sender_id, conversation_id, message_text, timestamp) VALUES ($1, $2, $3, $4)`, [sender_id, conversation, message_text, timestamp]);
+        //console.log(results)
+    
+        
+        //return res.send(results)
+        //return res.status(200)
+      } catch (e) {
+        console.log(`Error: ${e}`)
+      }
+    }
   

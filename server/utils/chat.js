@@ -6,6 +6,7 @@ app.use(cors())
 const server = http.createServer(app);
 const socket = require("socket.io");
 //const io = socket(server);
+const { insertMessageIntoConversation } = require('../controllers/conversationController')
 
 const io = require("socket.io")(server, {
   cors: {
@@ -37,6 +38,7 @@ io.on("connection", socket => {
   io.to(socketId).emit([message]);*/
     // Put message in database here?
   // to all clients in room1
+  insertMessageIntoConversation(message)
   io.to(message.conversation).emit("message", message);
   })
 })
