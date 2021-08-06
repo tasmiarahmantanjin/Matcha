@@ -32,11 +32,13 @@ const Chat = ( { id } ) => {
 
   const socketRef = useRef();
 
-  useEffect(() => {
-    socketRef.current = io.connect('localhost:3001/');
-
+  /*useEffect(() => {
+    socketRef.current = io.connect('localhost:3001/')
+    
+    socketRef.current.emit('create', conversation)
     socketRef.current.on("your id", id => {
       setYourID(id);
+      console.log(`yourID: ${yourID}`)
     })
 
     socketRef.current.on("message", (message) => {
@@ -44,7 +46,7 @@ const Chat = ( { id } ) => {
       console.log(message)
       receivedMessage(message);
     })
-  }, []);
+  }, []);*/
 
   function receivedMessage(message) {
     setMessages(oldMsgs => [...oldMsgs, message]);
@@ -57,6 +59,8 @@ const Chat = ( { id } ) => {
       message_text: message,
       sender_id: user.user_id,
       timestamp: new Date(),
+      conversation: conversation.id,
+      partner: partner.user_id // 
     };
     console.log(`Message: ${messageObject.message_text}`)
     setMessage("");
@@ -123,7 +127,27 @@ const Chat = ( { id } ) => {
               //console.log(data.rows) 
               setMessages(data.rows)
             });
-          ;
+            socketRef.current = io.connect('localhost:3001/')
+            /*var data = {name: user.user_name, userId: socketRef.current.id};
+            socketRef.current.emit('setSocketId', data);*/
+            socketRef.current.emit('create', data.rows[0].id)
+        
+            
+            /*socketRef.current.on('connection', socket => {
+              socket.join(conversation);
+              console.log(`socket.rooms: ${socket.rooms}`);
+            });*/
+        
+            socketRef.current.on("your id", id => {
+              setYourID(id);
+              console.log(`yourID: ${yourID}`)
+            })
+        
+            socketRef.current.on("message", (message) => {
+              console.log("Message.");
+              console.log(message)
+              receivedMessage(message);
+            })
         });
         //console.log(`Partner to use for fetching partner data: ${partner_id}`)
         
