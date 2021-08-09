@@ -32,22 +32,6 @@ const Chat = ( { id } ) => {
 
   const socketRef = useRef();
 
-  /*useEffect(() => {
-    socketRef.current = io.connect('localhost:3001/')
-    
-    socketRef.current.emit('create', conversation)
-    socketRef.current.on("your id", id => {
-      setYourID(id);
-      console.log(`yourID: ${yourID}`)
-    })
-
-    socketRef.current.on("message", (message) => {
-      console.log("Message.");
-      console.log(message)
-      receivedMessage(message);
-    })
-  }, []);*/
-
   function receivedMessage(message) {
     setMessages(oldMsgs => [...oldMsgs, message]);
     console.log(messages)
@@ -65,7 +49,6 @@ const Chat = ( { id } ) => {
     console.log(`Message: ${messageObject.message_text}`)
     setMessage("");
     socketRef.current.emit("send message", messageObject);
-    // To-do: insert message into database.
   }
 
   useEffect(() => {
@@ -156,51 +139,22 @@ const Chat = ( { id } ) => {
 }, []);
 //console.log(`${partner}`)
 
-/*useEffect(() => {
-  // POST request using fetch inside useEffect React hook
-  const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ profile_id: partner_id })
-  };
-  fetch('http://localhost:5000/profile', requestOptions)
-      .then(response => response.json())
-      .then(data =>{
-        //console.log(data.rows) 
-        setPartner(data.rows[0])
-      });
-  
-// empty dependency array means this effect will only run once (like componentDidMount in classes)
-}, []);*/
-//console.log(`Data now in partner: `) 
-//console.log(partner);
-
-
-
-  /*const submitForm = (e) => {
-      e.preventDefault()
-      const form = { ageRangeMax, ageRangeMin, distance, gender, sexual_orientation, interest }
-      //console.log(form)
-
-      const formData = new FormData()
-
-      for (const key in form) {
-          formData.append(key, form[key])
-      }
-      //console.log(`ageRangeMax in formData: ${formData.get('ageRangeMax')}`)
-      // dispatch the event action
-      const values = Object.fromEntries(formData.entries());
-      dispatch(getMatches(values))
-      //console.log(matches)
-  }*/
-  //console.log(id)
-  
-
-  
-
   function handleChange(e) {
     setMessage(e.target.value);
   }
+
+
+
+  const formatTimestamp = (timestamp) => {
+    console.log(`This is the string: ${timestamp}`);
+    let date = new Date(timestamp)
+    let ret
+    let n = date.toLocaleDateString()
+    let substr = timestamp.substring(0, 21)
+    console.log(`n = ${typeof(n)}`);
+    return timestamp
+  }
+
     return (
       <div>
         <div id='chat-container'>
@@ -211,11 +165,11 @@ const Chat = ( { id } ) => {
             {messages.map((message, index) => {
           if (message.sender_id === user.user_id) {
             return (
-              <UserRow key={index} sender={user.first_name} timestamp={message.timestamp} message={message.message_text} /> // 
+              <UserRow key={index} sender={user.first_name} timestamp={formatTimestamp(message.timestamp)} message={message.message_text} /> // 
             )
           }
           return (
-            <PartnerRow key={index} sender={partner.first_name} timestamp={message.timestamp} message={message.message_text} />
+            <PartnerRow key={index} sender={partner.first_name} timestamp={formatTimestamp(message.timestamp)} message={message.message_text} />
           )
         })}
       </div>
