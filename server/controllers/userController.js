@@ -26,10 +26,10 @@ const findUserInfo = async (key, value, ...args) => {
 };*/
 
 exports.update = async (req, res) => {
-  //console.log('Request.file.filename in userController:')
-  //console.log(req.file.filename)
+  console.log('Request.body in userController:')
+  console.log(req.body)
   try {
-		const {first_name, last_name, gender, sexual_orientation, bio, interest, birthdate, email, password } = req.body
+		const {user_id, first_name, last_name, gender, sexual_orientation, bio, interest, birthdate, email, password } = req.body
     //console.log(sexual_orientation);
     let avatar = null
     if (req.file) {
@@ -37,7 +37,7 @@ exports.update = async (req, res) => {
     }
 
 		//1. Find the user
-		const user = await findUserInfo('email', email);
+		const user = await findUserInfo('user_id', user_id);
 
 		//2. Check if user found
 		if (!user) return res.status(404).json({ message: 'User not found!' })
@@ -55,7 +55,7 @@ exports.update = async (req, res) => {
     let interest_arr = interest.split(",")
     let sexual_orientation_arr = sexual_orientation.split(",")
     //console.log(sexual_orientation_arr);
-    db.query("UPDATE users SET first_name = $1, last_name = $2, gender = $3, sexual_orientation = $4, bio = $5, interest = $6, birthdate = $7 WHERE email = $8", [first_name, last_name, gender, sexual_orientation_arr, bio, interest_arr, birthdate, email]);
+    db.query("UPDATE users SET first_name = $1, last_name = $2, gender = $3, sexual_orientation = $4, bio = $5, interest = $6, birthdate = $7, email = $8 WHERE user_id = $9", [first_name, last_name, gender, sexual_orientation_arr, bio, interest_arr, birthdate, email, user_id]);
     if (avatar !== null) {
       //console.log('Updating avatar')
       db.query("UPDATE users SET avatar = $1 WHERE email = $2", [avatar, email])

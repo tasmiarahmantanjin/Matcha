@@ -23,7 +23,7 @@ CREATE TABLE users (
 	password VARCHAR(255) NOT NULL,
 	token varchar(255) DEFAULT NULL,
 	verified SMALLINT NOT NULL DEFAULT 0,
-	sex_orientation varchar(255) DEFAULT NULL,
+	sex_orientation varchar(255) DEFAULT NULL, -- Should be removed.
 	avatar varchar(255) DEFAULT NULL,
 	bio VARCHAR(1000),
 	interest VARCHAR(255)[],
@@ -39,7 +39,7 @@ CREATE TABLE users (
 	last_online TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 	online SMALLINT NOT NULL DEFAULT 0,
   sexual_orientation VARCHAR(255)[],
-  blocked_users VARCHAR(255)[]
+  blocked_users VARCHAR(255)[] NOT NULL SET DEFAULT '{}'
 );
 
 CREATE TABLE likes
