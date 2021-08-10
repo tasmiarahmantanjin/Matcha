@@ -22,23 +22,82 @@ const MatchesPage = () => {
   const gender = user.gender
   const sexual_orientation = user.sexual_orientation
   const interest = user.interest
-  //const [matches, setMatches] = useState([])
+  const [sortBy, setSortBy] = useState('name')
   var matchList
   let dist
-  let age
+  
+  const sortMatches = (matches, option) => {
+    let ret = [...matches.rows]
+    if (option === 'youngest'){ // Done.
+      //console.log('Sorting by youngest.')
+      ret.sort((a, b) => {
+        let ageOfA = new Date(new Date() - new Date(a.birthdate)).getFullYear() - 1970;
+        let ageOfB = new Date(new Date() - new Date(b.birthdate)).getFullYear() - 1970;
+        return ageOfA - ageOfB
+      })
+      return ret
+    }
+    if (option === 'oldest'){ // Done.
+      //console.log('Sorting by oldest.')
+      ret.sort((a, b) => {
+        let ageOfA = new Date(new Date() - new Date(a.birthdate)).getFullYear() - 1970;
+        let ageOfB = new Date(new Date() - new Date(b.birthdate)).getFullYear() - 1970;
+        return ageOfB - ageOfA
+      })
+      return ret
+      
+    }
+    if (option === 'shared interests'){ // Done.
+      //console.log('Sorting by shared interests.')
+      ret.sort((a, b) => {
+        let countA = 0
+        let countB = 0
+        a.interest.forEach(entry => {
+          user.interest.forEach(hash => {
+            if (entry === hash){
+              ++countA
+            }
+          })
+        })
+        b.interest.forEach(entry => {
+          user.interest.forEach(hash => {
+            if (entry === hash){
+              ++countB
+            }
+          })
+        })
+        return countB - countA
+      })
+      return ret
+    }
+    if (option === 'proximity'){ // Done.
+      //console.log('Sorting by proximity.')
+      ret.sort((a, b) => {
+        let distA = getDistanceFromLatLonInKm(a.latitude, a.longitude, user.latitude, user.longitude)
+      let distB = getDistanceFromLatLonInKm(b.latitude, b.longitude, user.latitude, user.longitude)
+        return distA - distB
+      })
+      return ret
+    }
+    if (option === 'name'){ // Done.
+      //console.log('Sorting by name; default sorting.')
+      return ret
+    }
+  }
+
   if (matches !== undefined) {
-    matchList = matches.rows.map(match => {
+    // sort matches by selected ordering. 
+    let matchesSorted = sortMatches(matches, sortBy)
+    matchList = matchesSorted.map(match => {
               dist = getDistanceFromLatLonInKm(match.latitude, match.longitude, user.latitude, user.longitude)
-              var age = new Date(new Date() - new Date(match.birthdate)).getFullYear() - 1970;
-              //console.log(`age for ${match.first_name}(${match.birthdate}: ${age} years old)`)
+              let age = new Date(new Date() - new Date(match.birthdate)).getFullYear() - 1970;
               if (dist <= distance && !user.blocked_users.includes(match.user_id) && age >= ageRangeMin && age <= ageRangeMax) {
                 return <Match key={match.user_id}
               person={match}
               user={user}
               distance={dist}
               age={age}
-              />}
-              else {
+              />} else {
                 return null
               }
             }
@@ -67,7 +126,7 @@ const MatchesPage = () => {
   const submitForm = (e) => {
       e.preventDefault()
       const form = { ageRangeMax, ageRangeMin, distance, gender, sexual_orientation, interest }
-      //console.log(form)
+      console.log(form)
 
       const formData = new FormData()
 
@@ -131,9 +190,18 @@ const MatchesPage = () => {
                       id="sexual_orientation" name="sexual_orientation" 
                       value={sexual_orientation}
                       type='hidden' />
+              
             </form>
             <button className='btn-success' onClick={submitForm}>GET MATCHES</button>
-            </div>
+              </div>
+              <label htmlFor="sort_by">Sort matches by: </label>
+              <select name="sort_by" id="sort_by" onChange={e => setSortBy(e.target.value)}>
+                <option value="name">name</option>
+                <option value="shared interests">shared interests</option>
+                <option value="youngest">youngest</option>
+                <option value="oldest">oldest</option>
+                <option value="proximity">proximity</option>
+              </select>
             <div id="match_list">{matchList}</div>
         </div>
         
