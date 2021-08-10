@@ -18,6 +18,7 @@ const Navbar = () => {
     const [showProfileOptions, setShowProfileOptions] = useState(false)
     const [showProfileModal, setShowProfileModal] = useState(false)
 
+    const user_id = user.user_id
     const [first_name, setFirst_name] = useState(user.first_name)
     const [last_name, setLast_name] = useState(user.last_name)
     const [email, setEmail] = useState(user.email)
@@ -112,7 +113,7 @@ useEffect(() => {
     const submitForm = (e) => {
         e.preventDefault()
 
-        const form = { first_name, last_name, email, gender, sexual_orientation, bio, interest, birthdate, uploadAvatar }
+        const form = { user_id, first_name, last_name, email, gender, sexual_orientation, bio, interest, birthdate, uploadAvatar }
         //console.log(interest)
         if (password.length > 0) form.password = password
 
