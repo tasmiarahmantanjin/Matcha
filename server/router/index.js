@@ -37,7 +37,7 @@ router.use('/users', require('./user'))
 // @route	PATCH localhost:5000/notifications
 // @desc	API end-point for notifications
 // @access	Private
-router.use('/notification', require('./notification'))
+router.use('/notifications', require('./notification'))
 
 
 /*router.post('/matches', function(req, res){
