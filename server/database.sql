@@ -1,5 +1,5 @@
 -- Create database
-CREATE DATABASE login_matcha;
+CREATE DATABASE IF NOT EXISTS login_matcha;
 
 CREATE TYPE gender AS ENUM ('female', 'male', 'others');
 -- CREATE TYPE orientation AS ENUM ('f', 'm', 'o', 'fm', 'fo', 'mo', 'fmo');
@@ -87,6 +87,7 @@ CREATE TABLE notifications (
 		REFERENCES users(user_id)
 		ON DELETE CASCADE
 );
+
 
 --Insert predifined users for admin use
 INSERT INTO users (first_name, last_name, user_name, email, verified, password, gender, sex_orientation, tags, latitude, longitude, birthdate, fame, sexual_orientation)
