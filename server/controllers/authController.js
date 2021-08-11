@@ -39,14 +39,14 @@ exports.login = async (req, res) => {
 		// Once login user will be in online
 		location.online = 1;
 		await updateAccount(user.user_id, location)
-    const time = new Date().toISOString().slice(0, 19).replace('T', ' ')
-    console.log(time)
-    await updateTime(user.user_id, time)
+        const time = new Date().toISOString().slice(0, 19).replace('T', ' ')
+        console.log(time)
+        await updateTime(user.user_id, time)
 
 		//4. Generate auth token
 		const userWithToken = generateToken(user)
 		userWithToken.user.avatar = user.avatar
-    console.log(userWithToken)
+        console.log(userWithToken)
 
 		return res.send(userWithToken)
 	} catch (e) {
