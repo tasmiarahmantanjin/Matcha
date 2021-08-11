@@ -35,6 +35,4 @@ echo '####################################################'
 docker volume rm $(docker volume ls -q)
 
 # execute docker-compose up
-docker-compose up db
-docker-compose up server
-docker-compose up client
+# docker-compose up db
