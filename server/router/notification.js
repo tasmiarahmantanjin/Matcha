@@ -1,16 +1,14 @@
 const router = require('express').Router()
-const { likeNotification } = require('../controllers/notificationController')
+const { notification1, notification2, notification3, notification4 } = require('../controllers/notificationController')
+const { auth } = require('../middleware/auth')
 
-router.post('/', likeNotification)
+router.get('/', [auth], notification1)
 
-console.log(`Request body in router/notification for sending notification: `)
-// console.log(req.body)
-console.log('Endpoint hit: Notification')
+router.post('/', [auth], notification2)
 
-// router.post('/', notification)
+router.patch('/', [auth], notification3)
 
-// router.patch('/:id', notification)
+router.patch('/:id', [auth], notification4)
 
-// router.patch('/', notification)
 
 module.exports = router
