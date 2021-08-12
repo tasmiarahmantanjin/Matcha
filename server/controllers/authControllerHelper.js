@@ -16,10 +16,9 @@ exports.updateAccount = async (user_id, data) => {
 
 exports.updateTime = async (user_id, time) => {
 	const result = await pool.query(
-		`UPDATE users SET last_seen = to_timestamp($1) WHERE user_id = $2`,
-		[time / 1000, user_id]
+		`UPDATE users SET last_online = to_timestamp($1, 'YYYY-MM-DD HH24:MI:SS') WHERE user_id = $2`,
+		[time, user_id]
 	);
-
 	return result.rowCount;
 };
 

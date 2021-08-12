@@ -7,4 +7,5 @@ const { userFile } = require('../middleware/fileUpload')
 
 router.post('/update', [auth, userFile, updateRules, validate], update)
 
+
 module.exports = router

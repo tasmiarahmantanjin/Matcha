@@ -10,6 +10,9 @@ CREATE TYPE sex_orientation AS ENUM ('man', 'woman', 'both');
 CREATE EXTENSION postgis;
 CREATE EXTENSION postgis_topology;
 
+-- Run ALTER TABLE users ALTER last_online TYPE timestamptz USING last_online AT TIME ZONE 'UTC';
+-- and  ALTER TABLE users ADD COLUMN blocked_users VARCHAR(255)[]; to modify tables to work with new version.
+
 CREATE TABLE users (
 	user_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
 	first_name VARCHAR(50) NOT NULL,
@@ -20,7 +23,7 @@ CREATE TABLE users (
 	password VARCHAR(255) NOT NULL,
 	token varchar(255) DEFAULT NULL,
 	verified SMALLINT NOT NULL DEFAULT 0,
-	sex_orientation varchar(255) DEFAULT NULL,
+	sex_orientation varchar(255) DEFAULT NULL, -- Should be removed.
 	avatar varchar(255) DEFAULT NULL,
 	bio VARCHAR(1000),
 	interest VARCHAR(255)[],
@@ -33,19 +36,52 @@ CREATE TABLE users (
 	-- longitude DOUBLE PRECISION,
 	birthdate DATE DEFAULT NULL,
 	fame INTEGER DEFAULT 100,
-	last_online TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	online SMALLINT NOT NULL DEFAULT 0
+	last_online TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+	online SMALLINT NOT NULL DEFAULT 0,
+  sexual_orientation VARCHAR(255)[],
+  blocked_users VARCHAR(255)[] NOT NULL SET DEFAULT '{}'
+);
+
+CREATE TABLE likes
+(
+    like_id uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+    user_id character varying(255) NOT NULL,
+    liked_user character varying(255) NOT NULL
+);
+
+CREATE TABLE fake_account_reports 
+(
+    report_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id VARCHAR(255) NOT NULL,
+    reported_user VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE conversations
+(
+    id uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+    user_one_id character varying(255) NOT NULL,
+    user_two_id character varying(255) NOT NULL
+);
+
+CREATE TABLE messages
+(
+    id uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+    sender_id character varying(255) NOT NULL,
+    conversation_id character varying(255) NOT NULL,
+    message_text text,
+    timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 --Insert predifined users for admin use
-INSERT INTO users (first_name, last_name, user_name, email, password, verified, gender, orientation, tags, latitude, longitude, birthdate, fame)
+INSERT INTO users (first_name, last_name, user_name, email, password, verified, gender, orientation, tags, latitude, longitude, birthdate, fame, sexual_orientation)
 VALUES 
-('hille', 'haa', 'hille', 'hille@h', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'female', 'fo', '#hot', 60.1695, 24.9354, '1987-02-1', 100),
-('liina', 'lol', 'liina', 'liina@h', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'female', 'fmo', '#hot', 60.1695, 24.9354, '1984-02-1', 100),
-('kaisa', 'varis', 'hiihtaja', 'ski@hi', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'female', 'm', '#hot', 60.1695, 24.9354, '1990-02-1', 50),
-('muumi', 'maa', 'muumi', 'peikko@born', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'mo', '#hot', 60.1695, 24.9354, '2000-02-1', 100),
-('ada', 'l', 'ada', 'binar@h', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'f', '#hot', 60.1695, 24.9354, '1999-02-1', 100),
-('heikki', 'h', 'heikki', 'heikki@heikki', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'male', 'fmo', '#hot', 60.1695, 24.9354, '1987-02-1', 90),
-('muumi', 'maa', 'muumio', 'peikko@born1', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'mo', '#hot', 61.1695, 24.9354, '2000-02-1', 100),
-('ada', 'l', 'adalmiina', 'binar@h1', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'f', '#hot', 60.1695, 25.1354, '1999-02-1', 100),
-('kalle', 'pihlajakatunen', 'totori', 'ponihepatoequards@gmail.com', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'male', 'fmo', '#hot', 60.5695, 24.9354, '1987-02-1', 90);
+('hille', 'haa', 'hille', 'hille@h', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'female', 'fo', '#hot', 60.1695, 24.9354, '1987-02-1', 100, '{female,other}'),
+('liina', 'lol', 'liina', 'liina@h', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'female', 'fmo', '#hot', 60.1695, 24.9354, '1984-02-1', 100, '{female,male,other}'),
+('kaisa', 'varis', 'hiihtaja', 'ski@hi', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'female', 'm', '#hot', 60.1695, 24.9354, '1990-02-1', 50, '{male}'),
+('muumi', 'maa', 'muumi', 'peikko@born', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'mo', '#hot', 60.1695, 24.9354, '2000-02-1', 100, '{male,other}'),
+('ada', 'l', 'ada', 'binar@h', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'f', '#hot', 60.1695, 24.9354, '1999-02-1', 100, '{female}'),
+('heikki', 'h', 'heikki', 'heikki@heikki', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'male', 'fmo', '#hot', 60.1695, 24.9354, '1987-02-1', 90, '{female,male,other}'),
+('muumi', 'maa', 'muumio', 'peikko@born1', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'mo', '#hot', 61.1695, 24.9354, '2000-02-1', 100, '{male,other}'),
+('ada', 'l', 'adalmiina', 'binar@h1', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'f', '#hot', 60.1695, 25.1354, '1999-02-1', 100, '{female}'),
+('kalle', 'pihlajakatunen', 'totori', 'ponihepatoequards@gmail.com', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'male', 'fmo', '#hot', 60.5695, 24.9354, '1987-02-1', 90, '{female,male,other}');
