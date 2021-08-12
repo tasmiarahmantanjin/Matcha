@@ -73,6 +73,13 @@ CREATE TABLE messages
     timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE gallery
+(
+    image_id uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+    owner_id character varying(255) NOT NULL,
+    path character varying(255) NOT NULL
+);
+
 --Insert predifined users for admin use
 INSERT INTO users (first_name, last_name, user_name, email, password, verified, gender, orientation, tags, latitude, longitude, birthdate, fame, sexual_orientation)
 VALUES 
