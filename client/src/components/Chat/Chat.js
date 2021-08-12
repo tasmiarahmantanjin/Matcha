@@ -143,18 +143,6 @@ const Chat = ( { id } ) => {
     setMessage(e.target.value);
   }
 
-
-
-  const formatTimestamp = (timestamp) => {
-    console.log(`This is the string: ${timestamp}`);
-    let date = new Date(timestamp)
-    let ret
-    let n = date.toLocaleDateString()
-    let substr = timestamp.substring(0, 21)
-    console.log(`n = ${typeof(n)}`);
-    return timestamp
-  }
-
     return (
       <div>
         <div id='chat-container'>
@@ -165,11 +153,11 @@ const Chat = ( { id } ) => {
             {messages.map((message, index) => {
           if (message.sender_id === user.user_id) {
             return (
-              <UserRow key={index} sender={user.first_name} timestamp={formatTimestamp(message.timestamp)} message={message.message_text} /> // 
+              <UserRow key={index} sender={user.first_name} timestamp={message.timestamp} message={message.message_text} /> // 
             )
           }
           return (
-            <PartnerRow key={index} sender={partner.first_name} timestamp={formatTimestamp(message.timestamp)} message={message.message_text} />
+            <PartnerRow key={index} sender={partner.first_name} timestamp={message.timestamp} message={message.message_text} />
           )
         })}
       </div>

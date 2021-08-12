@@ -123,16 +123,54 @@ const reportButtonClickHandler = ( ) => {
   // Redirect to home.
 }
 
+const uploadButtonClickHandler = ( ) => {
+  // ask confirmation
+  var confirm = window.confirm("Are you sure you want to upload this image?");
+  if (confirm === true){
+    console.log(`Photo upload button clicked and confirmed.`)
+  }
+  //const formData = new FormData()
+
+  //formData.append('user_id', user.user_id)
+  //const values = Object.fromEntries(formData.entries())
+  //dispatch(galleryUpload(values))
+}
+
 var likeButton
+if (profile && user.user_id === profile.user_id) {
+  likeButton = null
+} else {
   if (liked === undefined) {
     likeButton = <div><button onClick={likeButtonClickHandler}>Like</button></div>
   }
   if (liked !== undefined) {
     likeButton = <div><button onClick={unlikeButtonClickHandler}>Unlike</button></div>
   }
+}
 
-var d = new Date(); // Get current datetime.
-console.log(`d: ${d}`)
+var blockButton
+if (profile && user.user_id === profile.user_id) {
+  blockButton = null
+} else {
+  blockButton = <div><button onClick={blockButtonClickHandler}>Block</button></div>
+}
+
+var reportButton
+if (profile && user.user_id === profile.user_id) {
+  reportButton = null
+} else {
+  reportButton = <div><button onClick={reportButtonClickHandler}>Report fake account</button></div>
+}
+
+var uploadButton
+if (profile && user.user_id === profile.user_id) {
+  uploadButton = <div><button onClick={uploadButtonClickHandler}>Upload image to gallery</button></div>
+} else {
+  uploadButton = null
+}
+
+var d = new Date();
+//console.log(`d: ${d}`)
 
 function timeDiffCalc(dateFuture, dateNow) {
   let diffInMilliSeconds = Math.abs(dateFuture - dateNow) / 1000;
@@ -204,8 +242,9 @@ var dateLastSeen
                   </li>
           )}</ul></div>
           <p>Fame rating: {profile.fame}</p>
-          <div><button onClick={blockButtonClickHandler}>Block</button></div>
-          <div><button onClick={reportButtonClickHandler}>Report fake account</button></div>
+          {blockButton}
+          {reportButton}
+          {uploadButton}
           </div>
     
   }
