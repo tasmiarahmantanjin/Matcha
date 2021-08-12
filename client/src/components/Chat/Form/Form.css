@@ -1,0 +1,23 @@
+.Form {
+  width: 400px;
+}
+
+.TextArea {
+  width: 98%;
+  height: 100px;
+  border-radius: 10px;
+  margin-top: 10px;
+  padding-left: 10px;
+  padding-top: 10px;
+  font-size: 17px;
+  background-color: transparent;
+  border: 1px solid lightgray;
+  outline: none;
+  color: black;
+  letter-spacing: 1px;
+  line-height: 20px;
+}
+
+::placeholder {
+  color: darkslategrey;
+}
