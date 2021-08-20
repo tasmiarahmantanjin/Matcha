@@ -70,10 +70,10 @@ exports.update = async (req, res) => {
 	}
 
   exports.galleryUpload = async (req, res) => {
-    //console.log('Request.body in userController:')
-    //console.log(req.body)
+    console.log('Request.body in userController:')
+    console.log(`user ID: ${req.user.user_id}`)
     try {
-      const { user_id } = req.body
+      const user_id = req.user.user_id
       //console.log(sexual_orientation);
       let image = null
       if (req.file) {
@@ -101,12 +101,12 @@ exports.update = async (req, res) => {
       //console.log(sexual_orientation_arr);
       //db.query("UPDATE users SET first_name = $1, last_name = $2, gender = $3, sexual_orientation = $4, bio = $5, interest = $6, birthdate = $7, email = $8 WHERE user_id = $9", [first_name, last_name, gender, sexual_orientation_arr, bio, interest_arr, birthdate, email, user_id]);
       
-      const newUser = await db.query("INSERT INTO gallery (owner_id, path) VALUES ($1, $2)", [user_id, image]);
+      const newImage = await db.query("INSERT INTO gallery (owner_id, path) VALUES ($1, $2) RETURNING path", [user_id, image]);
      
       
       
-      //return res.send(updatedUser)
-      return res.status(200)
+      return res.send(newImage)
+      //return res.status(200)
     } catch (e) {
       return res.status(500).json({ message: e.message })
     }

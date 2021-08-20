@@ -5,7 +5,9 @@ import { logout } from '../../store/actions/auth'
 import logoImage from "../../assets/images/logo_matcha.svg";
 // Import for the user update
 import Modal from '../Modal/Modal'
+import GalleryModal from '../GalleryModal/GalleryModal'
 import { updateProfile } from '../../store/actions/auth'
+import { uploadToGallery } from '../../store/actions/auth'
 import './Navbar.scss'
 
 const Navbar = () => {
@@ -17,6 +19,8 @@ const Navbar = () => {
 
     const [showProfileOptions, setShowProfileOptions] = useState(false)
     const [showProfileModal, setShowProfileModal] = useState(false)
+    const [showGalleryModal, setShowGalleryModal] = useState(false)
+    const [uploadFile, setUploadFile] = useState('')
 
     const user_id = user.user_id
     const [first_name, setFirst_name] = useState(user.first_name)
@@ -110,6 +114,7 @@ useEffect(() => {
   
       return [year, month, day].join('-');
   }
+
     const submitForm = (e) => {
         e.preventDefault()
 
@@ -124,6 +129,23 @@ useEffect(() => {
         }
         dispatch(updateProfile(formData)).then(() => setShowProfileModal(false))
     }
+
+    const submitGalleryForm = (e) => {
+      e.preventDefault()
+
+      const form = { uploadFile }
+      //console.log(form.uploadFile)
+      //if (password.length > 0) form.password = password
+
+      const formData = new FormData()
+
+      for (const key in form) {
+        console.log(key);
+          formData.append(key, form[key])
+      }
+      //console.log(formData)
+      dispatch(uploadToGallery(formData)).then(() => setShowGalleryModal(false))
+  }
 
     // Hashtag code
 
@@ -262,6 +284,7 @@ fetch('http://localhost:5000/logout', requestOptions)
                     showProfileOptions &&
                     <div id='profile-options'>
                         <p onClick={() => setShowProfileModal(true)}>Update profile</p>
+                        <p onClick={() => setShowGalleryModal(true)}>Image gallery</p>
                         <p onClick={() => logOut()}>Logout</p>
                     </div>
                 }
@@ -312,7 +335,7 @@ fetch('http://localhost:5000/logout', requestOptions)
                                     >
                                         <option value='male'>Male</option>
                                         <option value='female'>Female</option>
-                                        <option value='others'>Others</option>
+                                        <option value='others'>Other</option>
                                     </select>
                                 </div>
 
@@ -355,9 +378,10 @@ fetch('http://localhost:5000/logout', requestOptions)
                                   </input>
                                 </div>
                                 <div className='input-field mb-2'>
+                                <label htmlFor="avatar">Profile picture:</label>
                                     <input
                                         onChange={e => setUploadAvatar(e.target.files[0])}
-                                        type='file' />
+                                        type='file' id="avatar" name="avatar"/>
                                 </div>
                                 <div className="input-tag">
                         <ul className="input-tag__tags">
@@ -378,6 +402,33 @@ fetch('http://localhost:5000/logout', requestOptions)
                         </Fragment>
 
                     </Modal>
+                }
+                {
+                  showGalleryModal &&
+                  <GalleryModal click={() => setShowGalleryModal(false)}>
+                  <img width="40" height="40" src={`http://localhost:5000/uploads/user/${user.user_id}/${avatar}`} alt='Avatar' />
+                  <Fragment key='gallery-header'>
+                            <h3 className='m-0'>Image Gallery</h3>
+                            
+                        </Fragment>
+                        
+                        <Fragment key='gallery-body'>
+                        
+                                <form>
+                                <div className='input-field mb-2'>
+                                  <label htmlFor="gallery-upload-input">Upload image to gallery:</label>
+                                    <input
+                                        onChange={e => setUploadFile(e.target.files[0])}
+                                        type='file' name="gallery-upload-input" id="gallery-upload-input" accept="image/*"/>
+                                </div>
+                            </form>
+                        </Fragment>
+                        
+                        <Fragment key='gallery-footer'>
+                            <button className='btn-success' onClick={submitGalleryForm}>Upload</button>
+                        </Fragment>
+
+                    </GalleryModal>
                 }
 
             </div>

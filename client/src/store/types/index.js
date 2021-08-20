@@ -9,6 +9,8 @@ export const LIKE_USER = 'LIKE_USER' // ADDED.
 export const UNLIKE_USER = 'UNLIKE_USER' // ADDED.
 export const BLOCK_USER = 'UNLIKE_USER' // ADDED.
 export const REPORT_USER = 'UNLIKE_USER' // ADDED.
+export const UPLOAD_TO_GALLERY = 'UPLOAD_TO_GALLERY' // ADDED.
+
 
 
 
