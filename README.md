@@ -1,7 +1,7 @@
 
 # Matcha
 
-Instagram like web app with PERN stack
+Instagram like web app with PERN stack (PostgreSQL, Express, React, Node)
 
 
 ## Run Locally
