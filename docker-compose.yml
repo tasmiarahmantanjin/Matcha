@@ -8,8 +8,8 @@ services:
     container_name: app-backend
     command: npm run dev
     volumes:
-      - ./server/:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./server/:/server
+      - /server/node_modules
     ports:
       - "5000:5000"
     depends_on:
@@ -29,8 +29,8 @@ services:
     container_name: app-frontend
     command: npm start
     volumes:
-      - ./client/:/usr/app
-      - /usr/app/node_modules
+      - ./client/:/client
+      - /client/node_modules
     depends_on:
       - server
     ports:
