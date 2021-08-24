@@ -29,6 +29,10 @@ const GalleryModal = (props) => {
 						{findByKey('gallery-header')}
 					</div>
 
+          <div className='gallery-modal-body'>
+						{findByKey('gallery-images')}
+					</div>
+
 					<div className='gallery-modal-body'>
 						{findByKey('gallery-body')}
 					</div>

@@ -8,6 +8,7 @@ import Modal from '../Modal/Modal'
 import GalleryModal from '../GalleryModal/GalleryModal'
 import { updateProfile } from '../../store/actions/auth'
 import { uploadToGallery } from '../../store/actions/auth'
+import galleryService from '../../services/galleryService'
 import './Navbar.scss'
 
 const Navbar = () => {
@@ -21,6 +22,7 @@ const Navbar = () => {
     const [showProfileModal, setShowProfileModal] = useState(false)
     const [showGalleryModal, setShowGalleryModal] = useState(false)
     const [uploadFile, setUploadFile] = useState('')
+    const [galleryImages, setGalleryImages] = useState([])
 
     const user_id = user.user_id
     const [first_name, setFirst_name] = useState(user.first_name)
@@ -51,7 +53,17 @@ const Navbar = () => {
     //const [male, setMale] = useState(inArray('male'))
     //const [other, setOther] = useState(inArray('other'))
 
-    
+    useEffect(() => {
+      const requestObject = {
+        user: user
+      }
+      galleryService
+      .getUserGallery(requestObject)
+      .then(initialImages => {
+        console.log(initialImages);
+        setGalleryImages(initialImages.rows)
+      })
+    }, [user])
 
     useEffect(() => {
       if (sexual_orientation) {
@@ -254,6 +266,15 @@ useEffect(() => {
 
     // End of checkbox code
 
+
+    const galleryImagesToShow = 
+    galleryImages ? galleryImages.map((image, index) => {
+                              return (
+                                <img className="gallery-image" width="25%" height="25%" src={`http://localhost:5000/uploads/user/${user.user_id}/${image.path}`} alt={`${image.path}`} key={`${image.path}`} />
+                              )
+                            })
+    : null
+
     // Start of logout function
 function logOut() {
   const requestOptions = {
@@ -276,7 +297,7 @@ fetch('http://localhost:5000/logout', requestOptions)
             <div><a href="http://localhost:3000/matches">Find match</a></div>
 
             <div onClick={() => setShowProfileOptions(!showProfileOptions)} id='profile-menu'>
-                <img width="40" height="40" src={`http://localhost:5000/uploads/user/${user.user_id}/${avatar}`} alt='Avatar' />
+                <img className="avatar" width="40" height="40" src={`http://localhost:5000/uploads/user/${user.user_id}/${avatar}`} alt='Avatar' />
                 <p>{user.user_name}</p>
                 <FontAwesomeIcon icon='caret-down' className='fa-icon' />
 
@@ -410,6 +431,11 @@ fetch('http://localhost:5000/logout', requestOptions)
                   <Fragment key='gallery-header'>
                             <h3 className='m-0'>Image Gallery</h3>
                             
+                        </Fragment>
+
+                        <Fragment key='gallery-images'>
+                          {galleryImagesToShow}
+
                         </Fragment>
                         
                         <Fragment key='gallery-body'>

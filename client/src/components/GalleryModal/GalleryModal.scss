@@ -49,6 +49,15 @@
                     width: 100%;
                     box-sizing: border-box;
                 }
+
+                .gallery-image {
+                  display: flex;
+                  color: white;
+                  align-self: center;
+                  margin-right: 5px;
+                  //border-radius: 20px;
+              }
+      
             }
 
             .gallery-modal-footer {

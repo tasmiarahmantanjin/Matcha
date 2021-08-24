@@ -13,6 +13,8 @@ import { likeUser } from '../../store/actions/auth'
 import { unlikeUser } from '../../store/actions/auth'
 import { blockUser } from '../../store/actions/auth'
 import { reportUser } from '../../store/actions/auth'
+import { uploadToGallery } from '../../store/actions/auth'
+import galleryService from '../../services/galleryService'
 
 
 //import { getUserById } from '../../../../server/controllers/profileController';
@@ -24,9 +26,24 @@ const ProfilePage = ( { id } ) => {
   
   const [profile, setProfile] = useState()
   const [liked, setLiked] = useState()
+  const [uploadFile, setUploadFile] = useState('')
+  const [galleryImages, setGalleryImages] = useState([])
   const dispatch = useDispatch()
   const user = useSelector(state => state.authReducer.user)
   
+
+  useEffect(() => {
+    const requestObject = {
+      user: user
+    }
+    galleryService
+    .getUserGallery(requestObject)
+    .then(initialImages => {
+      //console.log(initialImages);
+      setGalleryImages(initialImages.rows)
+    })
+  }, [user])
+
   useEffect(() => {
     // POST request using fetch inside useEffect React hook
     const requestOptions = {
@@ -214,6 +231,14 @@ function deg2rad(deg) {
   return deg * (Math.PI/180)
 }
 
+const galleryImagesToShow = 
+    galleryImages ? galleryImages.map((image, index) => {
+                              return (
+                                <img className="gallery-image" width="25%" height="25%" src={`http://localhost:5000/uploads/user/${user.user_id}/${image.path}`} alt={`${image.path}`} key={`${image.path}`} />
+                              )
+                            })
+    : null
+
 var profileToShow
 var online
 var dateLastSeen
@@ -244,6 +269,7 @@ var dateLastSeen
           <p>Fame rating: {profile.fame}</p>
           {blockButton}
           {reportButton}
+          {galleryImagesToShow}
           {uploadButton}
           </div>
     
