@@ -81,3 +81,14 @@ CREATE TABLE IF NOT EXISTS notifications (
 );
 
 -- Need to add the fake user to the database
+INSERT INTO users (first_name, last_name, user_name, email, verified, password, gender, sex_orientation, tags, latitude, longitude, birthdate, fame, sexual_orientation)
+VALUES 
+('hille', 'haa', 'hille', 'hille@h', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'female', 'fo', '#hot', 60.1695, 24.9354, '1987-02-1', 100, '{female,other}'),
+('liina', 'lol', 'liina', 'liina@h', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'female', 'fmo', '#hot', 60.1695, 24.9354, '1984-02-1', 100, '{female,male,other}'),
+('kaisa', 'varis', 'hiihtaja', 'ski@hi', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'female', 'm', '#hot', 60.1695, 24.9354, '1990-02-1', 50, '{male}'),
+('muumi', 'maa', 'muumi', 'peikko@born', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'mo', '#hot', 60.1695, 24.9354, '2000-02-1', 100, '{male,other}'),
+('ada', 'l', 'ada', 'binar@h', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'f', '#hot', 60.1695, 24.9354, '1999-02-1', 100, '{female}'),
+('heikki', 'h', 'heikki', 'heikki@heikki', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'male', 'fmo', '#hot', 60.1695, 24.9354, '1987-02-1', 90, '{female,male,other}'),
+('muumi', 'maa', 'muumio', 'peikko@born1', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'mo', '#hot', 61.1695, 24.9354, '2000-02-1', 100, '{male,other}'),
+('ada', 'l', 'adalmiina', 'binar@h1', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'f', '#hot', 60.1695, 25.1354, '1999-02-1', 100, '{female}'),
+('kalle', 'pihlajakatunen', 'totori', 'ponihepatoequards@gmail.com', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'male', 'fmo', '#hot', 60.5695, 24.9354, '1987-02-1', 90, '{female,male,other}');
