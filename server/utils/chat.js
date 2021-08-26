@@ -19,12 +19,12 @@ const io = require("socket.io")(server, {
 
 app.get('/', (req, res) => {
   console.log('Endpoint hit: Chat home')
-	return res.send('Chat home is working');
+  return res.send('Chat home is working');
 })
 
 io.on("connection", socket => {
   console.log('Connection.');
-  socket.on('create', function(room) {
+  socket.on('create', function (room) {
     socket.join(room);
     console.log(`Created room:`)
     console.log(room);
@@ -37,9 +37,9 @@ io.on("connection", socket => {
     /*// to individual socketid (private message)
   io.to(socketId).emit([message]);*/
     // Put message in database here?
-  // to all clients in room1
-  insertMessageIntoConversation(message)
-  io.to(message.conversation).emit("message", message);
+    // to all clients in room1
+    insertMessageIntoConversation(message)
+    io.to(message.conversation).emit("message", message);
   })
 })
 
