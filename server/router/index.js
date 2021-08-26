@@ -37,6 +37,13 @@ router.use('/', require('./resetPassword'))
 // @access	Public
 router.use('/users', require('./user'))
 
+// @route	POST localhost:5000/notifications
+// @route	GET localhost:5000/notifications
+// @route	PATCH localhost:5000/notifications
+// @desc	API end-point for notifications
+// @access	Private
+router.use('/notifications', require('./notification'))
+
 
 /*router.post('/matches', function(req, res){
   console.log(`Request body in router/index: `)

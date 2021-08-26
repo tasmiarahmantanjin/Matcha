@@ -13,7 +13,7 @@ const Home = () => {
             <div id='chat-wrap'>
                 <Navbar />
             </div>
-            <h1>Welcome, {user.first_name}</h1>
+            <h1>Welcome to Match, {user.first_name}</h1>
         </div>
     );
 }
