@@ -1,17 +1,17 @@
 const nodemailer = require("nodemailer");
-const {appEmail, appPass, appClientId, appClientSecret, appRefreshToken} = require('../config/app')
+const { appEmail, appPass, appClientId, appClientSecret, appRefreshToken } = require('../config/app')
 
 const sendEmail = (email, token) => {
-  console.log(`Sending email to ${email}`)
+	console.log(`Sending email to ${email}`)
 	const transporter = nodemailer.createTransport({
 		service: 'gmail',
 		auth: {
-      type: 'OAuth2',
-      user: appEmail,
-      pass: appPass,
-      clientId: appClientId,
-      clientSecret: appClientSecret,
-      refreshToken: appRefreshToken
+			type: 'OAuth2',
+			user: appEmail,
+			pass: appPass,
+			clientId: appClientId,
+			clientSecret: appClientSecret,
+			refreshToken: appRefreshToken
 		}
 	})
 	const mailOptions = {
