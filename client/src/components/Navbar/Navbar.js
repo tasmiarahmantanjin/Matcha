@@ -251,7 +251,9 @@ fetch('http://localhost:5000/logout', requestOptions)
     return (
         <div id='navbar' className='card-shadow'>
             <a  href="http://localhost:3000" ><img width="100" height="80" src={logoImage} alt='Logo'/></a>
-            <div><a href="http://localhost:3000/matches">Find match</a></div>
+            <p><a href="http://localhost:3000/matches">Find Match</a></p>
+            <p><a href="http://localhost:3000/notifications">Notification</a></p>
+
 
             <div onClick={() => setShowProfileOptions(!showProfileOptions)} id='profile-menu'>
                 <img width="40" height="40" src={`http://localhost:5000/uploads/user/${user.user_id}/${avatar}`} alt='Avatar' />
