@@ -50,7 +50,7 @@ exports.userFile = ((req, res, next) => {
 					})
 				} else {
 					// it does exist
-					fs.readdir(dest, (error, files) => {
+					/*fs.readdir(dest, (error, files) => {
 						if (error) throw error
 
 						for (const file of files) {
@@ -58,7 +58,7 @@ exports.userFile = ((req, res, next) => {
 								if (error) throw error
 							})
 						}
-					})
+					})*/
 
 					return cb(null, dest)
 				}

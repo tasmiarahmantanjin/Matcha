@@ -33,10 +33,6 @@ const GalleryModal = (props) => {
 						{findByKey('gallery-images')}
 					</div>
 
-					<div className='gallery-modal-body'>
-						{findByKey('gallery-body')}
-					</div>
-
 					<div className='gallery-modal-footer'>
 						<button className='gallery-modal-close' onClick={closeModal}>CLOSE</button>
 						{findByKey('gallery-footer')}

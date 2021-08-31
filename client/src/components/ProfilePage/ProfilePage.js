@@ -8,12 +8,12 @@ import {withRouter} from 'react-router';
 
 import { useDispatch } from 'react-redux'
 // import the login action
-import { getUser } from '../../store/actions/auth'
+//import { getUser } from '../../store/actions/auth'
 import { likeUser } from '../../store/actions/auth'
 import { unlikeUser } from '../../store/actions/auth'
 import { blockUser } from '../../store/actions/auth'
 import { reportUser } from '../../store/actions/auth'
-import { uploadToGallery } from '../../store/actions/auth'
+//import { uploadToGallery } from '../../store/actions/auth'
 import galleryService from '../../services/galleryService'
 
 
@@ -31,19 +31,6 @@ const ProfilePage = ( { id } ) => {
   const dispatch = useDispatch()
   const user = useSelector(state => state.authReducer.user)
   
-
-  useEffect(() => {
-    const requestObject = {
-      user: user
-    }
-    galleryService
-    .getUserGallery(requestObject)
-    .then(initialImages => {
-      //console.log(initialImages);
-      setGalleryImages(initialImages.rows)
-    })
-  }, [user])
-
   useEffect(() => {
     // POST request using fetch inside useEffect React hook
     const requestOptions = {
@@ -59,7 +46,22 @@ const ProfilePage = ( { id } ) => {
         });
     
 // empty dependency array means this effect will only run once (like componentDidMount in classes)
-}, []);
+}, [id]);
+
+useEffect(() => { // Now it works, because of the if condition.
+  if (profile)
+  {
+      const requestObject = {
+      user: profile
+    }
+    galleryService
+    .getUserGallery(requestObject)
+    .then(initialImages => {
+      //console.log(initialImages);
+      setGalleryImages(initialImages.rows)
+    })
+  }
+}, [profile])
 
 useEffect(() => {
   // POST request using fetch inside useEffect React hook

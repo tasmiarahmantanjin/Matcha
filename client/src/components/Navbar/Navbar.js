@@ -266,14 +266,82 @@ useEffect(() => {
 
     // End of checkbox code
 
+    const imageDeleteButtonHandler = (img) => {
+      //console.log('Image delete button clicked.')
+      //console.log(`image path: ${img.path}`)
+      //console.log(`image owner: ${img.owner_id}`)
+      const requestObject = {
+        user: user,
+        image: img
+      }
+      galleryService
+      .deleteGalleryImage(requestObject)
+      .then(returnedImages => {
+        //console.log(initialImages);
+        setGalleryImages(returnedImages.rows)
+      })
+    }
 
-    const galleryImagesToShow = 
-    galleryImages ? galleryImages.map((image, index) => {
-                              return (
-                                <img className="gallery-image" width="25%" height="25%" src={`http://localhost:5000/uploads/user/${user.user_id}/${image.path}`} alt={`${image.path}`} key={`${image.path}`} />
-                              )
-                            })
-    : null
+    const makeAvatarButtonHandler = (img) => {
+      console.log('Image avatar button clicked.')
+      console.log(`image path: ${img.path}`)
+      //console.log(`image owner: ${img.owner_id}`)
+      const requestObject = {
+        user: user,
+        image: img
+      }
+      galleryService
+      .makeAvatarImage(requestObject)
+      /*.then(returnedImages => {
+        //console.log(initialImages);
+        setAvatar(returnedImages.rows[0].path)
+      })*/
+    }
+
+
+const galleryImagesToShow = 
+galleryImages ? galleryImages.map((image, index) => {
+if (image.path === user.avatar) {
+  return (
+    <div key={`${image.path}_container`} className="gallery-image-container">
+      <img /*className="gallery-image"*/ width="25%" height="25%" src={`http://localhost:5000/uploads/user/${user.user_id}/${image.path}`} alt={`${image.path}`} key={`${image.path}`} />
+      <button title="Delete image" className="delete-btn" key={`${image.path}_deleteButton`} onClick={() => imageDeleteButtonHandler(image)}>X</button>
+    </div>
+  )
+}
+  return (
+    <div key={`${image.path}_container`} className="gallery-image-container">
+      <img /*className="gallery-image"*/ width="25%" height="25%" src={`http://localhost:5000/uploads/user/${user.user_id}/${image.path}`} alt={`${image.path}`} key={`${image.path}`} />
+      <button className="delete-btn" key={`${image.path}_deleteButton`} onClick={() => imageDeleteButtonHandler(image)}>X</button>
+      <button title="Make avatar" className="avatar-btn" key={`${image.path}_avatarButton`} onClick={() => makeAvatarButtonHandler(image)}>*</button>
+    </div>
+  )
+})
+: null
+
+const galleryImagePicker = 
+galleryImages && galleryImages.length < 5 ? <form>
+                                <div className='input-field mb-2'>
+                                  <label htmlFor="gallery-upload-input">Upload image to gallery:</label>
+                                    <input
+                                        onChange={e => setUploadFile(e.target.files[0])}
+                                        type='file' name="gallery-upload-input" id="gallery-upload-input" accept="image/*"/>
+                                </div>
+                            </form>
+: <p className="delete-img-msg">5 images in gallery; delete at least one to make space!</p>
+
+const avatarImagePicker = 
+galleryImages.length < 5 ? <div className='input-field mb-2'>
+                              <label htmlFor="avatar">Profile picture:</label>
+                                  <input
+                                      onChange={e => setUploadAvatar(e.target.files[0])}
+                                      type='file' id="avatar" name="avatar"/>
+                              </div>
+: <div className='input-field mb-2'>
+    <label htmlFor="avatar">Profile picture:</label>
+    <p className="delete-img-msg" id="avatar" name="avatar">5 images in gallery; delete at least one to make space!</p>
+  </div>
+
 
     // Start of logout function
 function logOut() {
@@ -298,7 +366,7 @@ fetch('http://localhost:5000/logout', requestOptions)
 
             <div onClick={() => setShowProfileOptions(!showProfileOptions)} id='profile-menu'>
                 <img className="avatar" width="40" height="40" src={`http://localhost:5000/uploads/user/${user.user_id}/${avatar}`} alt='Avatar' />
-                <p>{user.user_name}</p>
+                <p className="user-name">{user.user_name}</p>
                 <FontAwesomeIcon icon='caret-down' className='fa-icon' />
 
                 {
@@ -398,12 +466,7 @@ fetch('http://localhost:5000/logout', requestOptions)
                                   value={birthdate}>
                                   </input>
                                 </div>
-                                <div className='input-field mb-2'>
-                                <label htmlFor="avatar">Profile picture:</label>
-                                    <input
-                                        onChange={e => setUploadAvatar(e.target.files[0])}
-                                        type='file' id="avatar" name="avatar"/>
-                                </div>
+                                {avatarImagePicker}
                                 <div className="input-tag">
                         <ul className="input-tag__tags">
                           { interest && interest.map((tag, i) => ( // ALWAYS DO THIS!
@@ -435,21 +498,9 @@ fetch('http://localhost:5000/logout', requestOptions)
 
                         <Fragment key='gallery-images'>
                           {galleryImagesToShow}
+                          {galleryImagePicker}
 
                         </Fragment>
-                        
-                        <Fragment key='gallery-body'>
-                        
-                                <form>
-                                <div className='input-field mb-2'>
-                                  <label htmlFor="gallery-upload-input">Upload image to gallery:</label>
-                                    <input
-                                        onChange={e => setUploadFile(e.target.files[0])}
-                                        type='file' name="gallery-upload-input" id="gallery-upload-input" accept="image/*"/>
-                                </div>
-                            </form>
-                        </Fragment>
-                        
                         <Fragment key='gallery-footer'>
                             <button className='btn-success' onClick={submitGalleryForm}>Upload</button>
                         </Fragment>

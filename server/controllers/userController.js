@@ -59,6 +59,7 @@ exports.update = async (req, res) => {
     if (avatar !== null) {
       //console.log('Updating avatar')
       db.query("UPDATE users SET avatar = $1 WHERE email = $2", [avatar, email])
+      const newImage = await db.query("INSERT INTO gallery (owner_id, path) VALUES ($1, $2) RETURNING path", [user_id, avatar]);
     }
     
     

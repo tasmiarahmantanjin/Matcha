@@ -9,9 +9,14 @@ const { userFile } = require('../middleware/fileUpload')
 const { galleryFile } = require('../middleware/galleryUpload')
 
 const { getGalleryByUser } = require('../controllers/galleryController')
+const { deleteGalleryImage } = require('../controllers/galleryController')
+const { makeAvatarImage } = require('../controllers/galleryController')
 
 router.post('/update', [auth, userFile, updateRules, validate], update)
 router.post('/galleryUpload', [auth, galleryFile, uploadRules, validate], galleryUpload)
 router.post('/getGallery', [/*auth, */uploadRules, validate], getGalleryByUser) // Should have different validation.
+router.post('/deleteGalleryImage', [/*auth, */ uploadRules, validate], deleteGalleryImage)
+router.post('/makeAvatarImage', [/*auth, */ uploadRules, validate], makeAvatarImage)
+
 
 module.exports = router

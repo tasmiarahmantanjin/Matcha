@@ -1,6 +1,7 @@
 // database connection 
 const db = require('../config/database')
 const bcrypt = require('bcrypt')
+const fs = require('fs')
 
 const findUserInfo = async (key, value, ...args) => {
   //console.log(`Finding user by key = ${key}, value = ${value}.`)
@@ -57,18 +58,80 @@ exports.galleryUpload = async (req, res) => {
   }
 
 
-    exports.getGalleryByUser = async (req, res) => {
-      console.log('Request.body in galleryController.getGalleryByUser:')
-      console.log(req.body)
-      try {
-        const owner_id = req.body.user.user_id
-        
-        const results = await db.query(`SELECT * FROM gallery WHERE owner_id = $1`, [owner_id]);
-        //console.log(results)
-        
-        return res.send(results)
-        //return res.status(200)
-      } catch (e) {
-        return res.status(500).json({ message: e.message })
-      }
-      }
+exports.getGalleryByUser = async (req, res) => {
+  console.log('Request.body in galleryController.getGalleryByUser:')
+  console.log(req.body.user)
+  try {
+    const owner_id = req.body.user.user_id
+    
+    const results = await db.query(`SELECT * FROM gallery WHERE owner_id = $1`, [owner_id]);
+    //console.log(results)
+    
+    return res.send(results)
+    //return res.status(200)
+  } catch (e) {
+    return res.status(500).json({ message: e.message })
+  }
+  }
+
+exports.deleteGalleryImage = async (req, res) => {
+  console.log('Request.body in galleryController.deleteGalleryImage:')
+  console.log(req.body)
+  try {
+    const user_id = req.body.user.user_id
+    const { image_id, owner_id, path} = req.body.image
+
+    if (user_id !== owner_id) return res.status(401).json({ message: 'Forbidden!' })
+    
+    const del = await db.query(`DELETE FROM gallery WHERE image_id = $1`, [image_id])
+    if (del.rowCount === 1) {
+      console.log('DB entry deleted!');
+      const file = `uploads/user/${owner_id}/${path}`
+      fs.unlink(file, function (err) {
+        if (err) throw err
+        //console.log('File deleted!')
+    })
+    }
+    // Send updated gallery 
+    const results = await db.query(`SELECT * FROM gallery WHERE owner_id = $1`, [owner_id])
+    //console.log('Here we delete the file: DELETE.');
+    //console.log(results)
+    
+    /**/
+    //console.log(results)
+    console.log('Sending results.')
+    return res.send(results)
+    //return res.status(200)
+  } catch (e) {
+    return res.status(500).json({ message: e.message })
+  }
+  }
+
+  exports.makeAvatarImage = async (req, res) => {
+  console.log('Request.body in galleryController.makeAvatarImage:')
+  console.log(req.body)
+  try {
+    const user_id = req.body.user.user_id
+    const { image_id, owner_id, path} = req.body.image
+
+    if (user_id !== owner_id) return res.status(401).json({ message: 'Forbidden!' })
+    
+    const update = await db.query(`UPDATE users SET avatar = $1 WHERE user_id = $2`, [path, user_id])
+    if (update.rowCount === 1) {
+      console.log('User image updated!');
+      const file = `uploads/user/${owner_id}/${path}`
+    }
+    // Send updated gallery 
+    const results = await db.query(`SELECT * FROM gallery WHERE owner_id = $1`, [owner_id])
+    //console.log('Here we delete the file: DELETE.');
+    //console.log(results)
+    
+    /**/
+    //console.log(results)
+    //console.log('Sending results.')
+    return res.send(results)
+    //return res.status(200)
+  } catch (e) {
+    return res.status(500).json({ message: e.message })
+  }
+  }
