@@ -236,7 +236,7 @@ function deg2rad(deg) {
 const galleryImagesToShow = 
     galleryImages ? galleryImages.map((image, index) => {
                               return (
-                                <img className="gallery-image" width="25%" height="25%" src={`http://localhost:5000/uploads/user/${user.user_id}/${image.path}`} alt={`${image.path}`} key={`${image.path}`} />
+                                <img className="gallery-image" width="25%" height="25%" src={`http://localhost:5000/uploads/user/${profile.user_id}/${image.path}`} alt={`${image.path}`} key={`${image.path}`} />
                               )
                             })
     : null
