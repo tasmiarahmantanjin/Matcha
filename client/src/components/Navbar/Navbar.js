@@ -9,6 +9,8 @@ import GalleryModal from '../GalleryModal/GalleryModal'
 import { updateProfile } from '../../store/actions/auth'
 import { uploadToGallery } from '../../store/actions/auth'
 import galleryService from '../../services/galleryService'
+import chatService from '../../services/chatService'
+
 import './Navbar.scss'
 
 const Navbar = () => {
@@ -19,6 +21,7 @@ const Navbar = () => {
     //console.log(user)
 
     const [showProfileOptions, setShowProfileOptions] = useState(false)
+    const [showChatOptions, setShowChatOptions] = useState(false)
     const [showProfileModal, setShowProfileModal] = useState(false)
     const [showGalleryModal, setShowGalleryModal] = useState(false)
     const [uploadFile, setUploadFile] = useState('')
@@ -53,6 +56,11 @@ const Navbar = () => {
     //const [male, setMale] = useState(inArray('male'))
     //const [other, setOther] = useState(inArray('other'))
 
+    const [conversationsArr, setConversationsArr] = useState([])
+    const [partnersIdArr, setPartnersIdArr] = useState([])
+    const [partnersArr, setPartnersArr] = useState([])
+    const [messageArr, setMessageArr] = useState()
+
     useEffect(() => {
       const requestObject = {
         user: user
@@ -64,6 +72,72 @@ const Navbar = () => {
         setGalleryImages(initialImages.rows)
       })
     }, [user])
+
+    useEffect(() => {
+      const requestObject = {
+        user: user
+      }
+      chatService
+      .getConversationsArray(requestObject)
+      .then(initialConversations => {
+        console.log(initialConversations);
+        setConversationsArr(initialConversations.rows)
+      })
+    }, [user])
+
+
+    useEffect(() => { // For each conversation fetched, make an array of objects with name, partner avatar, and recent message...
+      let conversationPartners = []
+      for (let i = 0; i < conversationsArr.length; i++) {
+        if (conversationsArr[i].user_one_id === user.user_id) {
+          console.log('User is user one.');
+          let currentConversation = {
+            conversation: conversationsArr[i].id,
+            partnerId: conversationsArr[i].user_two_id
+          }
+          conversationPartners.push(currentConversation)
+        } else {
+          console.log('User is user two.');
+          let currentConversation = {
+            conversation: conversationsArr[i].id,
+            partnerId: conversationsArr[i].user_one_id
+          }
+          conversationPartners.push(currentConversation)
+        }
+        /* const requestObject = {
+        user: user
+      }
+      chatService
+      .getConversationsArray(requestObject)
+      .then(initialConversations => {
+        console.log(initialConversations);
+        setConversationsArr(initialConversations.rows)
+      }) */
+      }
+      setPartnersIdArr(conversationPartners)
+    }, [conversationsArr, user])
+
+    useEffect(() => { // For each conversation fetched, make an array of objects with name, partner avatar, and recent message...
+      let partners = []
+      for (let i = 0; i < partnersIdArr.length; i++) {
+        const requestObject = {
+          profile_id: partnersIdArr[i].partnerId
+        }
+        chatService
+        .getPartnerProfile(requestObject)
+        .then(returnedPartner => {
+          let currentPartner = {
+            name: returnedPartner.rows[0].first_name.charAt(0).toUpperCase() + returnedPartner.rows[0].first_name.slice(1),
+            partner_id: partnersIdArr[i].partnerId,
+            avatar: returnedPartner.rows[0].avatar,
+            conversation: partnersIdArr[i].conversation
+          }
+          console.log(currentPartner);
+          partners.push(currentPartner)
+        })
+      }
+      setPartnersArr(partners)
+    }, [partnersIdArr])
 
     useEffect(() => {
       if (sexual_orientation) {
@@ -319,6 +393,18 @@ if (image.path === user.avatar) {
 })
 : null
 
+const conversationsToShow = 
+partnersArr ? partnersArr.map((conversation, index) => {
+  return(
+    <div key={index}>
+      <img className="avatar" width="40" height="40" src={`http://localhost:5000/uploads/user/${conversation.partner_id}/${conversation.avatar}`} alt='partner-avatar' />
+      <p>{conversation.name}</p>
+    </div>
+  )
+  // Make useState variable to store an array of conversation partners (name, avatar, latest message)!!!
+})
+: null
+
 const galleryImagePicker = 
 galleryImages && galleryImages.length < 5 ? <form>
                                 <div className='input-field mb-2'>
@@ -363,6 +449,16 @@ fetch('http://localhost:5000/logout', requestOptions)
         <div id='navbar' className='card-shadow'>
             <a  href="http://localhost:3000" ><img width="100" height="80" src={logoImage} alt='Logo'/></a>
             <div><a href="http://localhost:3000/matches">Find match</a></div>
+            <div onClick={() => setShowChatOptions(!showChatOptions)} id='chat-menu'>
+                <p className="user-name">Chat</p>
+                <FontAwesomeIcon icon='caret-down' className='fa-icon' />
+                {
+                    showChatOptions &&
+                    <div id='chat-options'>
+                      {conversationsToShow}
+                    </div>
+                }
+            </div>
 
             <div onClick={() => setShowProfileOptions(!showProfileOptions)} id='profile-menu'>
                 <img className="avatar" width="40" height="40" src={`http://localhost:5000/uploads/user/${user.user_id}/${avatar}`} alt='Avatar' />

@@ -9,6 +9,7 @@ import './Chat.scss'
 
 import { useDispatch } from 'react-redux'
 
+import chatService from '../../services/chatService'
 import Form from './Form/Form'
 import UserRow from './UserRow/UserRow'
 import PartnerRow from './PartnerRow/PartnerRow'
@@ -25,7 +26,7 @@ const Chat = ( { id } ) => {
   const [partner, setPartner] = useState()
   const dispatch = useDispatch()
   const user = useSelector(state => state.authReducer.user)
-  var partner_id
+  //var partner_id
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const [yourID, setYourID] = useState(user.user_id);
@@ -53,85 +54,87 @@ const Chat = ( { id } ) => {
 
   useEffect(() => {
     // POST request using fetch inside useEffect React hook
-    const requestOptions0 = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: id })
-    };
-    fetch('http://localhost:5000/conversation', requestOptions0)
-        .then(response => response.json())
-        .then(data =>{
-          //console.log('Data: ')
-          //console.log(data.rows) 
-          setConversation(data.rows[0])
-          //console.log(conversation)
-          if (data.rows[0].user_one_id === user.user_id) {
-            //console.log(`User ID matched: ${data.rows[0].user_one_id}`)
-            partner_id = data.rows[0].user_two_id
-            const requestOptions2 = {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ profile_id: partner_id })
-          };
-          fetch('http://localhost:5000/profile', requestOptions2)
-              .then(response => response.json())
-              .then(data =>{
-                //console.log(data.rows) 
-                setPartner(data.rows[0])
-                //console.log('Partner after fetching:');
-                //console.log(`${data.rows[0]}`)
-              });
-          } else {
-            //console.log(`Partner after checking: ${data.rows[0].user_two_id}`);
-            //setPartner(data.rows[0].user_one_id)
-            partner_id = data.rows[0].user_one_id
-            const requestOptions2 = {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ profile_id: partner_id })
-          };
-          fetch('http://localhost:5000/profile', requestOptions2)
-              .then(response => response.json())
-              .then(data =>{
-                //console.log(data.rows) 
-                setPartner(data.rows[0])
-                //console.log('Partner after fetching:');
-                //console.log(`${data.rows[0]}`)
-              });
-          }
-          const requestOptions1 = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ conversation_id: data.rows[0].id })
-        };
-        fetch('http://localhost:5000/messages', requestOptions1)
-            .then(response => response.json())
-            .then(data =>{
-              //console.log(data.rows) 
-              setMessages(data.rows)
-            });
-            socketRef.current = io.connect('localhost:3001/')
-            /*var data = {name: user.user_name, userId: socketRef.current.id};
-            socketRef.current.emit('setSocketId', data);*/
-            socketRef.current.emit('create', data.rows[0].id)
-        
-            
-            /*socketRef.current.on('connection', socket => {
-              socket.join(conversation);
-              console.log(`socket.rooms: ${socket.rooms}`);
-            });*/
-        
-            socketRef.current.on("your id", id => {
-              setYourID(id);
-              console.log(`yourID: ${yourID}`)
-            })
-        
-            socketRef.current.on("message", (message) => {
-              console.log("Message.");
-              console.log(message)
-              receivedMessage(message);
-            })
-        });
+    const requestObject = {
+        id: id
+    }
+    //console.log('Getting conversation.');
+    chatService
+    .getConversation(requestObject) // Getting conversation
+    .then(data =>{
+    //console.log('Data: ')
+    //console.log(data.rows) 
+    setConversation(data.rows[0])
+    //console.log(conversation)
+    if (data.rows[0].user_one_id === user.user_id) { // Getting partner where user is user one.
+      let partner_id = data.rows[0].user_two_id
+      const requestObject = {
+        profile_id: partner_id
+      };
+      chatService
+      .getPartnerProfile(requestObject)
+      //console.log(`User ID matched: ${data.rows[0].user_one_id}`)
+      .then(data =>{
+        //console.log(data.rows) 
+        setPartner(data.rows[0])
+        //console.log('Partner after fetching:');
+        //console.log(`${data.rows[0]}`)
+      })
+    } else { // Getting partner where user is user two.
+      //console.log(`Partner after checking: ${data.rows[0].user_two_id}`);
+      //setPartner(data.rows[0].user_one_id)
+      let partner_id = data.rows[0].user_one_id
+      const requestObject = {
+        profile_id: partner_id
+      };
+      chatService
+      .getPartnerProfile(requestObject)
+      //console.log(`User ID matched: ${data.rows[0].user_one_id}`)
+      .then(data =>{
+        //console.log(data.rows) 
+        setPartner(data.rows[0])
+        //console.log('Partner after fetching:');
+        //console.log(`${data.rows[0]}`)
+      })
+    }
+  const requestObject = {
+     conversation_id: data.rows[0].id
+  }
+  chatService
+  .getMessages(requestObject) // Getting messages.
+  .then(data =>{
+      //console.log(data.rows) 
+      setMessages(data.rows)
+    })
+
+      /**
+       * Keep this bit...
+       */
+      socketRef.current = io.connect('localhost:3001/')
+      /*var data = {name: user.user_name, userId: socketRef.current.id};
+      socketRef.current.emit('setSocketId', data);*/
+      socketRef.current.emit('create', data.rows[0].id)
+  
+      
+      /*socketRef.current.on('connection', socket => {
+        socket.join(conversation);
+        console.log(`socket.rooms: ${socket.rooms}`);
+      });*/
+  
+      socketRef.current.on("your id", id => {
+        setYourID(id);
+        console.log(`yourID: ${yourID}`)
+      })
+  
+      socketRef.current.on("message", (message) => {
+        console.log("Message.");
+        console.log(message)
+        receivedMessage(message);
+      })
+  });
+
+        /**
+         * ... until here.
+         */
         //console.log(`Partner to use for fetching partner data: ${partner_id}`)
         
     
@@ -153,12 +156,12 @@ const Chat = ( { id } ) => {
             {messages.map((message, index) => {
           if (message.sender_id === user.user_id) {
             return (
-              <UserRow key={index} sender={user.first_name} timestamp={message.timestamp} message={message.message_text} /> // 
+              <UserRow image={`${user.user_id}/${user.avatar}`} key={index} sender={user.first_name} timestamp={message.timestamp} message={message.message_text} /> // 
             )
-          }
+          } else if (partner){
           return (
-            <PartnerRow key={index} sender={partner.first_name} timestamp={message.timestamp} message={message.message_text} />
-          )
+            <PartnerRow key={index} image={`${partner.user_id}/${partner.avatar}`} sender={partner.first_name} timestamp={message.timestamp} message={message.message_text} />
+          )}
         })}
       </div>
       <Form message={message} onSubmit={sendMessage} handleChange={handleChange}>
