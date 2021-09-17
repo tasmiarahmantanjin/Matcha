@@ -8,7 +8,7 @@ CREATE TYPE sex_orientation AS ENUM ('man', 'woman', 'both');
 -- CREATE EXTENSION IF NOT EXISTS postgis_topology;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE users (
 	user_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
 	first_name VARCHAR(50) NOT NULL,
 	last_name VARCHAR(50) NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS users (
 	password VARCHAR(255) NOT NULL,
 	token varchar(255) DEFAULT NULL,
 	verified SMALLINT NOT NULL DEFAULT 0,
-	sex_orientation varchar(255) DEFAULT NULL,
+	sex_orientation varchar(255) DEFAULT NULL, -- Should be removed.
 	avatar varchar(255) DEFAULT NULL,
 	bio VARCHAR(1000),
 	interest VARCHAR(255)[],
@@ -26,12 +26,15 @@ CREATE TABLE IF NOT EXISTS users (
 	latitude float NULL ,
  	longitude float NULL ,
 	country varchar(255) NULL ,
+	-- geolocation geography(Point,4326),
+	-- latitude DOUBLE PRECISION,
+	-- longitude DOUBLE PRECISION,
 	birthdate DATE DEFAULT NULL,
 	fame INTEGER DEFAULT 100,
 	last_online TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 	online SMALLINT NOT NULL DEFAULT 0,
-    sexual_orientation VARCHAR(255)[],
-    blocked_users VARCHAR(255)[]
+  sexual_orientation VARCHAR(255)[],
+  blocked_users VARCHAR(255)[] NOT NULL DEFAULT '{}'
 );
 
 CREATE TABLE IF NOT EXISTS likes
@@ -80,15 +83,24 @@ CREATE TABLE IF NOT EXISTS notifications (
 		ON DELETE CASCADE
 );
 
+CREATE TABLE gallery
+(
+    image_id uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+    owner_id character varying(255) NOT NULL,
+    path character varying(255) NOT NULL
+);
+
 -- Need to add the fake user to the database
-INSERT INTO users (first_name, last_name, user_name, email, verified, password, gender, sex_orientation, tags, latitude, longitude, birthdate, fame, sexual_orientation)
+--Insert predifined users for admin use
+INSERT INTO users (first_name, last_name, user_name, email, verified, password, gender, sex_orientation, tags, latitude, longitude, birthdate, fame, sexual_orientation, interest)
 VALUES 
-('hille', 'haa', 'hille', 'hille@h', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'female', 'fo', '#hot', 60.1695, 24.9354, '1987-02-1', 100, '{female,other}'),
-('liina', 'lol', 'liina', 'liina@h', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'female', 'fmo', '#hot', 60.1695, 24.9354, '1984-02-1', 100, '{female,male,other}'),
-('kaisa', 'varis', 'hiihtaja', 'ski@hi', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'female', 'm', '#hot', 60.1695, 24.9354, '1990-02-1', 50, '{male}'),
-('muumi', 'maa', 'muumi', 'peikko@born', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'mo', '#hot', 60.1695, 24.9354, '2000-02-1', 100, '{male,other}'),
-('ada', 'l', 'ada', 'binar@h', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'f', '#hot', 60.1695, 24.9354, '1999-02-1', 100, '{female}'),
-('heikki', 'h', 'heikki', 'heikki@heikki', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'male', 'fmo', '#hot', 60.1695, 24.9354, '1987-02-1', 90, '{female,male,other}'),
-('muumi', 'maa', 'muumio', 'peikko@born1', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'mo', '#hot', 61.1695, 24.9354, '2000-02-1', 100, '{male,other}'),
-('ada', 'l', 'adalmiina', 'binar@h1', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'f', '#hot', 60.1695, 25.1354, '1999-02-1', 100, '{female}'),
-('kalle', 'pihlajakatunen', 'totori', 'ponihepatoequards@gmail.com', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'male', 'fmo', '#hot', 60.5695, 24.9354, '1987-02-1', 90, '{female,male,other}');
+('hille', 'haa', 'hille', 'hille@h', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'female', 'fo', '#hot', 60.1695, 24.9354, '1987-02-1', 100, '{female,other}', '{#debugging}'),
+('liina', 'lol', 'liina', 'liina@h', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'female', 'fmo', '#hot', 60.1695, 24.9354, '1984-02-1', 100, '{female,male,other}', '{#debugging}'),
+('kaisa', 'varis', 'hiihtaja', 'ski@hi', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'female', 'm', '#hot', 60.1695, 24.9354, '1990-02-1', 50, '{male}', '{#debugging}'),
+('muumi', 'maa', 'muumi', 'peikko@born', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'mo', '#hot', 60.1695, 24.9354, '2000-02-1', 100, '{male,other}', '{#debugging}'),
+('ada', 'l', 'ada', 'binar@h', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'f', '#hot', 60.1695, 24.9354, '1999-02-1', 100, '{female}', '{#debugging}'),
+('heikki', 'h', 'heikki', 'heikki@heikki', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'male', 'fmo', '#hot', 60.1695, 24.9354, '1987-02-1', 90, '{female,male,other}', '{#debugging}'),
+('muumi', 'maa', 'muumio', 'peikko@born1', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'mo', '#hot', 61.1695, 24.9354, '2000-02-1', 100, '{male,other}', '{#debugging}'),
+('ada', 'l', 'adalmiina', 'binar@h1', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'other', 'f', '#hot', 60.1695, 25.1354, '1999-02-1', 100, '{female}', '{#debugging}'),
+('kalle', 'pihlajakatunen', 'totori', 'ponihepatoequards@gmail.com', '1', '$2a$10$PAM0GqbRGkOS2bVupYY0he23LiSv2THGyfvtULZpcdRTzSM7BQ01u', 'male', 'fmo', '#hot', 60.5695, 24.9354, '1987-02-1', 90, '{female,male,other}', '{#debugging}'),
+('Pontus', 'Andersson', 'panderss', 'testing@gmail.com', '1', '$2b$10$xWGC3uyaKhHa8px8NUXDZuJquruXFSV37CRQe/wy9U13hRO5lWNDq', 'male', 'fmo', '#hot', 60.5695, 24.9354, '1987-02-1', 90, '{female,male,other}', '{#debugging}');
