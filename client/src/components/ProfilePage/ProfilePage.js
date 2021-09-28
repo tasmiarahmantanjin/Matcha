@@ -8,11 +8,13 @@ import {withRouter} from 'react-router';
 
 import { useDispatch } from 'react-redux'
 // import the login action
-import { getUser } from '../../store/actions/auth'
+//import { getUser } from '../../store/actions/auth'
 import { likeUser } from '../../store/actions/auth'
 import { unlikeUser } from '../../store/actions/auth'
 import { blockUser } from '../../store/actions/auth'
 import { reportUser } from '../../store/actions/auth'
+//import { uploadToGallery } from '../../store/actions/auth'
+import galleryService from '../../services/galleryService'
 
 
 //import { getUserById } from '../../../../server/controllers/profileController';
@@ -24,6 +26,8 @@ const ProfilePage = ( { id } ) => {
   
   const [profile, setProfile] = useState()
   const [liked, setLiked] = useState()
+  const [uploadFile, setUploadFile] = useState('')
+  const [galleryImages, setGalleryImages] = useState([])
   const dispatch = useDispatch()
   const user = useSelector(state => state.authReducer.user)
   
@@ -42,7 +46,22 @@ const ProfilePage = ( { id } ) => {
         });
     
 // empty dependency array means this effect will only run once (like componentDidMount in classes)
-}, []);
+}, [id]);
+
+useEffect(() => { // Now it works, because of the if condition.
+  if (profile)
+  {
+      const requestObject = {
+      user: profile
+    }
+    galleryService
+    .getUserGallery(requestObject)
+    .then(initialImages => {
+      //console.log(initialImages);
+      setGalleryImages(initialImages.rows)
+    })
+  }
+}, [profile])
 
 useEffect(() => {
   // POST request using fetch inside useEffect React hook
@@ -123,16 +142,54 @@ const reportButtonClickHandler = ( ) => {
   // Redirect to home.
 }
 
+const uploadButtonClickHandler = ( ) => {
+  // ask confirmation
+  var confirm = window.confirm("Are you sure you want to upload this image?");
+  if (confirm === true){
+    console.log(`Photo upload button clicked and confirmed.`)
+  }
+  //const formData = new FormData()
+
+  //formData.append('user_id', user.user_id)
+  //const values = Object.fromEntries(formData.entries())
+  //dispatch(galleryUpload(values))
+}
+
 var likeButton
+if (profile && user.user_id === profile.user_id) {
+  likeButton = null
+} else {
   if (liked === undefined) {
     likeButton = <div><button onClick={likeButtonClickHandler}>Like</button></div>
   }
   if (liked !== undefined) {
     likeButton = <div><button onClick={unlikeButtonClickHandler}>Unlike</button></div>
   }
+}
 
-var d = new Date(); // Get current datetime.
-console.log(`d: ${d}`)
+var blockButton
+if (profile && user.user_id === profile.user_id) {
+  blockButton = null
+} else {
+  blockButton = <div><button onClick={blockButtonClickHandler}>Block</button></div>
+}
+
+var reportButton
+if (profile && user.user_id === profile.user_id) {
+  reportButton = null
+} else {
+  reportButton = <div><button onClick={reportButtonClickHandler}>Report fake account</button></div>
+}
+
+var uploadButton
+if (profile && user.user_id === profile.user_id) {
+  uploadButton = <div><button onClick={uploadButtonClickHandler}>Upload image to gallery</button></div>
+} else {
+  uploadButton = null
+}
+
+var d = new Date();
+//console.log(`d: ${d}`)
 
 function timeDiffCalc(dateFuture, dateNow) {
   let diffInMilliSeconds = Math.abs(dateFuture - dateNow) / 1000;
@@ -176,6 +233,14 @@ function deg2rad(deg) {
   return deg * (Math.PI/180)
 }
 
+const galleryImagesToShow = 
+    galleryImages ? galleryImages.map((image, index) => {
+                              return (
+                                <img className="gallery-image" width="25%" height="25%" src={`http://localhost:5000/uploads/user/${profile.user_id}/${image.path}`} alt={`${image.path}`} key={`${image.path}`} />
+                              )
+                            })
+    : null
+
 var profileToShow
 var online
 var dateLastSeen
@@ -204,8 +269,10 @@ var dateLastSeen
                   </li>
           )}</ul></div>
           <p>Fame rating: {profile.fame}</p>
-          <div><button onClick={blockButtonClickHandler}>Block</button></div>
-          <div><button onClick={reportButtonClickHandler}>Report fake account</button></div>
+          {blockButton}
+          {reportButton}
+          {galleryImagesToShow}
+          {uploadButton}
           </div>
     
   }

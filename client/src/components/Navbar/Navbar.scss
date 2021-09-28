@@ -26,13 +26,13 @@
         position: relative;
         cursor: pointer;
 
-        p {
+        .user-name {
             display: flex;
             align-self: center;
             color: white;
         }
 
-        img {
+        .avatar {
             display: flex;
             color: white;
             align-self: center;
@@ -80,6 +80,76 @@
         }
     }
 }
+
+/** 
+* Chat notification stuff
+*/
+
+#chat-menu {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 100%;
+  position: relative;
+  cursor: pointer;
+
+  .user-name {
+      display: flex;
+      align-self: center;
+      color: white;
+  }
+
+  .avatar {
+      display: flex;
+      color: white;
+      align-self: center;
+      margin-right: 5px;
+      border-radius: 20px;
+  }
+
+  #chat-options {
+      position: absolute;
+      top: 50px;
+      border-radius: 5px;
+      padding: 0 5px;
+      right: 5px;
+      border: 1px solid #d9d9d9;
+      background-color: white;
+      z-index: 9999;
+
+      p {
+          margin: 10px 5px;
+          color: black;
+      }
+  }
+
+  form {
+      .input-field {
+
+          input,
+          select {
+              height: 40px;
+              width: 100%;
+              box-sizing: border-box;
+          }
+      }
+  }
+
+  .btn-success {
+      background-color: $success;
+      border: none;
+      padding: 5px;
+      width: 70px;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+  }
+}
+
+/**
+* End of chat stuff.
+*/
 
 #image-section {
     // background-color: $bg-light;

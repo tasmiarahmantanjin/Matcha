@@ -1,0 +1,169 @@
+@import '../../assets/scss/variables';
+
+.gallery-modal-mask {
+    position: fixed;
+    z-index: 9998;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    //display: table;
+    transition: opacity 0.3s ease;
+
+    .gallery-modal-wrapper {
+        margin: 2rem 10px 10px 10px;
+
+        .gallery-modal-container {
+            max-width: 400px;
+            margin: 0px auto;
+            border-radius: 2px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+            transition: all 0.3s ease;
+            font-family: Helvetica, Arial, sans-serif;
+
+            .gallery-modal-header {
+                background-color: $success;
+                padding: 10px;
+                color: white;
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
+                text-align: center;
+            }
+
+            .gallery-images {
+
+              .delete-img-msg {
+                color: black;
+              }
+
+            }
+
+            .gallery-modal-body {
+              overflow-y: scroll;
+              max-height: 500px;
+                padding: 20px;
+                background-color: white;
+                text-align: left;
+
+                .delete-img-msg {
+                  color: black;
+                }
+
+                p {
+                  color: black;
+                }
+
+                input {
+                    background-color: #f5f6f8;
+                    border: none;
+                    padding: 10px;
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+
+              /*  .gallery-image {
+                  display: flex;
+                  color: white;
+                  align-self: center;
+                  margin-right: 5px;
+                  //border-radius: 20px;
+              }
+              .delete-button {
+                display: block;
+                background-color: red;
+                min-width: 20px;
+                box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+                padding: 5px;
+                z-index: 1; 
+              }
+
+              .gallery-image:hover .delete-button {
+                //display: none;
+                display: none;
+              }*/
+              .gallery-image-container {
+                position: relative;
+                width: 50%;
+              }
+              
+              /* Make the image responsive */
+              .gallery-image-container img {
+                width: 100%;
+                height: auto;
+              }
+              
+              /* Style the button and place it in the upper right corner of the container/image */
+              .gallery-image-container .delete-btn {
+                display: none;
+                position: absolute;
+                top: 5%;
+                left: 95%;
+                transform: translate(-50%, -50%);
+                -ms-transform: translate(-50%, -50%);
+                background-color: #555;
+                color: white;
+                font-size: 16px;
+                padding: 12px 24px;
+                border: none;
+                cursor: pointer;
+                border-radius: 5px;
+              }
+
+              .gallery-image-container:hover .delete-btn {
+                //background-color: black;
+                display: block;
+              }
+              .gallery-image-container .delete-btn:hover {
+                background-color: black;
+              }
+
+              /* Style the button and place it in the mid-right of the container/image */
+              .gallery-image-container .avatar-btn {
+                display: none;
+                position: absolute;
+                top: 50%;
+                left: 95%;
+                transform: translate(-50%, -50%);
+                -ms-transform: translate(-50%, -50%);
+                background-color: lightblue ;
+                color: white;
+                font-size: 16px;
+                padding: 12px 24px;
+                border: none;
+                cursor: pointer;
+                border-radius: 5px;
+              }
+              
+              .gallery-image-container:hover .avatar-btn {
+                //background-color: black;
+                display: block;
+              }
+              .gallery-image-container .avatar-btn:hover {
+                background-color: blue;
+              }
+      
+            }
+
+            .gallery-modal-footer {
+                padding: 10px;
+                background-color: white;
+                display: flex;
+                justify-content: space-between;
+                border-bottom-left-radius: 10px;
+                border-bottom-right-radius: 10px;
+
+                button {
+                    background-color: $danger;
+                    border: none;
+                    padding: 5px;
+                    width: 70px;
+                    color: white;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+}

@@ -1,6 +1,6 @@
 import AuthService from '../../services/authService'
 
-import { LOGIN, REGISTER, LOGOUT, UPDATE_PROFILE, PASSWORD_RESET, GET_MATCHES, LIKE_USER, UNLIKE_USER,  BLOCK_USER, REPORT_USER } from '../types/index'
+import { LOGIN, REGISTER, LOGOUT, UPDATE_PROFILE, PASSWORD_RESET, GET_MATCHES, LIKE_USER, UNLIKE_USER, BLOCK_USER, REPORT_USER, UPLOAD_TO_GALLERY } from '../types/index'
 
 export const login = (params, history) => dispatch => {
     return AuthService.login(params)
@@ -39,6 +39,16 @@ export const updateProfile = (params) => dispatch => {
         })
 }
 
+export const uploadToGallery = (params) => dispatch => {
+  console.log('In actions/auth.uploadToGallery');
+    return AuthService.uploadToGallery(params)
+        .then(data => {
+            dispatch({ type: UPLOAD_TO_GALLERY, payload: data })
+        })
+        .catch(err => {
+            throw err
+        })
+}
 
 export const getMatches = (params) => dispatch => {
   //console.log(`Data in auth.js: ${params.get('ageRangeMax')}`) // Form data is still available here.

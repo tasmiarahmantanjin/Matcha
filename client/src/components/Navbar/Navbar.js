@@ -5,7 +5,12 @@ import { logout } from '../../store/actions/auth'
 import logoImage from "../../assets/images/logo_matcha.svg";
 // Import for the user update
 import Modal from '../Modal/Modal'
+import GalleryModal from '../GalleryModal/GalleryModal'
 import { updateProfile } from '../../store/actions/auth'
+import { uploadToGallery } from '../../store/actions/auth'
+import galleryService from '../../services/galleryService'
+import chatService from '../../services/chatService'
+
 import './Navbar.scss'
 
 const Navbar = () => {
@@ -16,7 +21,11 @@ const Navbar = () => {
     //console.log(user)
 
     const [showProfileOptions, setShowProfileOptions] = useState(false)
+    const [showChatOptions, setShowChatOptions] = useState(false)
     const [showProfileModal, setShowProfileModal] = useState(false)
+    const [showGalleryModal, setShowGalleryModal] = useState(false)
+    const [uploadFile, setUploadFile] = useState('')
+    const [galleryImages, setGalleryImages] = useState([])
 
     const user_id = user.user_id
     const [first_name, setFirst_name] = useState(user.first_name)
@@ -47,7 +56,88 @@ const Navbar = () => {
     //const [male, setMale] = useState(inArray('male'))
     //const [other, setOther] = useState(inArray('other'))
 
-    
+    const [conversationsArr, setConversationsArr] = useState([])
+    const [partnersIdArr, setPartnersIdArr] = useState([])
+    const [partnersArr, setPartnersArr] = useState([])
+    const [messageArr, setMessageArr] = useState()
+
+    useEffect(() => {
+      const requestObject = {
+        user: user
+      }
+      galleryService
+      .getUserGallery(requestObject)
+      .then(initialImages => {
+        console.log(initialImages);
+        setGalleryImages(initialImages.rows)
+      })
+    }, [user])
+
+    useEffect(() => {
+      const requestObject = {
+        user: user
+      }
+      chatService
+      .getConversationsArray(requestObject)
+      .then(initialConversations => {
+        console.log(initialConversations);
+        setConversationsArr(initialConversations.rows)
+      })
+    }, [user])
+
+
+    useEffect(() => { // For each conversation fetched, make an array of objects with name, partner avatar, and recent message...
+      let conversationPartners = []
+      for (let i = 0; i < conversationsArr.length; i++) {
+        if (conversationsArr[i].user_one_id === user.user_id) {
+          console.log('User is user one.');
+          let currentConversation = {
+            conversation: conversationsArr[i].id,
+            partnerId: conversationsArr[i].user_two_id
+          }
+          conversationPartners.push(currentConversation)
+        } else {
+          console.log('User is user two.');
+          let currentConversation = {
+            conversation: conversationsArr[i].id,
+            partnerId: conversationsArr[i].user_one_id
+          }
+          conversationPartners.push(currentConversation)
+        }
+        /* const requestObject = {
+        user: user
+      }
+      chatService
+      .getConversationsArray(requestObject)
+      .then(initialConversations => {
+        console.log(initialConversations);
+        setConversationsArr(initialConversations.rows)
+      }) */
+      }
+      setPartnersIdArr(conversationPartners)
+    }, [conversationsArr, user])
+
+    useEffect(() => { // For each conversation fetched, make an array of objects with name, partner avatar, and recent message...
+      let partners = []
+      for (let i = 0; i < partnersIdArr.length; i++) {
+        const requestObject = {
+          profile_id: partnersIdArr[i].partnerId
+        }
+        chatService
+        .getPartnerProfile(requestObject)
+        .then(returnedPartner => {
+          let currentPartner = {
+            name: returnedPartner.rows[0].first_name.charAt(0).toUpperCase() + returnedPartner.rows[0].first_name.slice(1),
+            partner_id: partnersIdArr[i].partnerId,
+            avatar: returnedPartner.rows[0].avatar,
+            conversation: partnersIdArr[i].conversation
+          }
+          console.log(currentPartner);
+          partners.push(currentPartner)
+        })
+      }
+      setPartnersArr(partners)
+    }, [partnersIdArr])
 
     useEffect(() => {
       if (sexual_orientation) {
@@ -110,6 +200,7 @@ useEffect(() => {
   
       return [year, month, day].join('-');
   }
+
     const submitForm = (e) => {
         e.preventDefault()
 
@@ -124,6 +215,23 @@ useEffect(() => {
         }
         dispatch(updateProfile(formData)).then(() => setShowProfileModal(false))
     }
+
+    const submitGalleryForm = (e) => {
+      e.preventDefault()
+
+      const form = { uploadFile }
+      //console.log(form.uploadFile)
+      //if (password.length > 0) form.password = password
+
+      const formData = new FormData()
+
+      for (const key in form) {
+        console.log(key);
+          formData.append(key, form[key])
+      }
+      //console.log(formData)
+      dispatch(uploadToGallery(formData)).then(() => setShowGalleryModal(false))
+  }
 
     // Hashtag code
 
@@ -232,6 +340,95 @@ useEffect(() => {
 
     // End of checkbox code
 
+    const imageDeleteButtonHandler = (img) => {
+      //console.log('Image delete button clicked.')
+      //console.log(`image path: ${img.path}`)
+      //console.log(`image owner: ${img.owner_id}`)
+      const requestObject = {
+        user: user,
+        image: img
+      }
+      galleryService
+      .deleteGalleryImage(requestObject)
+      .then(returnedImages => {
+        //console.log(initialImages);
+        setGalleryImages(returnedImages.rows)
+      })
+    }
+
+    const makeAvatarButtonHandler = (img) => {
+      console.log('Image avatar button clicked.')
+      console.log(`image path: ${img.path}`)
+      //console.log(`image owner: ${img.owner_id}`)
+      const requestObject = {
+        user: user,
+        image: img
+      }
+      galleryService
+      .makeAvatarImage(requestObject)
+      /*.then(returnedImages => {
+        //console.log(initialImages);
+        setAvatar(returnedImages.rows[0].path)
+      })*/
+    }
+
+
+const galleryImagesToShow = 
+galleryImages ? galleryImages.map((image, index) => {
+if (image.path === user.avatar) {
+  return (
+    <div key={`${image.path}_container`} className="gallery-image-container">
+      <img /*className="gallery-image"*/ width="25%" height="25%" src={`http://localhost:5000/uploads/user/${user.user_id}/${image.path}`} alt={`${image.path}`} key={`${image.path}`} />
+      <button title="Delete image" className="delete-btn" key={`${image.path}_deleteButton`} onClick={() => imageDeleteButtonHandler(image)}>X</button>
+    </div>
+  )
+}
+  return (
+    <div key={`${image.path}_container`} className="gallery-image-container">
+      <img /*className="gallery-image"*/ width="25%" height="25%" src={`http://localhost:5000/uploads/user/${user.user_id}/${image.path}`} alt={`${image.path}`} key={`${image.path}`} />
+      <button className="delete-btn" key={`${image.path}_deleteButton`} onClick={() => imageDeleteButtonHandler(image)}>X</button>
+      <button title="Make avatar" className="avatar-btn" key={`${image.path}_avatarButton`} onClick={() => makeAvatarButtonHandler(image)}>*</button>
+    </div>
+  )
+})
+: null
+
+const conversationsToShow = 
+partnersArr ? partnersArr.map((conversation, index) => {
+  return(
+    <div key={index}>
+      <img className="avatar" width="40" height="40" src={`http://localhost:5000/uploads/user/${conversation.partner_id}/${conversation.avatar}`} alt='partner-avatar' />
+      <p>{conversation.name}</p>
+    </div>
+  )
+  // Make useState variable to store an array of conversation partners (name, avatar, latest message)!!!
+})
+: null
+
+const galleryImagePicker = 
+galleryImages && galleryImages.length < 5 ? <form>
+                                <div className='input-field mb-2'>
+                                  <label htmlFor="gallery-upload-input">Upload image to gallery:</label>
+                                    <input
+                                        onChange={e => setUploadFile(e.target.files[0])}
+                                        type='file' name="gallery-upload-input" id="gallery-upload-input" accept="image/*"/>
+                                </div>
+                            </form>
+: <p className="delete-img-msg">5 images in gallery; delete at least one to make space!</p>
+
+const avatarImagePicker = 
+galleryImages.length < 5 ? <div className='input-field mb-2'>
+                              <label htmlFor="avatar">Profile picture:</label>
+                                  <input
+                                      onChange={e => setUploadAvatar(e.target.files[0])}
+                                      type='file' id="avatar" name="avatar"/>
+                              </div>
+: <div className='input-field mb-2'>
+    <label htmlFor="avatar">Profile picture:</label>
+    <p className="delete-img-msg" id="avatar" name="avatar">5 images in gallery; delete at least one to make space!</p>
+  </div>
+
+
     // Start of logout function
 function logOut() {
   const requestOptions = {
@@ -252,16 +449,27 @@ fetch('http://localhost:5000/logout', requestOptions)
         <div id='navbar' className='card-shadow'>
             <a  href="http://localhost:3000" ><img width="100" height="80" src={logoImage} alt='Logo'/></a>
             <div><a href="http://localhost:3000/matches">Find match</a></div>
+            <div onClick={() => setShowChatOptions(!showChatOptions)} id='chat-menu'>
+                <p className="user-name">Chat</p>
+                <FontAwesomeIcon icon='caret-down' className='fa-icon' />
+                {
+                    showChatOptions &&
+                    <div id='chat-options'>
+                      {conversationsToShow}
+                    </div>
+                }
+            </div>
 
             <div onClick={() => setShowProfileOptions(!showProfileOptions)} id='profile-menu'>
-                <img width="40" height="40" src={`http://localhost:5000/uploads/user/${user.user_id}/${avatar}`} alt='Avatar' />
-                <p>{user.user_name}</p>
+                <img className="avatar" width="40" height="40" src={`http://localhost:5000/uploads/user/${user.user_id}/${avatar}`} alt='Avatar' />
+                <p className="user-name">{user.user_name}</p>
                 <FontAwesomeIcon icon='caret-down' className='fa-icon' />
 
                 {
                     showProfileOptions &&
                     <div id='profile-options'>
                         <p onClick={() => setShowProfileModal(true)}>Update profile</p>
+                        <p onClick={() => setShowGalleryModal(true)}>Image gallery</p>
                         <p onClick={() => logOut()}>Logout</p>
                     </div>
                 }
@@ -312,7 +520,7 @@ fetch('http://localhost:5000/logout', requestOptions)
                                     >
                                         <option value='male'>Male</option>
                                         <option value='female'>Female</option>
-                                        <option value='others'>Others</option>
+                                        <option value='others'>Other</option>
                                     </select>
                                 </div>
 
@@ -354,11 +562,7 @@ fetch('http://localhost:5000/logout', requestOptions)
                                   value={birthdate}>
                                   </input>
                                 </div>
-                                <div className='input-field mb-2'>
-                                    <input
-                                        onChange={e => setUploadAvatar(e.target.files[0])}
-                                        type='file' />
-                                </div>
+                                {avatarImagePicker}
                                 <div className="input-tag">
                         <ul className="input-tag__tags">
                           { interest && interest.map((tag, i) => ( // ALWAYS DO THIS!
@@ -378,6 +582,26 @@ fetch('http://localhost:5000/logout', requestOptions)
                         </Fragment>
 
                     </Modal>
+                }
+                {
+                  showGalleryModal &&
+                  <GalleryModal click={() => setShowGalleryModal(false)}>
+                  <img width="40" height="40" src={`http://localhost:5000/uploads/user/${user.user_id}/${avatar}`} alt='Avatar' />
+                  <Fragment key='gallery-header'>
+                            <h3 className='m-0'>Image Gallery</h3>
+                            
+                        </Fragment>
+
+                        <Fragment key='gallery-images'>
+                          {galleryImagesToShow}
+                          {galleryImagePicker}
+
+                        </Fragment>
+                        <Fragment key='gallery-footer'>
+                            <button className='btn-success' onClick={submitGalleryForm}>Upload</button>
+                        </Fragment>
+
+                    </GalleryModal>
                 }
 
             </div>

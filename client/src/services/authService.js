@@ -48,6 +48,22 @@ const AuthService = {
             })
     },
 
+    uploadToGallery: (data) => {
+      //console.log(`Data in updateProfile (authService): ${data}`)
+        const headers = {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }
+        return API.post('/users/galleryUpload', data, headers)
+            .then(({ data }) => {
+                //localStorage.setItem('user', JSON.stringify(data))
+                return data
+            })
+            .catch(err => {
+                console.log("Auth service err in uploadToGallery", err);
+                throw err
+            })
+    },
+
     
     getMatches: (data) => {
       //console.log(`Data in getMatches (authService): ${data}`)

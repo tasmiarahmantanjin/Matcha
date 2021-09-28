@@ -8,3 +8,14 @@
   border-top-right-radius: 10%;
   border-bottom-right-radius: 10%;
 }
+.chat-avatar {
+  display: flex;
+  color: white;
+  align-self: center;
+  margin-right: 10px;
+  border-radius: 20px;
+}
+
+.chat-header {
+  display: flex;
+}

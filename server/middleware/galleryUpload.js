@@ -2,7 +2,7 @@ const multer = require('multer')
 const fs = require('fs')
 const path = require('path')
 
-exports.userFile = ((req, res, next) => {
+exports.galleryFile = ((req, res, next) => {
 	// All the helper functions
 
 	const getFileType = (file) => {
@@ -50,15 +50,15 @@ exports.userFile = ((req, res, next) => {
 					})
 				} else {
 					// it does exist
-					/*fs.readdir(dest, (error, files) => {
+					fs.readdir(dest, (error, files) => {
 						if (error) throw error
 
-						for (const file of files) {
+						/*for (const file of files) {
 							fs.unlink(path.join(dest, file), error => {
 								if (error) throw error
 							})
-						}
-					})*/
+						}*/
+					})
 
 					return cb(null, dest)
 				}
@@ -68,5 +68,5 @@ exports.userFile = ((req, res, next) => {
     
 
 	})
-	return multer({storage, fileFilter}).single('uploadAvatar')
+	return multer({storage, fileFilter}).single('uploadFile')
 })()

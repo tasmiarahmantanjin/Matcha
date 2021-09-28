@@ -25,8 +25,8 @@ const findUserInfo = async (key, value, ...args) => {
 };*/
 
 exports.getConversationById = async (req, res) => {
-  //console.log('Request.body in conversationController:')
-  //console.log(req.body)
+  console.log('Request.body in conversationController:')
+  console.log(req.body)
   try {
 		const { id } = req.body
     
@@ -73,3 +73,18 @@ exports.getConversationById = async (req, res) => {
       }
     }
   
+    exports.getConversationsArray = async (req, res) => {
+      console.log('Request.body in conversationController.getConversationsArray:')
+      console.log(req.body.user.user_id)
+      try {
+        const user_id = req.body.user.user_id
+        //console.log(`user_id = ${user_id}`);
+        
+        const results = await db.query(`SELECT * FROM conversations WHERE user_one_id = $1 OR user_two_id = $1`, [user_id]);
+        //console.log(results)
+        return res.send(results)
+        //return res.status(200)
+      } catch (e) {
+        return res.status(500).json({ message: e.message })
+      }
+      }
