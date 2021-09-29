@@ -126,6 +126,7 @@ const MatchesPage = () => {
   const submitForm = (e) => {
       e.preventDefault()
       const form = { ageRangeMax, ageRangeMin, distance, gender, sexual_orientation, interest }
+      console.log('Logging form: ');
       console.log(form)
 
       const formData = new FormData()
@@ -137,7 +138,8 @@ const MatchesPage = () => {
       // dispatch the event action
       const values = Object.fromEntries(formData.entries());
       dispatch(getMatches(values))
-      //console.log(matches)
+      console.log('Loggin matches:')
+      console.log(matches)
   }
     return (
         <div id='chat-container'>

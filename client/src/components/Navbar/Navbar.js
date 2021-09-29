@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect } from 'react'
+import React, { useState, Fragment, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { logout } from '../../store/actions/auth'
@@ -10,6 +10,7 @@ import { updateProfile } from '../../store/actions/auth'
 import { uploadToGallery } from '../../store/actions/auth'
 import galleryService from '../../services/galleryService'
 import chatService from '../../services/chatService'
+import io from "socket.io-client" // For chat.
 
 import './Navbar.scss'
 
@@ -61,6 +62,67 @@ const Navbar = () => {
     const [partnersArr, setPartnersArr] = useState([])
     const [messageArr, setMessageArr] = useState()
 
+  /**
+   * Chat code starts here
+   */
+   //const [conversation, setConversation] = useState()
+   //const [partner, setPartner] = useState()
+   const [messages, setMessages] = useState([]);
+   //const [message, setMessage] = useState("");
+   const [yourID, setYourID] = useState(user.user_id);
+ 
+   const socketRef = useRef();
+ 
+   function receivedMessage(message) {
+     //setMessages(oldMsgs => [...oldMsgs, message]);
+     //console.log('Now we log messages.');
+     //console.log(messages)
+    alert(message.message_text); // Alert user to new message!
+   }
+ 
+   /*function sendMessage(e) {
+     e.preventDefault();
+     const messageObject = {
+       message_text: message,
+       sender_id: user.user_id,
+       timestamp: new Date(),
+       conversation: conversation.id,
+       partner: partner.user_id // 
+     };
+     console.log(`Message: ${messageObject.message_text}`)
+     setMessage("");
+     socketRef.current.emit("send message", messageObject);
+   }*/
+ 
+   useEffect(() => {
+       socketRef.current = io.connect('localhost:3001/')
+       socketRef.current.emit('create', user.user_id)
+       socketRef.current.on("your id", id => {
+         setYourID(id);
+         console.log(`yourID: ${yourID}`)
+       })
+   
+       socketRef.current.on("message", (message) => {
+         console.log("Message.");
+         console.log(message)
+         receivedMessage(message);
+       })
+   //});
+ 
+         /**
+          * ... until here.
+          */
+         //console.log(`Partner to use for fetching partner data: ${partner_id}`)
+         
+     
+ // empty dependency array means this effect will only run once (like componentDidMount in classes)
+ }, []);
+
+  /** 
+   * Chat code ends here.
+   */
+
+
     useEffect(() => {
       const requestObject = {
         user: user
@@ -85,8 +147,8 @@ const Navbar = () => {
       })
     }, [user])
 
-
-    useEffect(() => { // For each conversation fetched, make an array of objects with name, partner avatar, and recent message...
+  // For each conversation fetched, make an array of objects with conversation ID and partner ID.
+    useEffect(() => { 
       let conversationPartners = []
       for (let i = 0; i < conversationsArr.length; i++) {
         if (conversationsArr[i].user_one_id === user.user_id) {
@@ -117,7 +179,8 @@ const Navbar = () => {
       setPartnersIdArr(conversationPartners)
     }, [conversationsArr, user])
 
-    useEffect(() => { // For each conversation fetched, make an array of objects with name, partner avatar, and recent message...
+    // For each conversation fetched, make an array of objects with partner name, partner ID, partner avatar, conversation ID.
+    useEffect(() => {
       let partners = []
       for (let i = 0; i < partnersIdArr.length; i++) {
         const requestObject = {
@@ -130,14 +193,41 @@ const Navbar = () => {
             name: returnedPartner.rows[0].first_name.charAt(0).toUpperCase() + returnedPartner.rows[0].first_name.slice(1),
             partner_id: partnersIdArr[i].partnerId,
             avatar: returnedPartner.rows[0].avatar,
-            conversation: partnersIdArr[i].conversation
+            conversation: partnersIdArr[i].conversation,
+            recentMessageObj: messageArr.filter(message => {
+              return message.conversation === partnersIdArr[i].conversation
+            })
           }
           console.log(currentPartner);
           partners.push(currentPartner)
         })
       }
       setPartnersArr(partners)
-    }, [partnersIdArr])
+    }, [partnersIdArr, messageArr])
+
+    // For each conversation fetched, make an array of recent messages.
+    useEffect(() => { 
+      let recentMessages = []
+      for (let i = 0; i < conversationsArr.length; i++) {
+        const requestObject = {
+          conversation_id: conversationsArr[i].id
+       }
+       chatService
+      .getMessages(requestObject)
+      .then(returnedMessages => {
+        let currentMessage = {
+          conversation: conversationsArr[i].id,
+          mostRecentMessage: returnedMessages.rows[returnedMessages.rows.length - 1].message_text,
+          sender: returnedMessages.rows[returnedMessages.rows.length - 1].sender_id
+        }
+        console.log(currentMessage.mostRecentMessage);
+        //console.log(returnedMessages);
+        recentMessages.push(currentMessage)
+      }
+      )
+      }
+      setMessageArr(recentMessages)
+    }, [conversationsArr, user])
 
     useEffect(() => {
       if (sexual_orientation) {
@@ -399,6 +489,8 @@ partnersArr ? partnersArr.map((conversation, index) => {
     <div key={index}>
       <img className="avatar" width="40" height="40" src={`http://localhost:5000/uploads/user/${conversation.partner_id}/${conversation.avatar}`} alt='partner-avatar' />
       <p>{conversation.name}</p>
+      <p>Link: <a href={`http://localhost:3000/conversations/${conversation.conversation}`}>link</a></p>
+      <p>Recent message: {conversation.recentMessageObj[0].mostRecentMessage}</p>
     </div>
   )
   // Make useState variable to store an array of conversation partners (name, avatar, latest message)!!!
