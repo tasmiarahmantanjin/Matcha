@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 // import useSelector to connect the store with the component
 import { useSelector} from 'react-redux'
@@ -10,12 +10,14 @@ import ProfilePage from '../ProfilePage/ProfilePage'
 import { useDispatch } from 'react-redux'
 // import the login action
 import { getMatches } from '../../store/actions/auth'
+import matchesService from '../../services/matchesService'
 
 const MatchesPage = () => {
 
   const dispatch = useDispatch()
   const user = useSelector(state => state.authReducer.user)
   const matches = useSelector(state => state.authReducer.matches)
+  const [userLikes, setUserLikes] = useState([])
   const [ageRangeMax, setAgeRangeMax] = useState(100)
   const [ageRangeMin, setAgeRangeMin] = useState(22)
   const [distance, setDistance] = useState(20)
@@ -85,10 +87,51 @@ const MatchesPage = () => {
     }
   }
 
+  /**
+   * Liked already code: start.
+   */
+
+   useEffect(() => {
+    const requestObject = {
+        user_id: user.user_id
+    };
+    //console.log(requestOptions.body)
+    matchesService
+      .getUserLikes(requestObject)
+      //console.log(`User ID matched: ${data.rows[0].user_one_id}`)
+      .then(data =>{
+        console.log(data.rows)
+        let likeList = data.rows.map(like => {
+          return like.liked_user
+        })
+        setUserLikes(likeList)
+        //console.log('Partner after fetching:');
+        //console.log(`${data.rows[0]}`)
+      })
+  }, [user]);
+  
+ /* var likeButton
+if (profile && user.user_id === profile.user_id) {
+  likeButton = null
+} else {
+  if (liked === undefined) {
+    likeButton = <div><button onClick={likeButtonClickHandler}>Like</button></div>
+  }
+  if (liked !== undefined) {
+    likeButton = <div><button onClick={unlikeButtonClickHandler}>Unlike</button></div>
+  }
+}*/
+
+
+  /**
+   * Liked already code: end.
+   */
+
   if (matches !== undefined) {
     // sort matches by selected ordering. 
     let matchesSorted = sortMatches(matches, sortBy)
     matchList = matchesSorted.map(match => {
+              console.log(match);
               dist = getDistanceFromLatLonInKm(match.latitude, match.longitude, user.latitude, user.longitude)
               let age = new Date(new Date() - new Date(match.birthdate)).getFullYear() - 1970;
               if (dist <= distance && !user.blocked_users.includes(match.user_id) && age >= ageRangeMin && age <= ageRangeMax) {
@@ -97,6 +140,7 @@ const MatchesPage = () => {
               user={user}
               distance={dist}
               age={age}
+              liked={userLikes.includes(match.user_id) ? true : false}
               />} else {
                 return null
               }
@@ -138,8 +182,8 @@ const MatchesPage = () => {
       // dispatch the event action
       const values = Object.fromEntries(formData.entries());
       dispatch(getMatches(values))
-      console.log('Loggin matches:')
-      console.log(matches)
+      //console.log('Loggin matches:')
+      //console.log(matches)
   }
     return (
         <div id='chat-container'>

@@ -13,6 +13,18 @@ const AuthService = {
             })
     },
 
+    /* getNotifications: (data) => {
+      return API.post('/notifications/getNotifications', data)
+          .then(({ data }) => {
+              setHeadersAndStorage(data)
+              return data
+          })
+          .catch(err => {
+              console.log("Auth service err", err);
+              throw err
+          })
+  }, */
+
     register: (data) => {
         return API.post('/register', data)
             .then(({ data }) => {

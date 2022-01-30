@@ -1,0 +1,2 @@
+CREATE TABLE hashtags (id uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(), interest character varying(255) NOT NULL, number INTEGER);
+

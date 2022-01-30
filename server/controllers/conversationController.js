@@ -25,8 +25,8 @@ const findUserInfo = async (key, value, ...args) => {
 };*/
 
 exports.getConversationById = async (req, res) => {
-  console.log('Request.body in conversationController:')
-  console.log(req.body)
+  //console.log('Request.body in conversationController:')
+  //console.log(req.body)
   try {
 		const { id } = req.body
     
@@ -63,6 +63,11 @@ exports.getConversationById = async (req, res) => {
         const { message_text, sender_id, timestamp, conversation, partner } = message
         
         const results = await db.query(`INSERT INTO messages(sender_id, conversation_id, message_text, timestamp) VALUES ($1, $2, $3, $4)`, [sender_id, conversation, message_text, timestamp]);
+        const sender = await db.query('SELECT * FROM users WHERE user_id = $1', [sender_id])
+        //console.log(sender);
+        if (sender.rowCount > 0) {
+          const matchNotification = await db.query('INSERT INTO notifications (user_id, from_id, notification) VALUES ($1, $2, $3) RETURNING *', [partner, sender_id, `${sender.rows[0].first_name.charAt(0).toUpperCase() + sender.rows[0].first_name.slice(1)} sent you a message!`]);
+        }
         //console.log(results)
     
         
@@ -74,8 +79,8 @@ exports.getConversationById = async (req, res) => {
     }
   
     exports.getConversationsArray = async (req, res) => {
-      console.log('Request.body in conversationController.getConversationsArray:')
-      console.log(req.body.user.user_id)
+      //console.log('Request.body in conversationController.getConversationsArray:')
+      //console.log(req.body.user.user_id)
       try {
         const user_id = req.body.user.user_id
         //console.log(`user_id = ${user_id}`);

@@ -15,8 +15,8 @@ const findUserInfo = async (key, value, ...args) => {
 };
 
 exports.galleryUpload = async (req, res) => {
-  console.log('Request.body in galleryController.galleryUpload:')
-  console.log(`user ID: ${req.user.user_id}`)
+  //console.log('Request.body in galleryController.galleryUpload:')
+  //console.log(`user ID: ${req.user.user_id}`)
   try {
     const user_id = req.user.user_id
     //console.log(sexual_orientation);
@@ -59,8 +59,8 @@ exports.galleryUpload = async (req, res) => {
 
 
 exports.getGalleryByUser = async (req, res) => {
-  console.log('Request.body in galleryController.getGalleryByUser:')
-  console.log(req.body.user)
+  //console.log('Request.body in galleryController.getGalleryByUser:')
+  //console.log(req.body.user)
   try {
     const owner_id = req.body.user.user_id
     
@@ -75,8 +75,8 @@ exports.getGalleryByUser = async (req, res) => {
   }
 
 exports.deleteGalleryImage = async (req, res) => {
-  console.log('Request.body in galleryController.deleteGalleryImage:')
-  console.log(req.body)
+  //console.log('Request.body in galleryController.deleteGalleryImage:')
+  //console.log(req.body)
   try {
     const user_id = req.body.user.user_id
     const { image_id, owner_id, path} = req.body.image
@@ -85,7 +85,7 @@ exports.deleteGalleryImage = async (req, res) => {
     
     const del = await db.query(`DELETE FROM gallery WHERE image_id = $1`, [image_id])
     if (del.rowCount === 1) {
-      console.log('DB entry deleted!');
+      //console.log('DB entry deleted!');
       const file = `uploads/user/${owner_id}/${path}`
       fs.unlink(file, function (err) {
         if (err) throw err
@@ -99,7 +99,7 @@ exports.deleteGalleryImage = async (req, res) => {
     
     /**/
     //console.log(results)
-    console.log('Sending results.')
+    //console.log('Sending results.')
     return res.send(results)
     //return res.status(200)
   } catch (e) {
@@ -108,8 +108,8 @@ exports.deleteGalleryImage = async (req, res) => {
   }
 
   exports.makeAvatarImage = async (req, res) => {
-  console.log('Request.body in galleryController.makeAvatarImage:')
-  console.log(req.body)
+  //console.log('Request.body in galleryController.makeAvatarImage:')
+  //console.log(req.body)
   try {
     const user_id = req.body.user.user_id
     const { image_id, owner_id, path} = req.body.image
@@ -118,7 +118,7 @@ exports.deleteGalleryImage = async (req, res) => {
     
     const update = await db.query(`UPDATE users SET avatar = $1 WHERE user_id = $2`, [path, user_id])
     if (update.rowCount === 1) {
-      console.log('User image updated!');
+      //console.log('User image updated!');
       const file = `uploads/user/${owner_id}/${path}`
     }
     // Send updated gallery 

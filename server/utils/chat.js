@@ -43,6 +43,40 @@ io.on("connection", socket => {
   io.to(message.conversation).emit("message", message);
   io.to(message.partner).emit("message", message);
   })
+  socket.on("like", like => {
+    console.log(like)
+    //io.emit("message", message)
+    /*// to individual socketid (private message)
+  io.to(socketId).emit([message]);*/
+    // Put message in database here?
+  // to all clients in room1
+  //insertMessageIntoConversation(message)
+  io.to(like.partner).emit("like", like);
+  //io.to(message.partner).emit("message", message);
+  })
+  socket.on("unlike", unlike => {
+    console.log(unlike)
+    //io.emit("message", message)
+    /*// to individual socketid (private message)
+  io.to(socketId).emit([message]);*/
+    // Put message in database here?
+  // to all clients in room1
+  //insertMessageIntoConversation(message)
+  io.to(unlike.partner).emit("unlike", unlike);
+  //io.to(message.partner).emit("message", message);
+  })
+  socket.on("match", match => {
+    console.log(match)
+    //io.emit("message", message)
+    /*// to individual socketid (private message)
+  io.to(socketId).emit([message]);*/
+    // Put message in database here?
+  // to all clients in room1
+  //insertMessageIntoConversation(message)
+  io.to(match.sender_id).emit("match", match);
+  io.to(match.partner).emit("match", match);
+  //io.to(message.partner).emit("message", message);
+  })
 })
 
 /*var userNames = {};

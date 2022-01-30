@@ -1,6 +1,6 @@
 import AuthService from '../../services/authService'
 
-import { LOGIN, REGISTER, LOGOUT, UPDATE_PROFILE, PASSWORD_RESET, GET_MATCHES, LIKE_USER, UNLIKE_USER, BLOCK_USER, REPORT_USER, UPLOAD_TO_GALLERY } from '../types/index'
+import { LOGIN, GET_NOTIFICATIONS, REGISTER, LOGOUT, UPDATE_PROFILE, PASSWORD_RESET, GET_MATCHES, LIKE_USER, UNLIKE_USER, BLOCK_USER, REPORT_USER, UPLOAD_TO_GALLERY } from '../types/index'
 
 export const login = (params, history) => dispatch => {
     return AuthService.login(params)
@@ -12,6 +12,17 @@ export const login = (params, history) => dispatch => {
 
         })
 }
+
+/* export const getNotifications = (params, history) => dispatch => {
+  return AuthService.getNotifications(params)
+      .then(data => {
+          dispatch({ type: GET_NOTIFICATIONS, payload: data })
+          //history.push('/')
+      })
+      .catch(err => {
+
+      })
+} */
 
 export const register = (params, history) => dispatch => {
     return AuthService.register(params)

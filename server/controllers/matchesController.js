@@ -30,4 +30,16 @@ exports.match = async (req, res) => {
 	}
 	}
 
-  
+  exports.getUserLikes = async (req, res) => {
+    console.log('Request.body in matchesController:')
+    console.log(req.body)
+    try {
+      const { user_id } = req.body
+      
+      const results = await db.query(`SELECT * FROM likes WHERE user_id = $1`, [user_id]);
+      console.log(results)
+      return res.send(results)
+    } catch (e) {
+      return res.status(500).json({ message: e.message })
+    }
+  }
