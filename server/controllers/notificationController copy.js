@@ -2,52 +2,6 @@ const pool = require('../config/database')
 const jwt = require('jsonwebtoken')
 const config = require('../config/app')
 
-exports.getNotifications = async (req, resp) => {
-  console.log('Request.body.user.user_id and token in notificationsController.getNotifications:')
-  console.log(req.body.user.user_id)//.user.user_id)
-
-  //console.log(`user ID: ${req.body.user.user_id}`)
-  //console.log(`user token: ${req.body.user.token}`)
-	try {
-    const user_id = req.body.user.user_id
-    console.log(`user ID = ${user_id}`)
-		//1. Get the user's token
-		const authHeader = req.headers['authorization']
-		const token = authHeader && authHeader.split(' ')[1]
-    console.log(`token = ${token}`)
-		if (!token) {
-			return resp.status(401).json({ error: 'Missing token!' })
-		}
-		//2. Verify the token
-		const user = jwt.verify(token, config.appKey)
-		if (!user)
-			return resp.status(401).json({ error: 'token missing or invalid' })
-		console.log('Endpoint hit: POST req for notification')
-
-		//3. Database query to get the data from notification table if user_id exists
-		if (user_id) {
-      console.log('We have a user ID.');
-			pool.query(`SELECT * FROM notifications WHERE user_id = $1 ORDER BY date DESC`,
-				[user_id], (err, result) => {
-					if (err) {
-						return resp.status(500).json({ error: err })
-					}
-					resp.json(result.rows)
-				})
-		}
-		else
-			pool.query('SELECT * FROM notifications ORDER BY date DESC', [], (err, res) => {
-				if (err)
-					return resp.status(500).send({ error: err.detail })
-				resp.status(200).send(res.rows)
-			})
-	}
-	catch (err) {
-		console.log(err)
-		resp.status(500).json({ error: err })
-	}
-}
-
 exports.notification1 = async (req, resp) => {
 	try {
 		//1. Get the user's token

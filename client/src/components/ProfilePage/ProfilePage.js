@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 // import useSelector to connect the store with the component
 import { useSelector} from 'react-redux'
@@ -15,6 +15,7 @@ import { blockUser } from '../../store/actions/auth'
 import { reportUser } from '../../store/actions/auth'
 //import { uploadToGallery } from '../../store/actions/auth'
 import galleryService from '../../services/galleryService'
+import io from "socket.io-client" // For chat.
 
 
 //import { getUserById } from '../../../../server/controllers/profileController';
@@ -26,10 +27,47 @@ const ProfilePage = ( { id } ) => {
   
   const [profile, setProfile] = useState()
   const [liked, setLiked] = useState()
+  const [likedUser, setLikedUser] = useState()
   const [uploadFile, setUploadFile] = useState('')
   const [galleryImages, setGalleryImages] = useState([])
   const dispatch = useDispatch()
   const user = useSelector(state => state.authReducer.user)
+  const [yourID, setYourID] = useState(user.user_id);
+  const socketRef = useRef();
+
+  useEffect(() => {
+    socketRef.current = io.connect('localhost:3001/')
+    socketRef.current.emit('create', user.user_id)
+    socketRef.current.on("your id", id => {
+      setYourID(id);
+      console.log(`yourID: ${yourID}`)
+    })
+
+    socketRef.current.on("message", (message) => {
+      console.log("Message.");
+      console.log(message)
+      //receivedMessage(message);
+    })
+
+    socketRef.current.on("like", (like) => {
+     console.log("Received like.");
+     console.log(like)
+     //receivedMessage(message);
+   })
+//});
+
+      /**
+       * ... until here.
+       */
+      //console.log(`Partner to use for fetching partner data: ${partner_id}`)
+      
+  
+// empty dependency array means this effect will only run once (like componentDidMount in classes)
+}, []);
+
+/** 
+* Chat code ends here.
+*/
   
   useEffect(() => {
     // POST request using fetch inside useEffect React hook
@@ -45,6 +83,23 @@ const ProfilePage = ( { id } ) => {
           setProfile(data.rows[0])
         });
     
+// empty dependency array means this effect will only run once (like componentDidMount in classes)
+}, [id]);
+
+useEffect(() => {
+  // POST request using fetch inside useEffect React hook
+  const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ profile_id: id, user_id: user.user_id })
+  };
+  fetch('http://localhost:5000/visitUser', requestOptions)
+      //.then(response => response.json())
+      //.then(data =>{
+        //console.log(data.rows) 
+        //setProfile(data.rows[0])
+      //});
+  
 // empty dependency array means this effect will only run once (like componentDidMount in classes)
 }, [id]);
 
@@ -85,17 +140,57 @@ useEffect(() => {
 //console.log(`Data now in profile: `) 
 //console.log(profile);
 
+useEffect(() => {
+  // POST request using fetch inside useEffect React hook
+  const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ profile_id: user.user_id, user_id: id })
+  };
+  //console.log(requestOptions.body)
+  fetch('http://localhost:5000/getLike', requestOptions)
+      .then(response => response.json())
+      .then(data =>{
+        //console.log('Like data: ')
+        //console.log(data.rows)
+        if (data.rows[0]) {
+          setLikedUser(data.rows[0])}
+      });
+  
+// empty dependency array means this effect will only run once (like componentDidMount in classes)
+}, []);
+
 const likeButtonClickHandler = ( ) => {
   //console.log(`Like button clicked. ${user.first_name.charAt(0).toUpperCase() + user.first_name.slice(1)} likes ${profile.first_name.charAt(0).toUpperCase() + profile.first_name.slice(1)}.`)
   const formData = new FormData()
 
   formData.append('profile_id', profile.user_id)
   formData.append('user_id', user.user_id)
+  formData.append('first_name', user.first_name)
   //console.log(`id in formData: ${formData.get('profile_id')}`)
   // dispatch the event action
   const values = Object.fromEntries(formData.entries());
   dispatch(likeUser(values))
   setLiked(1)
+  const messageObject = {
+    //message_text: message,
+    sender_id: user.user_id,
+    timestamp: new Date(),
+    //conversation: conversation.id,
+    partner: profile.user_id // 
+  };
+  //console.log(`Message: ${messageObject.message_text}`)
+  socketRef.current.emit("like", messageObject);
+  if (likedUser !== undefined) {
+    const messageObject = {
+      //message_text: message,
+      sender_id: user.user_id,
+      timestamp: new Date(),
+      //conversation: conversation.id,
+      partner: profile.user_id // 
+    };
+    socketRef.current.emit("match", messageObject); 
+  }
 }
 
 const unlikeButtonClickHandler = ( ) => {
@@ -104,11 +199,21 @@ const unlikeButtonClickHandler = ( ) => {
 
   formData.append('profile_id', profile.user_id)
   formData.append('user_id', user.user_id)
+  formData.append('first_name', user.first_name)
   //console.log(`id in formData: ${formData.get('profile_id')}`)
   // dispatch the event action
   const values = Object.fromEntries(formData.entries());
   dispatch(unlikeUser(values))
   setLiked()
+  const messageObject = {
+    //message_text: message,
+    sender_id: user.user_id,
+    timestamp: new Date(),
+    //conversation: conversation.id,
+    partner: profile.user_id // 
+  };
+  //console.log(`Message: ${messageObject.message_text}`)
+  socketRef.current.emit("unlike", messageObject);
 }
 
 const blockButtonClickHandler = ( ) => {

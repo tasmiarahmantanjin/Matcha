@@ -54,6 +54,15 @@ router.use('/notifications', require('./notification'))
 // @desc	API end-point for getting matches
 // @access	Public
 router.use('/matches', require('./matches'))
+
+const { getUserLikes } = require('../controllers/matchesController')
+router.post('/getUserLikes', function(req, res){
+  //console.log(`Request body in router/index: `)
+  //console.log(req.body)
+  //console.log('Endpoint hit: Profile')
+  return(getUserLikes(req, res))
+})
+
 const { getUserById } = require('../controllers/profileController')
 router.post('/profile', function(req, res){
   //console.log(`Request body in router/index: `)
@@ -65,6 +74,22 @@ router.post('/profile', function(req, res){
 // @desc	API end-point for getting profile
 // @access	Public
 //router.use('/profile', require('./profile'))
+
+const { visitUser } = require('../controllers/profileController')
+router.post('/visitUser', function(req, res){
+  //console.log(`Request body in router/index: `)
+  //console.log(req.body)
+  //console.log('Endpoint hit: Profile')
+  return(visitUser(req, res))
+})
+
+const { getHashtagList } = require('../controllers/userController')
+router.get('/getHashtagList', function(req, res){
+  //console.log(`Request body in router/index: `)
+  //console.log(req.body)
+  console.log('Endpoint hit: getHashtagList')
+  return(getHashtagList(req, res))
+})
 
 //router.use('/like', require('./matches'))
 const { likeUser } = require('../controllers/profileController')

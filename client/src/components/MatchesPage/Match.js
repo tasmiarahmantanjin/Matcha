@@ -3,11 +3,12 @@ import './Match.scss'
 
 // To-do: account for distance and age range filters, and for any ordering.
 // getDistanceFromLatLonInKm(person.longitude, person.latitude, user.longitude, user.latitude)
-const Match = ({ person, user, distance, age }) =>{
+const Match = ({ person, user, distance, age, liked }) =>{
 	return (
 		<div className="match">
       <img width="150" height="150" src={`http://localhost:5000/uploads/user/${person.user_id}/${person.avatar}`} alt='match_avatar' />
 			<h2>{person.first_name.charAt(0).toUpperCase() + person.first_name.slice(1)}</h2>
+      <p>{liked ? `You have liked ${person.first_name.charAt(0).toUpperCase() + person.first_name.slice(1)} <3` : `You have not liked ${person.first_name.charAt(0).toUpperCase() + person.first_name.slice(1)} </3`}</p>
       <p>{age} years young</p>
       <p>{person.gender} located {distance} km away.</p>
       {person.interest.map(interest_sing => 
