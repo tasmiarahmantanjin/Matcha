@@ -48,9 +48,18 @@ exports.getUserById = async (req, res) => {
 
       //console.log(`Now we insert like from ${user_id} to ${profile_id}`)
 		const results = await db.query("INSERT INTO likes (user_id, liked_user) VALUES ($1, $2) RETURNING *", [user_id, profile_id]);
-    //console.log(results)
+    console.log(results)
     
     // To-do: insert notification.
+
+    // send notification to the user.
+    // console.log("This is from like user");
+    // const user = await findUserInfo('user_id', user_id);
+    // console.log(user)
+    //   return res.send(user)
+    //   //return res.status(200)
+
+
 
       
       return res.send(results)

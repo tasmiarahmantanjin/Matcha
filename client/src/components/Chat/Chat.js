@@ -14,9 +14,7 @@ import UserRow from './UserRow/UserRow'
 import PartnerRow from './PartnerRow/PartnerRow'
 import io from "socket.io-client"
 
-
 //import { getUserById } from '../../../../server/controllers/profileController';
-
 
 
 const Chat = ( { id } ) => {
@@ -178,8 +176,6 @@ const Chat = ( { id } ) => {
       </Form>
             </div>
             <p>Here will be some chat messages.</p>
-
-            
         </div>
     );
 }

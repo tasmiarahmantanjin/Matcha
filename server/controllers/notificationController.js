@@ -4,7 +4,7 @@ const config = require('../config/app')
 
 // Path: /notifications
 // Method: GET
-exports.notification1 = async (req, resp) => {
+exports.getNotifications = async (req, resp) => {
 	try {
 		//1. Get the user's token
 		const authHeader = req.headers['authorization']
@@ -43,7 +43,7 @@ exports.notification1 = async (req, resp) => {
 
 // Path: /notifications
 // Method: POST
-exports.notification2 = async (req, resp) => {
+exports.sendNotifications = async (req, resp) => {
 	try {
 		//1. De-structure the request body
 		const { user_id, from_id, notification } = req.body
@@ -81,57 +81,59 @@ exports.notification2 = async (req, resp) => {
 // Path: /notifications
 // Method: PATCH
 // Desc: Update the notification table after seen a notification
-exports.notification3 = async (req, resp) => {
-	// console.log("djfhdj");
-	// try {
-	// 	//1. Get the token
-	// 	const authHeader = req.headers['authorization']
-	// 	const token = authHeader && authHeader.split(' ')[1]
+// exports.notification3 = async (req, resp) => {
+// console.log("djfhdj");
+// try {
+// 	//1. Get the token
+// 	const authHeader = req.headers['authorization']
+// 	const token = authHeader && authHeader.split(' ')[1]
 
-	// 	//2. Verify the token
-	// 	const user = jwt.verify(token, config.appKey)
-	// 	console.log(user);
-	// 	if (!user)
-	// 		return resp.status(401).json({ error: 'token missing or invalid' })
-	// 	console.log('Endpoint hit: PatchNotification')
+// 	//2. Verify the token
+// 	const user = jwt.verify(token, config.appKey)
+// 	console.log(user);
+// 	if (!user)
+// 		return resp.status(401).json({ error: 'token missing or invalid' })
+// 	console.log('Endpoint hit: PatchNotification')
 
-	// 	//3. Database query to UPDATE the data of notification table after reading the notification
-	// 	pool.query('UPDATE notifications SET read = $1 WHERE user_id = $2',
-	// 		[req.body.read, user.user_id], (err, res) => {
-	// 			res ? resp.status(204).end() : resp.status(500).json({ error: err.detail })
-	// 		})
-	// } catch (error) {
-	// 	console.log(error)
-	// 	resp.status(500).json({ error: error })
-	// }
+// 	//3. Database query to UPDATE the data of notification table after reading the notification
+// 	pool.query('UPDATE notifications SET read = $1 WHERE user_id = $2',
+// 		[req.body.read, user.user_id], (err, res) => {
+// 			res ? resp.status(204).end() : resp.status(500).json({ error: err.detail })
+// 		})
+// } catch (error) {
+// 	console.log(error)
+// 	resp.status(500).json({ error: error })
+// }
 
-	// Path: /notifications/:id
-	// Method: PATCH
-	// Desc: Update the notification table after seen a notification
-	// exports.notification4 = async (req, resp) => {
-	// 	try {
-	// 		//1. Get the token
-	// 		const authHeader = req.headers['authorization']
-	// 		const token = authHeader && authHeader.split(' ')[1]
+/*
+**Path: /notifications/:id
+**Method: PATCH
+**Desc: Update the notification table after seen a notification
+*/
+exports.notification4 = async (req, resp) => {
+	try {
+		//1. Get the token
+		const authHeader = req.headers['authorization']
+		const token = authHeader && authHeader.split(' ')[1]
 
-	// 		//2. Verify the token
-	// 		const user = jwt.verify(token, config.appKey)
-	// 		console.log(user);
-	// 		if (!user)
-	// 			return resp.status(401).json({ error: 'token missing or invalid' })
-	// 		console.log('Endpoint hit: PatchNotification')
+		//2. Verify the token
+		const user = jwt.verify(token, config.appKey)
+		console.log(user);
+		if (!user)
+			return resp.status(401).json({ error: 'token missing or invalid' })
+		console.log('Endpoint hit: PatchNotification')
 
-	// 		pool.query('UPDATE notifications SET read = $1 WHERE user_id = $2',
-	// 			[req.body.read, user.user_id], (err, res) => {
-	// 				if (res)
-	// 					resp.status(204).end()
-	// 				else
-	// 					resp.status(500).send({ error: err.detail })
-	// 			})
-	// 	} catch (error) {
-	// 		console.log(error)
-	// 		resp.status(500).json({ error: error })
-	// 	}
+		pool.query('UPDATE notifications SET read = $1 WHERE user_id = $2',
+			[req.body.read, user.user_id], (err, res) => {
+				if (res)
+					resp.status(204).end()
+				else
+					resp.status(500).send({ error: err.detail })
+			})
+	} catch (error) {
+		console.log(error)
+		resp.status(500).json({ error: error })
+	}
 	// 	// try {
 	// 	// 	//1. Get the token
 	// 	// 	const authHeader = req.headers['authorization']
@@ -153,5 +155,5 @@ exports.notification3 = async (req, resp) => {
 	// 	// 	console.log(err)
 	// 	// 	resp.status(500).json({ error: err })
 	// 	// }
-	// }
 }
+// }

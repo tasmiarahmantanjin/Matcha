@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { useSelector} from 'react-redux'
 import Navbar from '../Navbar/Navbar'
 import Match from './Match'
-import ProfilePage from '../ProfilePage/ProfilePage'
+// import ProfilePage from '../ProfilePage/ProfilePage'
 
 
 import { useDispatch } from 'react-redux'
@@ -25,7 +25,7 @@ const MatchesPage = () => {
   const [sortBy, setSortBy] = useState('name')
   var matchList
   let dist
-  
+
   const sortMatches = (matches, option) => {
     let ret = [...matches.rows]
     if (option === 'youngest'){ // Done.

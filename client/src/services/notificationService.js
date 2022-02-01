@@ -1,27 +1,27 @@
 import API from './api'
 
 const NotificationService = {
-	notification1: (data) => {
+	getNotifications: async (data) => {
 		return API.get('/notifications', data)
 			.then(({ data }) => {
-				console.log("Data From NotificationAPI", data);
+				console.log("Data From NotificationAPI for getting Notification", data);
 				// setHeadersAndStorage(data)
 				return data
 			})
 			.catch(err => {
-				console.log("Notification service err in Notification1", err);
+				console.log("Notification service err in getNotifications", err);
 				throw err
 			})
 	},
-	notification2: (data) => {
+	sendNotifications: (data) => {
 		return API.post('/notifications', data)
 			.then(({ data }) => {
-				console.log("Data From NotificationAPI", data);
+				console.log("Data From NotificationAPI for sending Notification", data);
 				// setHeadersAndStorage(data)
 				return data
 			})
 			.catch(err => {
-				console.log("Notification service err in Notification2", err);
+				console.log("Notification service err in sendNotifications", err);
 				throw err
 			})
 	},

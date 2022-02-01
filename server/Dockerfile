@@ -4,6 +4,9 @@ FROM node:12
 
 WORKDIR /server
 
+# Install nodemon
+RUN npm install -g nodemon
+
 # copy json files inside container
 COPY package*.json ./
 
