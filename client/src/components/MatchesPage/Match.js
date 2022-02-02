@@ -1,21 +1,16 @@
-import React from 'react'
-import './Match.scss'
+import React from "react";
+import "./Match.scss";
+import ProfileCard from "./ProfileCard";
 
 // To-do: account for distance and age range filters, and for any ordering.
 // getDistanceFromLatLonInKm(person.longitude, person.latitude, user.longitude, user.latitude)
-const Match = ({ person, user, distance, age }) =>{
-	return (
-		<div className="match">
-      <img width="150" height="150" src={`http://localhost:5000/uploads/user/${person.user_id}/${person.avatar}`} alt='match_avatar' />
-			<h2>{person.first_name.charAt(0).toUpperCase() + person.first_name.slice(1)}</h2>
-      <p>{age} years young</p>
-      <p>{person.gender} located {distance} km away.</p>
-      {person.interest.map(interest_sing => 
-              <li key={interest_sing}> {interest_sing}
-              </li>
-      )}
-      <div><a href={`http://localhost:3000/users/${person.user_id}`}>View profile</a></div>
-		</div>
-	) }
+const Match = ({ person, distance, age }) => {
+  console.log("person: ", person);
+  return (
+    <div className="container">
+      <ProfileCard person={person} distance={distance} age={age} />
+    </div>
+  );
+};
 
-export default Match
+export default Match;
