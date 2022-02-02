@@ -17,7 +17,7 @@ import { reportUser } from "../../store/actions/auth";
 import galleryService from "../../services/galleryService";
 
 //import { getUserById } from '../../../../server/controllers/profileController';
-import ProfileCard from "../MatchesPage/ProfileCard";
+import "./ProfilePage.scss";
 
 const ProfilePage = ({ id }) => {
   const [profile, setProfile] = useState();
@@ -174,7 +174,7 @@ const ProfilePage = ({ id }) => {
     //dispatch(galleryUpload(values))
   };
 
-  var likeButton;
+  let likeButton;
   if (profile && user.user_id === profile.user_id) {
     likeButton = null;
   } else {
@@ -194,29 +194,29 @@ const ProfilePage = ({ id }) => {
     }
   }
 
-  var blockButton;
+  let blockButton;
   if (profile && user.user_id === profile.user_id) {
     blockButton = null;
   } else {
     blockButton = (
-      <div>
-        <button onClick={blockButtonClickHandler}>Block</button>
-      </div>
+      <button className="button" onClick={blockButtonClickHandler}>
+        Block
+      </button>
     );
   }
 
-  var reportButton;
+  let reportButton;
   if (profile && user.user_id === profile.user_id) {
     reportButton = null;
   } else {
     reportButton = (
-      <div>
-        <button onClick={reportButtonClickHandler}>Report fake account</button>
-      </div>
+      <button className="button" onClick={reportButtonClickHandler}>
+        Report
+      </button>
     );
   }
 
-  var uploadButton;
+  let uploadButton;
   if (profile && user.user_id === profile.user_id) {
     uploadButton = (
       <div>
@@ -230,14 +230,12 @@ const ProfilePage = ({ id }) => {
   }
 
   var d = new Date();
-  //console.log(`d: ${d}`)
 
   function timeDiffCalc(dateFuture, dateNow) {
     let diffInMilliSeconds = Math.abs(dateFuture - dateNow) / 1000;
     // calculate days
     const days = Math.floor(diffInMilliSeconds / 86400);
     diffInMilliSeconds -= days * 86400;
-    //console.log('calculated days', days);
     // calculate hours
     const hours = Math.floor(diffInMilliSeconds / 3600) % 24;
     diffInMilliSeconds -= hours * 3600;
@@ -294,9 +292,9 @@ const ProfilePage = ({ id }) => {
       })
     : null;
 
-  var profileToShow;
-  var online;
-  var dateLastSeen;
+  let profileToShow;
+  let online;
+  let dateLastSeen;
   if (profile !== undefined) {
     console.log("profile", profile);
     if (profile.online === 1) {
@@ -315,55 +313,57 @@ const ProfilePage = ({ id }) => {
       );
     }
     profileToShow = (
-      <div className="container">
-        <ProfileCard
-          person={profile}
-          distance={getDistanceFromLatLonInKm(
-            profile.latitude,
-            profile.longitude,
-            user.latitude,
-            user.longitude
-          )}
-        />
-        {/* 
-        <img
-          width="150"
-          height="150"
-          src={`http://localhost:5000/uploads/user/${profile.user_id}/${profile.avatar}`}
-          alt="profile_avatar"
-        />
-        {online}
-        <h2>
-          {profile.first_name.charAt(0).toUpperCase() +
-            profile.first_name.slice(1)}{" "}
-          {profile.last_name.charAt(0).toUpperCase() +
-            profile.last_name.slice(1)}
-        </h2>
-        {likeButton}
-        <p>
-          {profile.gender} located{" "}
-          {getDistanceFromLatLonInKm(
-            profile.latitude,
-            profile.longitude,
-            user.latitude,
-            user.longitude
-          )}
-          km away.
-        </p>
-        {profile.interest.map((interest_sing) => (
-          <li key={interest_sing}> {interest_sing}</li>
-        ))}
-        <div>
-          <p>Looking for...</p>
-          <ul>
-            {profile.sexual_orientation.map((orientation) => (
-              <li key={orientation}> {orientation}</li>
-            ))}
-          </ul>
+      <div>
+        <div className="card">
+          <img
+            className="card__image"
+            width="150"
+            height="150"
+            src={`http://localhost:5000/uploads/user/${profile.user_id}/${profile.avatar}`}
+            alt="profile_avatar"
+          />
+          {online}
+          <h2>
+            {profile.first_name.charAt(0).toUpperCase() +
+              profile.first_name.slice(1)}{" "}
+            {profile.last_name.charAt(0).toUpperCase() +
+              profile.last_name.slice(1)}
+          </h2>
+          <button className="button">{likeButton}</button>
+
+          <p>
+            {profile.gender} located
+            {getDistanceFromLatLonInKm(
+              profile.latitude,
+              profile.longitude,
+              user.latitude,
+              user.longitude
+            )}
+            km away.
+          </p>
+          {profile.interest.map((interest_sing) => (
+            <li key={interest_sing}> {interest_sing}</li>
+          ))}
+
+          <div className="skills">
+            <p>Looking for...</p>
+            <ul>
+              {profile.sexual_orientation.map((orientation) => (
+                <li key={orientation}>{orientation}</li>
+              ))}
+            </ul>
+          </div>
+          <p>Fame rating: {profile.fame}</p>
+          <div>
+            {blockButton}
+            {reportButton}
+          </div>
+
+          <div>
+            {galleryImagesToShow}
+            {uploadButton}
+          </div>
         </div>
-        <p>Fame rating: {profile.fame}</p>
-        {blockButton}
-        {reportButton} */}
         <div>
           {galleryImagesToShow}
           {uploadButton}
