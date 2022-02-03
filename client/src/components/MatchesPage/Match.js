@@ -40,9 +40,7 @@ const Match = ({ person, distance, age }) => {
       </div>
 
       <a href={`http://localhost:3000/users/${person.user_id}`}>
-        <button className="profile-view-button draw-border">
-          View Profile
-        </button>
+        <button className="btn draw-border">View Profile</button>
       </a>
     </div>
   );

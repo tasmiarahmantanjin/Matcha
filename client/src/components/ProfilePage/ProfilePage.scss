@@ -5,10 +5,8 @@ button {
   border-radius: 5px;
   outline: 0;
   display: inline-block;
-  // padding: 6px;
   padding-right: 30px;
   padding-left: 30px;
-
   margin-bottom: 5px;
   gap: 5px;
   color: white;
@@ -142,23 +140,16 @@ a:hover {
   cursor: pointer;
   line-height: 1.5;
   font: 700 1.2rem "Roboto Slab", sans-serif;
+  color: #fff;
   padding: 0.75em 2em;
   letter-spacing: 0.05rem;
   margin: 1em;
   width: 13rem;
 }
 
-.btn:focus {
-  // outline: 2px dotted #55d7dc;
-}
-
 div.gallery {
   margin: 5px;
   float: left;
-}
-
-div.gallery:hover {
-  // border: 1px solid #777;
 }
 
 div.gallery p {
@@ -172,8 +163,5 @@ div.gallery p {
 .flex-container {
   display: flex;
   flex-wrap: nowrap;
-  // justify-content: space-around;
   gap: 5px;
-  // background-color: #222831;
-  // background-color: DodgerBlue;
 }
