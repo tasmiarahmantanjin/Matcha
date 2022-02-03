@@ -300,7 +300,12 @@ const ProfilePage = ({ id }) => {
     if (profile.online === 1) {
       online = (
         <div>
-          <p>User is currently online!</p>
+          <p>
+            {profile.first_name.charAt(0).toLowerCase() +
+              profile.first_name.slice(1)}{" "}
+            is currently online!
+          </p>
+          {/* // TODO: I can add a icon here with green light */}
         </div>
       );
     } else {
@@ -329,7 +334,11 @@ const ProfilePage = ({ id }) => {
             {profile.last_name.charAt(0).toUpperCase() +
               profile.last_name.slice(1)}
           </h2>
-          <button className="button">{likeButton}</button>
+          <div className="btn-group">
+            {blockButton}
+            {reportButton}
+            <button className="button">{likeButton}</button>
+          </div>
 
           <p>
             {profile.gender} located
@@ -354,20 +363,16 @@ const ProfilePage = ({ id }) => {
             </ul>
           </div>
           <p>Fame rating: {profile.fame}</p>
+          <div class="gallery">
+            <p>{galleryImagesToShow}</p>
+            <p>{uploadButton}</p>
+          </div>
           <div>
             {blockButton}
             {reportButton}
           </div>
-
-          <div>
-            {galleryImagesToShow}
-            {uploadButton}
-          </div>
         </div>
-        <div>
-          {galleryImagesToShow}
-          {uploadButton}
-        </div>
+        {/* <div>{uploadButton}</div> */}
       </div>
     );
   }

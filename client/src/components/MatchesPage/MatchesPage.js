@@ -256,7 +256,8 @@ const MatchesPage = () => {
         <option value="oldest">oldest</option>
         <option value="proximity">proximity</option>
       </select>
-      <div id="match_list">{matchList}</div>
+      {/* <div id="match_list">{matchList}</div> */}
+      <div className="card_continer">{matchList}</div>
     </div>
   );
 };
