@@ -330,15 +330,15 @@ const ProfilePage = ({ id }) => {
           {online}
           <h2>
             {profile.first_name.charAt(0).toUpperCase() +
-              profile.first_name.slice(1)}{" "}
+              profile.first_name.slice(1)}
             {profile.last_name.charAt(0).toUpperCase() +
               profile.last_name.slice(1)}
           </h2>
-          <div className="btn-group">
-            {blockButton}
-            {reportButton}
-            <button className="button">{likeButton}</button>
-          </div>
+          {/* <div className="btn-group"> */}
+          {blockButton}
+          {reportButton}
+          <button className="btn">{likeButton}</button>
+          {/* </div> */}
 
           <p>
             {profile.gender} located
@@ -362,8 +362,15 @@ const ProfilePage = ({ id }) => {
               ))}
             </ul>
           </div>
+          {blockButton}
+          {reportButton}
           <p>Fame rating: {profile.fame}</p>
           <div class="gallery">
+            <p>
+              {profile.first_name.charAt(0).toUpperCase() +
+                profile.first_name.slice(1)}
+              's Images
+            </p>
             <p>{galleryImagesToShow}</p>
             <p>{uploadButton}</p>
           </div>
@@ -372,7 +379,6 @@ const ProfilePage = ({ id }) => {
             {reportButton}
           </div>
         </div>
-        {/* <div>{uploadButton}</div> */}
       </div>
     );
   }

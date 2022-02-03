@@ -1,6 +1,7 @@
 import React, { useState, Fragment, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { logout } from "../../store/actions/auth";
 import logoImage from "../../assets/images/logo_matcha.svg";
 // Import for the user update
@@ -629,7 +630,9 @@ const Navbar = () => {
 
       <div onClick={() => setShowChatOptions(!showChatOptions)} id="chat-menu">
         <p className="user-name">Chat</p>
-        <FontAwesomeIcon icon="caret-down" className="fa-icon" />
+        <FontAwesomeIcon icon="caret-down" className="fa-icon" size="lg" />
+
+        <i class="fa-github-square fa-brands"></i>
         {showChatOptions && <div id="chat-options">{conversationsToShow}</div>}
       </div>
 
@@ -653,10 +656,10 @@ const Navbar = () => {
             <p onClick={() => setShowGalleryModal(true)}>Image gallery</p>
           </div>
         )}
-
+        {/* 
         <div id="profile-menu">
           <p onClick={() => logOut()}>Logout</p>
-        </div>
+        </div> */}
 
         {showProfileModal && (
           <Modal click={() => setShowProfileModal(false)}>
@@ -840,6 +843,10 @@ const Navbar = () => {
             </Fragment>
           </GalleryModal>
         )}
+      </div>
+
+      <div id="profile-menu">
+        <p onClick={() => logOut()}>Logout</p>
       </div>
     </div>
   );
