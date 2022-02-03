@@ -757,12 +757,12 @@ const Navbar = () => {
 
       <div
         onClick={() => setShowNotificationOptions(!showNotificationOptions)}
-        id="chat-menu"
+        id="notification-menu"
       >
         <p className="user-name">Notifications</p>
         <FontAwesomeIcon icon="caret-down" className="fa-icon" />
         {showNotificationOptions && (
-          <div id="chat-options">{notificationsToShow}</div>
+          <div className="card">{notificationsToShow}</div>
         )}
       </div>
 

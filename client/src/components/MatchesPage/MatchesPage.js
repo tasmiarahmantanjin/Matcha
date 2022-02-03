@@ -1,257 +1,264 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from "react";
 
 // import useSelector to connect the store with the component
-import { useSelector} from 'react-redux'
-import Navbar from '../Navbar/Navbar'
-import Match from './Match'
-import ProfilePage from '../ProfilePage/ProfilePage'
+import { useSelector } from "react-redux";
+import Navbar from "../Navbar/Navbar";
+import Match from "./Match";
+import ProfilePage from "../ProfilePage/ProfilePage";
 
-
-import { useDispatch } from 'react-redux'
+import { useDispatch } from "react-redux";
 // import the login action
-import { getMatches } from '../../store/actions/auth'
-import matchesService from '../../services/matchesService'
+import { getMatches } from "../../store/actions/auth";
 
 const MatchesPage = () => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.authReducer.user);
+  const matches = useSelector((state) => state.authReducer.matches);
+  const [ageRangeMax, setAgeRangeMax] = useState(100);
+  const [ageRangeMin, setAgeRangeMin] = useState(22);
+  const [distance, setDistance] = useState(20);
+  const gender = user.gender;
+  const sexual_orientation = user.sexual_orientation;
+  const interest = user.interest;
+  const [sortBy, setSortBy] = useState("name");
+  var matchList;
+  let dist;
 
-  const dispatch = useDispatch()
-  const user = useSelector(state => state.authReducer.user)
-  const matches = useSelector(state => state.authReducer.matches)
-  const [userLikes, setUserLikes] = useState([])
-  const [ageRangeMax, setAgeRangeMax] = useState(100)
-  const [ageRangeMin, setAgeRangeMin] = useState(22)
-  const [distance, setDistance] = useState(20)
-  const gender = user.gender
-  const sexual_orientation = user.sexual_orientation
-  const interest = user.interest
-  const [sortBy, setSortBy] = useState('name')
-  var matchList
-  let dist
-  
   const sortMatches = (matches, option) => {
-    let ret = [...matches.rows]
-    if (option === 'youngest'){ // Done.
+    let ret = [...matches.rows];
+    if (option === "youngest") {
+      // Done.
       //console.log('Sorting by youngest.')
       ret.sort((a, b) => {
-        let ageOfA = new Date(new Date() - new Date(a.birthdate)).getFullYear() - 1970;
-        let ageOfB = new Date(new Date() - new Date(b.birthdate)).getFullYear() - 1970;
-        return ageOfA - ageOfB
-      })
-      return ret
+        let ageOfA =
+          new Date(new Date() - new Date(a.birthdate)).getFullYear() - 1970;
+        let ageOfB =
+          new Date(new Date() - new Date(b.birthdate)).getFullYear() - 1970;
+        return ageOfA - ageOfB;
+      });
+      return ret;
     }
-    if (option === 'oldest'){ // Done.
+    if (option === "oldest") {
+      // Done.
       //console.log('Sorting by oldest.')
       ret.sort((a, b) => {
-        let ageOfA = new Date(new Date() - new Date(a.birthdate)).getFullYear() - 1970;
-        let ageOfB = new Date(new Date() - new Date(b.birthdate)).getFullYear() - 1970;
-        return ageOfB - ageOfA
-      })
-      return ret
-      
+        let ageOfA =
+          new Date(new Date() - new Date(a.birthdate)).getFullYear() - 1970;
+        let ageOfB =
+          new Date(new Date() - new Date(b.birthdate)).getFullYear() - 1970;
+        return ageOfB - ageOfA;
+      });
+      return ret;
     }
-    if (option === 'shared interests'){ // Done.
+    if (option === "shared interests") {
+      // Done.
       //console.log('Sorting by shared interests.')
       ret.sort((a, b) => {
-        let countA = 0
-        let countB = 0
-        a.interest.forEach(entry => {
-          user.interest.forEach(hash => {
-            if (entry === hash){
-              ++countA
+        let countA = 0;
+        let countB = 0;
+        a.interest.forEach((entry) => {
+          user.interest.forEach((hash) => {
+            if (entry === hash) {
+              ++countA;
             }
-          })
-        })
-        b.interest.forEach(entry => {
-          user.interest.forEach(hash => {
-            if (entry === hash){
-              ++countB
+          });
+        });
+        b.interest.forEach((entry) => {
+          user.interest.forEach((hash) => {
+            if (entry === hash) {
+              ++countB;
             }
-          })
-        })
-        return countB - countA
-      })
-      return ret
+          });
+        });
+        return countB - countA;
+      });
+      return ret;
     }
-    if (option === 'proximity'){ // Done.
+    if (option === "proximity") {
+      // Done.
       //console.log('Sorting by proximity.')
       ret.sort((a, b) => {
-        let distA = getDistanceFromLatLonInKm(a.latitude, a.longitude, user.latitude, user.longitude)
-      let distB = getDistanceFromLatLonInKm(b.latitude, b.longitude, user.latitude, user.longitude)
-        return distA - distB
-      })
-      return ret
+        let distA = getDistanceFromLatLonInKm(
+          a.latitude,
+          a.longitude,
+          user.latitude,
+          user.longitude
+        );
+        let distB = getDistanceFromLatLonInKm(
+          b.latitude,
+          b.longitude,
+          user.latitude,
+          user.longitude
+        );
+        return distA - distB;
+      });
+      return ret;
     }
-    if (option === 'name'){ // Done.
+    if (option === "name") {
+      // Done.
       //console.log('Sorting by name; default sorting.')
-      return ret
+      return ret;
     }
-  }
-
-  /**
-   * Liked already code: start.
-   */
-
-   useEffect(() => {
-    const requestObject = {
-        user_id: user.user_id
-    };
-    //console.log(requestOptions.body)
-    matchesService
-      .getUserLikes(requestObject)
-      //console.log(`User ID matched: ${data.rows[0].user_one_id}`)
-      .then(data =>{
-        console.log(data.rows)
-        let likeList = data.rows.map(like => {
-          return like.liked_user
-        })
-        setUserLikes(likeList)
-        //console.log('Partner after fetching:');
-        //console.log(`${data.rows[0]}`)
-      })
-  }, [user]);
-  
- /* var likeButton
-if (profile && user.user_id === profile.user_id) {
-  likeButton = null
-} else {
-  if (liked === undefined) {
-    likeButton = <div><button onClick={likeButtonClickHandler}>Like</button></div>
-  }
-  if (liked !== undefined) {
-    likeButton = <div><button onClick={unlikeButtonClickHandler}>Unlike</button></div>
-  }
-}*/
-
-
-  /**
-   * Liked already code: end.
-   */
+  };
 
   if (matches !== undefined) {
-    // sort matches by selected ordering. 
-    let matchesSorted = sortMatches(matches, sortBy)
-    matchList = matchesSorted.map(match => {
-              console.log(match);
-              dist = getDistanceFromLatLonInKm(match.latitude, match.longitude, user.latitude, user.longitude)
-              let age = new Date(new Date() - new Date(match.birthdate)).getFullYear() - 1970;
-              if (dist <= distance && !user.blocked_users.includes(match.user_id) && age >= ageRangeMin && age <= ageRangeMax) {
-                return <Match key={match.user_id}
-              person={match}
-              user={user}
-              distance={dist}
-              age={age}
-              liked={userLikes.includes(match.user_id) ? true : false}
-              />} else {
-                return null
-              }
-            }
-            )
+    // sort matches by selected ordering.
+    let matchesSorted = sortMatches(matches, sortBy);
+    matchList = matchesSorted.map((match) => {
+      dist = getDistanceFromLatLonInKm(
+        match.latitude,
+        match.longitude,
+        user.latitude,
+        user.longitude
+      );
+      let age =
+        new Date(new Date() - new Date(match.birthdate)).getFullYear() - 1970;
+      if (
+        dist <= distance &&
+        !user.blocked_users.includes(match.user_id) &&
+        age >= ageRangeMin &&
+        age <= ageRangeMax
+      ) {
+        return (
+          <Match
+            key={match.user_id}
+            person={match}
+            user={user}
+            distance={dist}
+            age={age}
+          />
+        );
+      } else {
+        return null;
+      }
+    });
   }
 
   function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
     var R = 6371; // Radius of the earth in km
-    var dLat = deg2rad(lat2-lat1);  // deg2rad below
-    var dLon = deg2rad(lon2-lon1); 
-    var a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
-      Math.sin(dLon/2) * Math.sin(dLon/2)
-      ; 
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var dLat = deg2rad(lat2 - lat1); // deg2rad below
+    var dLon = deg2rad(lon2 - lon1);
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) *
+        Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     var d = R * c; // Distance in km
-    var rounded = Math.round(d * 10) / 10 // Distance rounded to one decimal
+    var rounded = Math.round(d * 10) / 10; // Distance rounded to one decimal
     return rounded;
   }
-  
+
   function deg2rad(deg) {
-    return deg * (Math.PI/180)
+    return deg * (Math.PI / 180);
   }
 
   const submitForm = (e) => {
-      e.preventDefault()
-      const form = { ageRangeMax, ageRangeMin, distance, gender, sexual_orientation, interest }
-      console.log('Logging form: ');
-      console.log(form)
+    e.preventDefault();
+    const form = {
+      ageRangeMax,
+      ageRangeMin,
+      distance,
+      gender,
+      sexual_orientation,
+      interest,
+    };
+    console.log("Logging form: ");
+    console.log(form);
 
-      const formData = new FormData()
+    const formData = new FormData();
 
-      for (const key in form) {
-          formData.append(key, form[key])
-      }
-      //console.log(`ageRangeMax in formData: ${formData.get('ageRangeMax')}`)
-      // dispatch the event action
-      const values = Object.fromEntries(formData.entries());
-      dispatch(getMatches(values))
-      //console.log('Loggin matches:')
-      //console.log(matches)
-  }
-    return (
-        <div id='chat-container'>
-            <div id='chat-wrap'>
-                <Navbar />
-            </div>
-            <div>
-            <form>
-              <div className='input-field mb-1'>
-              <label htmlFor="ageRangeMax">Age range maximum (between 18 and 120):</label>
-                  <input
-                      onChange={e => setAgeRangeMax(e.target.value)}
-                      id="ageRangeMax" name="ageRangeMax" 
-                      min="18" 
-                      max="120"
-                      value={ageRangeMax}
-                      required='required'
-                      type='range' />
-                      <span>{ageRangeMax}</span>
-              </div>
-              <div className='input-field mb-1'>
-              <label htmlFor="ageRangeMin">Age range minimum (between 18 and 120):</label>
-                  <input
-                      onChange={e => setAgeRangeMin(e.target.value)}
-                      id="ageRangeMin" name="ageRangeMin" 
-                      min="18" 
-                      max="120"
-                      value={ageRangeMin}
-                      required='required'
-                      type='range' />
-                      <span>{ageRangeMin}</span>
-              </div>
-              <div className='input-field mb-1'>
-              <label htmlFor="distance">Distance (between 1 and 100 km):</label>
-                  <input
-                      onChange={e => setDistance(e.target.value)}
-                      id="distance" name="distance" 
-                      min="1" 
-                      max="100"
-                      value={distance}
-                      required='required'
-                      type='range' />
-                      <span>{distance}</span>
-              </div>
-              <input
-                      id="gender" name="gender" 
-                      value={gender}
-                      type='hidden' />
-                      <input
-                      id="sexual_orientation" name="sexual_orientation" 
-                      value={sexual_orientation}
-                      type='hidden' />
-              
-            </form>
-            <button className='btn-success' onClick={submitForm}>GET MATCHES</button>
-              </div>
-              <label htmlFor="sort_by">Sort matches by: </label>
-              <select name="sort_by" id="sort_by" onChange={e => setSortBy(e.target.value)}>
-                <option value="name">name</option>
-                <option value="shared interests">shared interests</option>
-                <option value="youngest">youngest</option>
-                <option value="oldest">oldest</option>
-                <option value="proximity">proximity</option>
-              </select>
-            <div id="match_list">{matchList}</div>
-        </div>
-        
-    );
-}
+    for (const key in form) {
+      formData.append(key, form[key]);
+    }
+    //console.log(`ageRangeMax in formData: ${formData.get('ageRangeMax')}`)
+    // dispatch the event action
+    const values = Object.fromEntries(formData.entries());
+    dispatch(getMatches(values));
+    console.log("Loggin matches:");
+    console.log(matches);
+  };
+  return (
+    <div id="chat-container">
+      <div id="chat-wrap">
+        <Navbar />
+      </div>
+      <div>
+        <form>
+          <div className="input-field mb-1">
+            <label htmlFor="ageRangeMax">
+              Age range maximum (between 18 and 120):
+            </label>
+            <input
+              onChange={(e) => setAgeRangeMax(e.target.value)}
+              id="ageRangeMax"
+              name="ageRangeMax"
+              min="18"
+              max="120"
+              value={ageRangeMax}
+              required="required"
+              type="range"
+            />
+            <span>{ageRangeMax}</span>
+          </div>
+          <div className="input-field mb-1">
+            <label htmlFor="ageRangeMin">
+              Age range minimum (between 18 and 120):
+            </label>
+            <input
+              onChange={(e) => setAgeRangeMin(e.target.value)}
+              id="ageRangeMin"
+              name="ageRangeMin"
+              min="18"
+              max="120"
+              value={ageRangeMin}
+              required="required"
+              type="range"
+            />
+            <span>{ageRangeMin}</span>
+          </div>
+          <div className="input-field mb-1">
+            <label htmlFor="distance">Distance (between 1 and 100 km):</label>
+            <input
+              onChange={(e) => setDistance(e.target.value)}
+              id="distance"
+              name="distance"
+              min="1"
+              max="100"
+              value={distance}
+              required="required"
+              type="range"
+            />
+            <span>{distance}</span>
+          </div>
+          <input id="gender" name="gender" value={gender} type="hidden" />
+          <input
+            id="sexual_orientation"
+            name="sexual_orientation"
+            value={sexual_orientation}
+            type="hidden"
+          />
+        </form>
+        <button className="btn-success" onClick={submitForm}>
+          GET MATCHES
+        </button>
+      </div>
+      <label htmlFor="sort_by">Sort matches by: </label>
+      <select
+        name="sort_by"
+        id="sort_by"
+        onChange={(e) => setSortBy(e.target.value)}
+      >
+        <option value="name">name</option>
+        <option value="shared interests">shared interests</option>
+        <option value="youngest">youngest</option>
+        <option value="oldest">oldest</option>
+        <option value="proximity">proximity</option>
+      </select>
+      <div className="card_continer">{matchList}</div>
+    </div>
+  );
+};
 
-export default MatchesPage
+export default MatchesPage;
