@@ -1,6 +1,6 @@
 import React, { useState, Fragment, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-//import { getNotifications } from '../../store/actions/auth'
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { logout } from "../../store/actions/auth";
 import logoImage from "../../assets/images/logo_matcha.svg";
@@ -13,7 +13,7 @@ import galleryService from "../../services/galleryService";
 import notificationsService from "../../services/notificationsService";
 
 import chatService from "../../services/chatService";
-import io from "socket.io-client"; // For chat.
+import io from "socket.io-client";
 
 import "./Navbar.scss";
 
@@ -66,25 +66,24 @@ const Navbar = () => {
   /**
    * Chat code starts here
    */
-
   const [messages, setMessages] = useState([]);
 
   const [yourID, setYourID] = useState(user.user_id);
 
   const socketRef = useRef();
 
-  function receivedMessage(message) {
+  const receivedMessage = (message) => {
     alert(message.message_text); // Alert user to new message!
-  }
-  function receivedLike(message) {
+  };
+  const receivedLike = (message) => {
     alert(`Liked by ${message.sender_id}`); // Alert user to new like! WORKS!
-  }
-  function receivedUnlike(message) {
+  };
+  const receivedUnlike = (message) => {
     alert(`Unliked by ${message.sender_id}`); // Alert user to new unlike! WORKS!
-  }
-  function receivedMatch(match) {
+  };
+  const receivedMatch = (match) => {
     alert(`Match between ${match.sender_id} and ${match.partner}`); // Alert user to new unlike! WORKS!
-  }
+  };
 
   useEffect(() => {
     socketRef.current = io.connect("localhost:3001/");
@@ -126,7 +125,6 @@ const Navbar = () => {
 
     // empty dependency array means this effect will only run once (like componentDidMount in classes)
   }, []);
-
   /**
    * Chat code ends here.
    */
@@ -134,24 +132,19 @@ const Navbar = () => {
   /**
    * Notifications code starts here.
    */
-
   useEffect(() => {
     const requestObject = {
       headers: {
         "Content-type": "application/json; charset=UTF-8",
         Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-      }, //{"Authorization" : `Bearer ${user.token}`},
-      /*headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${user.token}`
-    },*/
+      },
+
       user: user,
     };
     console.log("User: ");
     console.log(user);
     notificationsService
       .getNotifications(requestObject)
-      //dispatch(getNotifications({ user }))
       .then((initialNotifications) => {
         console.log(initialNotifications);
         setNotifications(initialNotifications);
@@ -173,13 +166,10 @@ const Navbar = () => {
   /**
    * Notifications code ends here.
    */
-
   useEffect(() => {
     // POST request using fetch inside useEffect React hook
     const requestOptions = {
       method: "GET", //,
-      //headers: { 'Content-Type': 'application/json' },
-      //body: JSON.stringify({ profile_id: id, user_id: user.user_id })
     };
     fetch("http://localhost:5000/getHashtagList", requestOptions)
       .then((response) => response.json())
@@ -256,9 +246,6 @@ const Navbar = () => {
           partner_id: partnersIdArr[i].partnerId,
           avatar: returnedPartner.rows[0].avatar,
           conversation: partnersIdArr[i].conversation,
-          /*recentMessageObj: messageArr.filter(message => {//Currently doesn't work.
-              return message.conversation === partnersIdArr[i].conversation
-            })*/
         };
         console.log(currentPartner);
         partners.push(currentPartner);
@@ -284,8 +271,6 @@ const Navbar = () => {
             sender:
               returnedMessages.rows[returnedMessages.rows.length - 1].sender_id,
           };
-          //console.log(currentMessage.mostRecentMessage);
-          //console.log(returnedMessages);
           recentMessages.push(currentMessage);
         }
       });
@@ -325,13 +310,13 @@ const Navbar = () => {
     // empty dependency array means this effect will only run once (like componentDidMount in classes)
   }, []);
 
-  var checked = [];
+  let checked = [];
   if (sexual_orientation !== null) {
     checked = sexual_orientation;
   }
 
   function formatDate(date) {
-    var d = new Date(date),
+    let d = new Date(date),
       month = "" + (d.getMonth() + 1),
       day = "" + d.getDate(),
       year = d.getFullYear();
@@ -357,7 +342,6 @@ const Navbar = () => {
       birthdate,
       uploadAvatar,
     };
-    //console.log(interest)
     if (password.length > 0) form.password = password;
 
     const formData = new FormData();
@@ -372,8 +356,6 @@ const Navbar = () => {
     e.preventDefault();
 
     const form = { uploadFile };
-    //console.log(form.uploadFile)
-    //if (password.length > 0) form.password = password
 
     const formData = new FormData();
 
@@ -381,7 +363,7 @@ const Navbar = () => {
       console.log(key);
       formData.append(key, form[key]);
     }
-    //console.log(formData)
+
     dispatch(uploadToGallery(formData)).then(() => setShowGalleryModal(false));
   };
 
@@ -447,17 +429,11 @@ const Navbar = () => {
 
     return;
   };
-
   // End of hashtag code
 
   // Checkbox code
   function getSexOrientation(checkmark) {
-    if (
-      checked &&
-      !checked.includes(
-        checkmark
-      ) /* && (checkmark === 'male' || checkmark === 'female' || checkmark === 'other')*/
-    ) {
+    if (checked && !checked.includes(checkmark)) {
       checked.push(checkmark);
       if (checkmark === "female") {
         setFemale(true);
@@ -471,7 +447,6 @@ const Navbar = () => {
     } else {
       for (var j = 0; j < checked.length; j++) {
         if (checked[j] === checkmark) {
-          //console.log(`Removing ${checkmark} from array: ${checked}.`)
           checked.splice(j, 1);
           j--;
         }
@@ -486,33 +461,25 @@ const Navbar = () => {
         }
       }
     }
-    //if (checkmark === 'male' ) checked.push(checkmark) LOOP!
-    //if (checkmark === 'other' ) checked.push(checkmark)
-    //checked.push(checkmark)
-    //console.log(checked)
+
     setSexual_orientation(checked);
   }
 
-  function inArray(option) {
+  const inArray = (option) => {
     if (sexual_orientation.includes(option)) {
       return true;
     } else {
       return false;
     }
-  }
-
+  };
   // End of checkbox code
 
   const imageDeleteButtonHandler = (img) => {
-    //console.log('Image delete button clicked.')
-    //console.log(`image path: ${img.path}`)
-    //console.log(`image owner: ${img.owner_id}`)
     const requestObject = {
       user: user,
       image: img,
     };
     galleryService.deleteGalleryImage(requestObject).then((returnedImages) => {
-      //console.log(initialImages);
       setGalleryImages(returnedImages.rows);
     });
   };
@@ -520,16 +487,12 @@ const Navbar = () => {
   const makeAvatarButtonHandler = (img) => {
     console.log("Image avatar button clicked.");
     console.log(`image path: ${img.path}`);
-    //console.log(`image owner: ${img.owner_id}`)
+
     const requestObject = {
       user: user,
       image: img,
     };
     galleryService.makeAvatarImage(requestObject);
-    /*.then(returnedImages => {
-        //console.log(initialImages);
-        setAvatar(returnedImages.rows[0].path)
-      })*/
   };
 
   const galleryImagesToShow = galleryImages
@@ -541,7 +504,7 @@ const Navbar = () => {
               className="gallery-image-container"
             >
               <img
-                /*className="gallery-image"*/ width="25%"
+                width="25%"
                 height="25%"
                 src={`http://localhost:5000/uploads/user/${user.user_id}/${image.path}`}
                 alt={`${image.path}`}
@@ -564,7 +527,7 @@ const Navbar = () => {
             className="gallery-image-container"
           >
             <img
-              /*className="gallery-image"*/ width="25%"
+              width="25%"
               height="25%"
               src={`http://localhost:5000/uploads/user/${user.user_id}/${image.path}`}
               alt={`${image.path}`}
@@ -610,8 +573,6 @@ const Navbar = () => {
                 link
               </a>
             </p>
-            {/*<p>Recent message: {conversation.recentMessageObj[0].mostRecentMessage}</p>*/
-            /*Currently doesn't work.*/}
           </div>
         );
         // Make useState variable to store an array of conversation partners (name, avatar, latest message)!!!
@@ -670,26 +631,24 @@ const Navbar = () => {
     );
 
   // Start of logout function
-  function logOut() {
+  const logOut = () => {
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ user_id: user.user_id }),
     };
-    //console.log(requestOptions.body)
     fetch("http://localhost:5000/logout", requestOptions);
-    /*.then(response =>{
-      console.log('Response: ')
-      console.log(response)}
-    )*/
     dispatch(logout());
-  }
+  };
 
   return (
     <div id="navbar" className="card-shadow">
-      <a href="http://localhost:3000">
-        <img width="100" height="80" src={logoImage} alt="Logo" />
-      </a>
+      <div className="nav-header">
+        <a className="nav-title" href="http://localhost:3000">
+          <img width="100" height="80" src={logoImage} alt="Logo" />
+        </a>
+      </div>
+
       <div id="chat-menu">
         <a className="user-name" href="http://localhost:3000/matches">
           Find match
@@ -704,7 +663,7 @@ const Navbar = () => {
 
       <div
         onClick={() => setShowNotificationOptions(!showNotificationOptions)}
-        id="notification-menu"
+        id="chat-menu"
       >
         <p className="user-name">Notifications</p>
         <FontAwesomeIcon icon="caret-down" className="fa-icon" />
