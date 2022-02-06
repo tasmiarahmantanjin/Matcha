@@ -89,8 +89,10 @@
   cursor: pointer;
 
   .card {
-    background-color: $success;
-    height: 37rem;
+    // background-color: $success;
+    position: relative;
+    margin-top: 1px;
+    height: 40rem;
     border-radius: 5px;
     display: flex;
     flex-direction: column;

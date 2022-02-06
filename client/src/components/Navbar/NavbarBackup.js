@@ -21,6 +21,8 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.authReducer.user);
 
+  //console.log(user)
+
   const [showProfileOptions, setShowProfileOptions] = useState(false);
   const [showChatOptions, setShowChatOptions] = useState(false);
   const [showNotificationOptions, setShowNotificationOptions] = useState(false);
@@ -40,6 +42,8 @@ const Navbar = () => {
     user.sexual_orientation
   );
   const [bio, setBio] = useState(user.bio);
+  //const [bioInitial, setBioInitial] = useState('')
+  //const [interest, setInterest] = useState(user.interest)
 
   const [password, setPassword] = useState("");
   const [avatar, setAvatar] = useState(user.avatar);
@@ -49,11 +53,16 @@ const Navbar = () => {
   const [birthdate, setBirthdate] = useState(
     formatDate(new Date(user.birthdate))
   );
-
+  //console.log(`Birthdate: ${birthdate}`);
+  //console.log(user)
   const [female, setFemale] = useState(false);
   const [male, setMale] = useState(false);
   const [other, setOther] = useState(false);
   const [interestArr, setInterestArr] = useState([]);
+
+  //const [female, setFemale] = useState(inArray('female'))
+  //const [male, setMale] = useState(inArray('male'))
+  //const [other, setOther] = useState(inArray('other'))
 
   const [conversationsArr, setConversationsArr] = useState([]);
   const [partnersIdArr, setPartnersIdArr] = useState([]);
@@ -66,25 +75,52 @@ const Navbar = () => {
   /**
    * Chat code starts here
    */
-
+  //const [conversation, setConversation] = useState()
+  //const [partner, setPartner] = useState()
   const [messages, setMessages] = useState([]);
-
+  //const [message, setMessage] = useState("");
   const [yourID, setYourID] = useState(user.user_id);
 
   const socketRef = useRef();
 
   function receivedMessage(message) {
+    //setMessages(oldMsgs => [...oldMsgs, message]);
+    //console.log('Now we log messages.');
+    //console.log(messages)
     alert(message.message_text); // Alert user to new message!
   }
   function receivedLike(message) {
+    //setMessages(oldMsgs => [...oldMsgs, message]);
+    //console.log('Now we log messages.');
+    //console.log(messages)
     alert(`Liked by ${message.sender_id}`); // Alert user to new like! WORKS!
   }
   function receivedUnlike(message) {
+    //setMessages(oldMsgs => [...oldMsgs, message]);
+    //console.log('Now we log messages.');
+    //console.log(messages)
     alert(`Unliked by ${message.sender_id}`); // Alert user to new unlike! WORKS!
   }
   function receivedMatch(match) {
+    //setMessages(oldMsgs => [...oldMsgs, message]);
+    //console.log('Now we log messages.');
+    //console.log(messages)
     alert(`Match between ${match.sender_id} and ${match.partner}`); // Alert user to new unlike! WORKS!
   }
+
+  /*function sendMessage(e) {
+     e.preventDefault();
+     const messageObject = {
+       message_text: message,
+       sender_id: user.user_id,
+       timestamp: new Date(),
+       conversation: conversation.id,
+       partner: partner.user_id // 
+     };
+     console.log(`Message: ${messageObject.message_text}`)
+     setMessage("");
+     socketRef.current.emit("send message", messageObject);
+   }*/
 
   useEffect(() => {
     socketRef.current = io.connect("localhost:3001/");
@@ -237,6 +273,15 @@ const Navbar = () => {
         };
         conversationPartners.push(currentConversation);
       }
+      /* const requestObject = {
+        user: user
+      }
+      chatService
+      .getConversationsArray(requestObject)
+      .then(initialConversations => {
+        console.log(initialConversations);
+        setConversationsArr(initialConversations.rows)
+      }) */
     }
     setPartnersIdArr(conversationPartners);
   }, [conversationsArr, user]);
@@ -325,10 +370,18 @@ const Navbar = () => {
     // empty dependency array means this effect will only run once (like componentDidMount in classes)
   }, []);
 
+  //console.log(`female = ${female}`)
+  //console.log(`male = ${male}`)
+  //console.log(`other = ${other}`)
+
+  //var male = inArray('male')
+  //var female = inArray('female')
+  //var other = inArray('other')
   var checked = [];
   if (sexual_orientation !== null) {
     checked = sexual_orientation;
   }
+  //console.log(checked)
 
   function formatDate(date) {
     var d = new Date(date),

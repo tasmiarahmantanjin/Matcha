@@ -4,6 +4,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import MatchesPage from "../MatchesPage/MatchesPage";
 import Navbar from "../Navbar/Navbar";
+// import Nav from "../Nav";
 
 const Home = () => {
   const user = useSelector((state) => state.authReducer.user);
@@ -13,8 +14,9 @@ const Home = () => {
       <div id="chat-wrap">
         <Navbar />
       </div>
-      <h1>Welcome to Match, {user.first_name}</h1>
-      <MatchesPage />
+
+      {/* <MatchesPage /> */}
+      {/* <Nav /> */}
     </div>
   );
 };

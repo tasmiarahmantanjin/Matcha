@@ -12,6 +12,7 @@ services:
       - /server/node_modules
     ports:
       - "5000:5000"
+      - "3001:3001"
     depends_on:
       - db
     env_file: ./server/.env
@@ -37,6 +38,19 @@ services:
       - "3000:3000"
     networks:
       - default
+  # https://phillaf.medium.com/how-to-run-socket-io-on-a-live-server-2234a15c8767
+  # chat:
+  #   image: app-chat
+  #   container_name: app-chat
+  #   command: npm start
+  #   volumes:
+  #     - ./server/utils/chat.js/:/chat.js
+  #   depends_on:
+  #     - server
+  #   ports:
+  #     - "3001:3001"
+  #   networks:
+  #     - default
 
   db:
     image: postgres:10.4
