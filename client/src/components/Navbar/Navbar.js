@@ -1,5 +1,6 @@
 import React, { useState, Fragment, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+//import { getNotifications } from '../../store/actions/auth'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { logout } from '../../store/actions/auth'
 import logoImage from "../../assets/images/logo_matcha.svg";
@@ -9,6 +10,8 @@ import GalleryModal from '../GalleryModal/GalleryModal'
 import { updateProfile } from '../../store/actions/auth'
 import { uploadToGallery } from '../../store/actions/auth'
 import galleryService from '../../services/galleryService'
+import notificationsService from '../../services/notificationsService'
+
 import chatService from '../../services/chatService'
 import io from "socket.io-client" // For chat.
 
@@ -18,11 +21,13 @@ const Navbar = () => {
 
     const dispatch = useDispatch()
     const user = useSelector(state => state.authReducer.user)
+    
 
     //console.log(user)
 
     const [showProfileOptions, setShowProfileOptions] = useState(false)
     const [showChatOptions, setShowChatOptions] = useState(false)
+    const [showNotificationOptions, setShowNotificationOptions] = useState(false)
     const [showProfileModal, setShowProfileModal] = useState(false)
     const [showGalleryModal, setShowGalleryModal] = useState(false)
     const [uploadFile, setUploadFile] = useState('')
@@ -62,6 +67,9 @@ const Navbar = () => {
     const [partnersArr, setPartnersArr] = useState([])
     const [messageArr, setMessageArr] = useState()
 
+    const [notifications, setNotifications] = useState([])
+    const [hashtags, setHashtags] = useState([])
+
   /**
    * Chat code starts here
    */
@@ -79,6 +87,24 @@ const Navbar = () => {
      //console.log(messages)
     alert(message.message_text); // Alert user to new message!
    }
+   function receivedLike(message) {
+     //setMessages(oldMsgs => [...oldMsgs, message]);
+     //console.log('Now we log messages.');
+     //console.log(messages)
+    alert(`Liked by ${message.sender_id}`); // Alert user to new like! WORKS!
+   }
+   function receivedUnlike(message) {
+    //setMessages(oldMsgs => [...oldMsgs, message]);
+    //console.log('Now we log messages.');
+    //console.log(messages)
+   alert(`Unliked by ${message.sender_id}`); // Alert user to new unlike! WORKS!
+  }
+  function receivedMatch(match) {
+    //setMessages(oldMsgs => [...oldMsgs, message]);
+    //console.log('Now we log messages.');
+    //console.log(messages)
+   alert(`Match between ${match.sender_id} and ${match.partner}`); // Alert user to new unlike! WORKS!
+  }
  
    /*function sendMessage(e) {
      e.preventDefault();
@@ -107,6 +133,24 @@ const Navbar = () => {
          console.log(message)
          receivedMessage(message);
        })
+
+       socketRef.current.on("like", (like) => {
+        console.log("Received like.");
+        console.log(like)
+        receivedLike(like);
+      })
+
+      socketRef.current.on("unlike", (unlike) => {
+        console.log("Received unlike.");
+        console.log(unlike)
+        receivedUnlike(unlike);
+      })
+
+      socketRef.current.on("match", (match) => {
+        console.log("Match!");
+        console.log(match)
+        receivedMatch(match);
+      })
    //});
  
          /**
@@ -122,6 +166,65 @@ const Navbar = () => {
    * Chat code ends here.
    */
 
+  /**
+   * Notifications code starts here.
+   */
+
+   useEffect(() => {
+    const requestObject = {
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        "Authorization": `Bearer ${localStorage.getItem('token') || ''}`
+ },//{"Authorization" : `Bearer ${user.token}`},
+      /*headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${user.token}`
+    },*/
+      user: user
+    }
+    console.log('User: ');
+    console.log(user)
+    notificationsService
+    .getNotifications(requestObject)
+    //dispatch(getNotifications({ user }))
+    .then(initialNotifications => {
+      console.log(initialNotifications);
+      setNotifications(initialNotifications)
+    })
+  }, [user])
+
+  useEffect(() => {
+    const requestObject = {
+      user: user
+    }
+    chatService
+    .getConversationsArray(requestObject)
+    .then(initialConversations => {
+      console.log(initialConversations);
+      setConversationsArr(initialConversations.rows)
+    })
+  }, [user])
+
+  /**
+   * Notifications code ends here.
+   */
+
+   useEffect(() => {
+    // POST request using fetch inside useEffect React hook
+    const requestOptions = {
+        method: 'GET'//,
+        //headers: { 'Content-Type': 'application/json' },
+        //body: JSON.stringify({ profile_id: id, user_id: user.user_id })
+    };
+    fetch('http://localhost:5000/getHashtagList', requestOptions)
+        .then(response => response.json())
+        .then(data =>{
+          console.log(data.rows) 
+          setHashtags(data.rows)
+        });
+    
+  // empty dependency array means this effect will only run once (like componentDidMount in classes)
+  }, [user]);
 
     useEffect(() => {
       const requestObject = {
@@ -134,6 +237,11 @@ const Navbar = () => {
         setGalleryImages(initialImages.rows)
       })
     }, [user])
+
+    useEffect(() => {
+      console.log('Notifications:');
+      console.log(notifications);
+    }, [notifications])
 
     useEffect(() => {
       const requestObject = {
@@ -194,9 +302,9 @@ const Navbar = () => {
             partner_id: partnersIdArr[i].partnerId,
             avatar: returnedPartner.rows[0].avatar,
             conversation: partnersIdArr[i].conversation,
-            recentMessageObj: messageArr.filter(message => {
+            /*recentMessageObj: messageArr.filter(message => {//Currently doesn't work.
               return message.conversation === partnersIdArr[i].conversation
-            })
+            })*/
           }
           console.log(currentPartner);
           partners.push(currentPartner)
@@ -215,14 +323,16 @@ const Navbar = () => {
        chatService
       .getMessages(requestObject)
       .then(returnedMessages => {
-        let currentMessage = {
-          conversation: conversationsArr[i].id,
-          mostRecentMessage: returnedMessages.rows[returnedMessages.rows.length - 1].message_text,
-          sender: returnedMessages.rows[returnedMessages.rows.length - 1].sender_id
+        if (returnedMessages.rows > 0){
+          let currentMessage = {
+            conversation: conversationsArr[i].id,
+            mostRecentMessage: returnedMessages.rows[returnedMessages.rows.length - 1].message_text,
+            sender: returnedMessages.rows[returnedMessages.rows.length - 1].sender_id
+          }
+          //console.log(currentMessage.mostRecentMessage);
+          //console.log(returnedMessages);
+          recentMessages.push(currentMessage)
         }
-        console.log(currentMessage.mostRecentMessage);
-        //console.log(returnedMessages);
-        recentMessages.push(currentMessage)
       }
       )
       }
@@ -371,6 +481,10 @@ useEffect(() => {
         inputTag.value = ''
       } else if (e.key === 'Backspace' && val === "#") {
         removeTag(interestArr.length - 1);
+      } else {
+        //console.log(hashtags);
+        //console.log(`Matching interests:`);
+        //console.log(hashtags.filter(item => !item.interest.search(val))); // Show these as suggestions.
       }
       console.log(interestArr)
       console.log(interest)
@@ -490,7 +604,18 @@ partnersArr ? partnersArr.map((conversation, index) => {
       <img className="avatar" width="40" height="40" src={`http://localhost:5000/uploads/user/${conversation.partner_id}/${conversation.avatar}`} alt='partner-avatar' />
       <p>{conversation.name}</p>
       <p>Link: <a href={`http://localhost:3000/conversations/${conversation.conversation}`}>link</a></p>
-      <p>Recent message: {conversation.recentMessageObj[0].mostRecentMessage}</p>
+      {/*<p>Recent message: {conversation.recentMessageObj[0].mostRecentMessage}</p>*/ /*Currently doesn't work.*/}
+    </div>
+  )
+  // Make useState variable to store an array of conversation partners (name, avatar, latest message)!!!
+})
+: null
+
+const notificationsToShow = 
+notifications ? notifications.map((notification, index) => {
+  return(
+    <div key={index}>
+      <p>{notification.notification}</p>
     </div>
   )
   // Make useState variable to store an array of conversation partners (name, avatar, latest message)!!!
@@ -548,6 +673,16 @@ fetch('http://localhost:5000/logout', requestOptions)
                     showChatOptions &&
                     <div id='chat-options'>
                       {conversationsToShow}
+                    </div>
+                }
+            </div>
+            <div onClick={() => setShowNotificationOptions(!showNotificationOptions)} id='chat-menu'>
+                <p className="user-name">Notifications</p>
+                <FontAwesomeIcon icon='caret-down' className='fa-icon' />
+                {
+                    showNotificationOptions &&
+                    <div id='chat-options'>
+                      {notificationsToShow}
                     </div>
                 }
             </div>
@@ -665,6 +800,14 @@ fetch('http://localhost:5000/logout', requestOptions)
                           ))}
                           <li className="input-tag__tags__input"><input id="input-tag" type="text" onKeyDown={inputKeyDown} placeholder="Interests (write one at a time and press enter...)" /*ref={c => { tagInput = c; }}*/ /></li>
                         </ul>
+                      </div>
+                      <div>
+                        <h3>Blocked users</h3>
+                        { user.blocked_users && user.blocked_users.map((blockedUser, i) => ( // ALWAYS DO THIS!
+                            <li key={blockedUser}>
+                              {blockedUser}
+                            </li>
+                          ))}
                       </div>
                             </form>
                         </Fragment>
