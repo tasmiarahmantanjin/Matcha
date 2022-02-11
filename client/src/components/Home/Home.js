@@ -4,7 +4,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import MatchesPage from "../MatchesPage/MatchesPage";
 import Navbar from "../Navbar/Navbar";
-// import Nav from "../Nav";
+import Nav from "../Navbar/Nav";
 
 const Home = () => {
   const user = useSelector((state) => state.authReducer.user);

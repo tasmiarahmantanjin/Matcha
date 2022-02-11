@@ -16,6 +16,7 @@ import chatService from "../../services/chatService";
 import io from "socket.io-client";
 
 import "./Navbar.scss";
+import "./Nav.css";
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -648,248 +649,266 @@ const Navbar = () => {
           <img width="100" height="80" src={logoImage} alt="Logo" />
         </a>
       </div>
-
-      <div id="chat-menu">
-        <a className="user-name" href="http://localhost:3000/matches">
-          Find match
-        </a>
-      </div>
-
+      {/* 
       <div onClick={() => setShowChatOptions(!showChatOptions)} id="chat-menu">
         <p className="user-name">Chat</p>
         <FontAwesomeIcon icon="caret-down" className="fa-icon" />
         {showChatOptions && <div id="chat-options">{conversationsToShow}</div>}
-      </div>
+      </div> */}
 
-      <div
-        onClick={() => setShowNotificationOptions(!showNotificationOptions)}
-        id="chat-menu"
-      >
-        <p className="user-name">Notifications</p>
-        <FontAwesomeIcon icon="caret-down" className="fa-icon" />
-        {showNotificationOptions && (
-          <div className="card">{notificationsToShow}</div>
-        )}
-      </div>
+      <header>
+        <div
+          onClick={() => setShowChatOptions(!showChatOptions)}
+          id="chat-menu"
+        >
+          <p className="user-name">Chat</p>
+          <FontAwesomeIcon icon="caret-down" className="fa-icon" />
+          {showChatOptions && (
+            <div id="chat-options">{conversationsToShow}</div>
+          )}
+        </div>
+        <nav>
+          <ul>
+            <li>
+              <div
+                onClick={() => setShowProfileOptions(!showProfileOptions)}
+                id="profile-menu"
+              >
+                <img
+                  className="avatar"
+                  width="40"
+                  height="40"
+                  src={`http://localhost:5000/uploads/user/${user.user_id}/${avatar}`}
+                  alt="Avatar"
+                />
+                <p className="user-name">{user.user_name}</p>
+                <FontAwesomeIcon icon="caret-down" className="fa-icon" />
 
-      <div
-        onClick={() => setShowProfileOptions(!showProfileOptions)}
-        id="profile-menu"
-      >
-        <img
-          className="avatar"
-          width="40"
-          height="40"
-          src={`http://localhost:5000/uploads/user/${user.user_id}/${avatar}`}
-          alt="Avatar"
-        />
-        <p className="user-name">{user.user_name}</p>
-        <FontAwesomeIcon icon="caret-down" className="fa-icon" />
+                {showProfileOptions && (
+                  <div id="profile-options">
+                    <p onClick={() => setShowProfileModal(true)}>
+                      Update profile
+                    </p>
+                    <p onClick={() => setShowGalleryModal(true)}>
+                      Image gallery
+                    </p>
+                  </div>
+                )}
 
-        {showProfileOptions && (
-          <div id="profile-options">
-            <p onClick={() => setShowProfileModal(true)}>Update profile</p>
-            <p onClick={() => setShowGalleryModal(true)}>Image gallery</p>
-          </div>
-        )}
+                {showProfileModal && (
+                  <Modal click={() => setShowProfileModal(false)}>
+                    <Fragment key="header">
+                      <h3 className="m-0">Update profile</h3>
+                    </Fragment>
 
-        {showProfileModal && (
-          <Modal click={() => setShowProfileModal(false)}>
-            <Fragment key="header">
-              <h3 className="m-0">Update profile</h3>
-            </Fragment>
+                    <Fragment key="body">
+                      <form>
+                        <div className="input-field mb-1">
+                          <input
+                            onChange={(e) => setFirst_name(e.target.value)}
+                            value={first_name}
+                            required="required"
+                            type="text"
+                            placeholder="First name"
+                          />
+                        </div>
 
-            <Fragment key="body">
-              <form>
-                <div className="input-field mb-1">
-                  <input
-                    onChange={(e) => setFirst_name(e.target.value)}
-                    value={first_name}
-                    required="required"
-                    type="text"
-                    placeholder="First name"
-                  />
-                </div>
+                        <div className="input-field mb-1">
+                          <input
+                            onChange={(e) => setLast_name(e.target.value)}
+                            value={last_name}
+                            required="required"
+                            type="text"
+                            placeholder="Last name"
+                          />
+                        </div>
 
-                <div className="input-field mb-1">
-                  <input
-                    onChange={(e) => setLast_name(e.target.value)}
-                    value={last_name}
-                    required="required"
-                    type="text"
-                    placeholder="Last name"
-                  />
-                </div>
+                        <div className="input-field mb-1">
+                          <input
+                            onChange={(e) => setEmail(e.target.value)}
+                            value={email}
+                            required="required"
+                            type="text"
+                            placeholder="Email"
+                          />
+                        </div>
 
-                <div className="input-field mb-1">
-                  <input
-                    onChange={(e) => setEmail(e.target.value)}
-                    value={email}
-                    required="required"
-                    type="text"
-                    placeholder="Email"
-                  />
-                </div>
+                        <div className="input-field mb-1">
+                          <h3>I am ...</h3>
+                          <select
+                            onChange={(e) => setGender(e.target.value)}
+                            value={gender}
+                            required="required"
+                          >
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="others">Other</option>
+                          </select>
+                        </div>
 
-                <div className="input-field mb-1">
-                  <h3>I am ...</h3>
-                  <select
-                    onChange={(e) => setGender(e.target.value)}
-                    value={gender}
-                    required="required"
-                  >
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="others">Other</option>
-                  </select>
-                </div>
+                        <div className="input-field mb-1">
+                          <h3>Looking for...</h3>
+                          <label htmlFor="sex-or-male">Male</label>
+                          <input
+                            type="checkbox"
+                            value="male"
+                            id="sex-or-male"
+                            name="sex-or-male"
+                            checked={male}
+                            onChange={(e) => getSexOrientation(e.target.value)}
+                          />
+                          <label htmlFor="sex-or-female">Female</label>
+                          <input
+                            type="checkbox"
+                            value="female"
+                            id="sex-or-female"
+                            name="sex-or-female"
+                            checked={female}
+                            onChange={(e) => getSexOrientation(e.target.value)}
+                          />
+                          <label htmlFor="sex-or-other">Other</label>
+                          <input
+                            type="checkbox"
+                            value="other"
+                            id="sex-or-other"
+                            name="sex-or-other"
+                            checked={other}
+                            onChange={(e) => getSexOrientation(e.target.value)}
+                          />
+                        </div>
 
-                {/* //! TODO need to add all the needed field and connect the updated data with database */}
+                        <div className="input-field mb-1">
+                          <input
+                            onChange={(e) => setBio(e.target.value)}
+                            value={bio}
+                            type="text"
+                            placeholder="Bio"
+                            autoComplete="off"
+                          />
+                        </div>
 
-                <div className="input-field mb-1">
-                  <h3>Looking for...</h3>
-                  <label htmlFor="sex-or-male">Male</label>
-                  <input
-                    type="checkbox"
-                    value="male"
-                    id="sex-or-male"
-                    name="sex-or-male"
-                    checked={male}
-                    onChange={(e) => getSexOrientation(e.target.value)}
-                  />
-                  <label htmlFor="sex-or-female">Female</label>
-                  <input
-                    type="checkbox"
-                    value="female"
-                    id="sex-or-female"
-                    name="sex-or-female"
-                    checked={female}
-                    onChange={(e) => getSexOrientation(e.target.value)}
-                  />
-                  <label htmlFor="sex-or-other">Other</label>
-                  <input
-                    type="checkbox"
-                    value="other"
-                    id="sex-or-other"
-                    name="sex-or-other"
-                    checked={other}
-                    onChange={(e) => getSexOrientation(e.target.value)}
-                  />
-                </div>
+                        <div className="input-field mb-2">
+                          <input
+                            onChange={(e) => setPassword(e.target.value)}
+                            value={password}
+                            required="required"
+                            type="password"
+                            placeholder="Password"
+                            autoComplete="current-password"
+                          />
+                        </div>
+                        <div className="input-field mb-2">
+                          <label htmlFor="birthdate">Birthdate:</label>
+                          <input
+                            type="date"
+                            id="birthdate"
+                            onChange={(e) => setBirthdate(e.target.value)}
+                            name="birthdate"
+                            value={birthdate}
+                          ></input>
+                        </div>
+                        {avatarImagePicker}
+                        <div className="input-tag">
+                          <ul className="input-tag__tags">
+                            {interest &&
+                              interest.map((tag, i) => (
+                                <li key={tag}>
+                                  {tag}
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      removeTag(i);
+                                    }}
+                                  >
+                                    +
+                                  </button>
+                                </li>
+                              ))}
+                            <li className="input-tag__tags__input">
+                              <input
+                                id="input-tag"
+                                type="text"
+                                onKeyDown={inputKeyDown}
+                                placeholder="Interests (write one at a time and press enter...)" /*ref={c => { tagInput = c; }}*/
+                              />
+                            </li>
+                          </ul>
+                        </div>
+                        <div>
+                          <h3>Blocked users</h3>
+                          {user.blocked_users &&
+                            user.blocked_users.map(
+                              (
+                                blockedUser,
+                                i // ALWAYS DO THIS!
+                              ) => <li key={blockedUser}>{blockedUser}</li>
+                            )}
+                        </div>
+                      </form>
+                    </Fragment>
 
-                <div className="input-field mb-1">
-                  <input
-                    onChange={(e) => setBio(e.target.value)}
-                    value={bio}
-                    // required='required'
-                    type="text"
-                    placeholder="Bio"
-                    autoComplete="off"
-                  />
-                </div>
+                    <Fragment key="footer">
+                      <button className="btn-success" onClick={submitForm}>
+                        UPDATE
+                      </button>
+                    </Fragment>
+                  </Modal>
+                )}
+                {showGalleryModal && (
+                  <GalleryModal click={() => setShowGalleryModal(false)}>
+                    <img
+                      width="40"
+                      height="40"
+                      src={`http://localhost:5000/uploads/user/${user.user_id}/${avatar}`}
+                      alt="Avatar"
+                    />
+                    <Fragment key="gallery-header">
+                      <h3 className="m-0">Image Gallery</h3>
+                    </Fragment>
 
-                {/* //! TODO end of newly added code */}
+                    <Fragment key="gallery-images">
+                      {galleryImagesToShow}
+                      {galleryImagePicker}
+                    </Fragment>
+                    <Fragment key="gallery-footer">
+                      <button
+                        className="btn-success"
+                        onClick={submitGalleryForm}
+                      >
+                        Upload
+                      </button>
+                    </Fragment>
+                  </GalleryModal>
+                )}
+              </div>
+            </li>
+            <li>
+              <a className="user-name" href="http://localhost:3000/matches">
+                Find match
+              </a>
+            </li>
 
-                <div className="input-field mb-2">
-                  <input
-                    onChange={(e) => setPassword(e.target.value)}
-                    value={password}
-                    required="required"
-                    type="password"
-                    placeholder="Password"
-                    autoComplete="current-password"
-                  />
-                </div>
-                <div className="input-field mb-2">
-                  <label htmlFor="birthdate">Birthdate:</label>
-                  <input
-                    type="date"
-                    id="birthdate"
-                    onChange={(e) => setBirthdate(e.target.value)}
-                    name="birthdate"
-                    value={birthdate}
-                  ></input>
-                </div>
-                {avatarImagePicker}
-                <div className="input-tag">
-                  <ul className="input-tag__tags">
-                    {interest &&
-                      interest.map(
-                        (
-                          tag,
-                          i // ALWAYS DO THIS!
-                        ) => (
-                          <li key={tag}>
-                            {tag}
-                            <button
-                              type="button"
-                              onClick={() => {
-                                removeTag(i);
-                              }}
-                            >
-                              +
-                            </button>
-                          </li>
-                        )
-                      )}
-                    <li className="input-tag__tags__input">
-                      <input
-                        id="input-tag"
-                        type="text"
-                        onKeyDown={inputKeyDown}
-                        placeholder="Interests (write one at a time and press enter...)" /*ref={c => { tagInput = c; }}*/
-                      />
-                    </li>
-                  </ul>
-                </div>
-                <div>
-                  <h3>Blocked users</h3>
-                  {user.blocked_users &&
-                    user.blocked_users.map(
-                      (
-                        blockedUser,
-                        i // ALWAYS DO THIS!
-                      ) => <li key={blockedUser}>{blockedUser}</li>
-                    )}
-                </div>
-              </form>
-            </Fragment>
+            <li>
+              <div
+                onClick={() =>
+                  setShowNotificationOptions(!showNotificationOptions)
+                }
+                id="chat-menu"
+              >
+                <p className="user-name">Notifications</p>
+                <FontAwesomeIcon icon="caret-down" className="fa-icon" />
+                {showNotificationOptions && (
+                  <div className="card">{notificationsToShow}</div>
+                )}
+              </div>
+            </li>
 
-            <Fragment key="footer">
-              <button className="btn-success" onClick={submitForm}>
-                UPDATE
-              </button>
-            </Fragment>
-          </Modal>
-        )}
-        {showGalleryModal && (
-          <GalleryModal click={() => setShowGalleryModal(false)}>
-            <img
-              width="40"
-              height="40"
-              src={`http://localhost:5000/uploads/user/${user.user_id}/${avatar}`}
-              alt="Avatar"
-            />
-            <Fragment key="gallery-header">
-              <h3 className="m-0">Image Gallery</h3>
-            </Fragment>
-
-            <Fragment key="gallery-images">
-              {galleryImagesToShow}
-              {galleryImagePicker}
-            </Fragment>
-            <Fragment key="gallery-footer">
-              <button className="btn-success" onClick={submitGalleryForm}>
-                Upload
-              </button>
-            </Fragment>
-          </GalleryModal>
-        )}
-      </div>
-
-      <div onClick={() => logOut()} id="chat-menu">
-        <p className="user-name">Logout</p>
-      </div>
+            <li onClick={() => logOut()} id="signup">
+              <a href="/login">Logout</a>
+            </li>
+          </ul>
+        </nav>
+      </header>
     </div>
   );
 };
