@@ -166,20 +166,20 @@ const Navbar = () => {
   /**
    * Notifications code ends here.
    */
-  useEffect(() => {
-    // POST request using fetch inside useEffect React hook
-    const requestOptions = {
-      method: "GET", //,
-    };
-    fetch("http://localhost:5000/getHashtagList", requestOptions)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data.rows);
-        setHashtags(data.rows);
-      });
+  // useEffect(() => {
+  //   // POST request using fetch inside useEffect React hook
+  //   const requestOptions = {
+  //     method: "GET", //,
+  //   };
+  //   fetch("http://localhost:5000/getHashtagList", requestOptions)
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       console.log(data.rows);
+  //       setHashtags(data.rows);
+  //     });
 
-    // empty dependency array means this effect will only run once (like componentDidMount in classes)
-  }, [user]);
+  //   // empty dependency array means this effect will only run once (like componentDidMount in classes)
+  // }, [user]);
 
   useEffect(() => {
     const requestObject = {
@@ -419,10 +419,6 @@ const Navbar = () => {
       inputTag.value = "";
     } else if (e.key === "Backspace" && val === "#") {
       removeTag(interestArr.length - 1);
-    } else {
-      console.log(hashtags);
-      console.log(`Matching interests:`);
-      console.log(hashtags.filter((item) => !item.interest.search(val))); // Show these as suggestions.
     }
     console.log(interestArr);
     console.log(interest);
