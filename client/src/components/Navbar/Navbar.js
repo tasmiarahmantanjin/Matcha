@@ -162,24 +162,9 @@ const Navbar = () => {
         setConversationsArr(initialConversations.rows);
       });
   }, [user]);
-
   /**
    * Notifications code ends here.
    */
-  // useEffect(() => {
-  //   // POST request using fetch inside useEffect React hook
-  //   const requestOptions = {
-  //     method: "GET", //,
-  //   };
-  //   fetch("http://localhost:5000/getHashtagList", requestOptions)
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       console.log(data.rows);
-  //       setHashtags(data.rows);
-  //     });
-
-  //   // empty dependency array means this effect will only run once (like componentDidMount in classes)
-  // }, [user]);
 
   useEffect(() => {
     const requestObject = {
