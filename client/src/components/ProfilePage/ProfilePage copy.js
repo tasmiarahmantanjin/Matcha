@@ -1,71 +1,28 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 
-// import useSelector to connect the store with the component
 import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import Navbar from '../Navbar/Navbar'
-//import Match from './Match'
+
 import { withRouter } from 'react-router'
 
-import { useDispatch } from 'react-redux'
-// import the login action
-//import { getUser } from '../../store/actions/auth'
 import { likeUser } from '../../store/actions/auth'
 import { unlikeUser } from '../../store/actions/auth'
 import { blockUser } from '../../store/actions/auth'
 import { reportUser } from '../../store/actions/auth'
-//import { uploadToGallery } from '../../store/actions/auth'
 import galleryService from '../../services/galleryService'
-import io from 'socket.io-client' // For chat.
 
-//import { getUserById } from '../../../../server/controllers/profileController';
 import './ProfilePage.scss'
 
 const ProfilePage = ({ id }) => {
   const [profile, setProfile] = useState()
   const [liked, setLiked] = useState()
   const [likedUser, setLikedUser] = useState()
-  const [uploadFile, setUploadFile] = useState('')
   const [galleryImages, setGalleryImages] = useState([])
   const dispatch = useDispatch()
   const user = useSelector(state => state.authReducer.user)
-  const [yourID, setYourID] = useState(user.user_id)
-  const socketRef = useRef()
 
   useEffect(() => {
-    socketRef.current = io.connect('localhost:3001/')
-    socketRef.current.emit('create', user.user_id)
-    socketRef.current.on('your id', id => {
-      setYourID(id)
-      console.log(`yourID: ${yourID}`)
-    })
-
-    socketRef.current.on('message', message => {
-      console.log('Message.')
-      console.log(message)
-      //receivedMessage(message);
-    })
-
-    socketRef.current.on('like', like => {
-      console.log('Received like.')
-      console.log(like)
-      //receivedMessage(message);
-    })
-    //});
-
-    /**
-     * ... until here.
-     */
-    //console.log(`Partner to use for fetching partner data: ${partner_id}`)
-
-    // empty dependency array means this effect will only run once (like componentDidMount in classes)
-  }, [])
-
-  /**
-   * Chat code ends here.
-   */
-
-  useEffect(() => {
-    // POST request using fetch inside useEffect React hook
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -74,21 +31,8 @@ const ProfilePage = ({ id }) => {
     fetch('http://localhost:5000/profile', requestOptions)
       .then(response => response.json())
       .then(data => {
-        //console.log(data.rows)
         setProfile(data.rows[0])
       })
-
-    // empty dependency array means this effect will only run once (like componentDidMount in classes)
-  }, [id])
-
-  useEffect(() => {
-    // POST request using fetch inside useEffect React hook
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ profile_id: id, user_id: user.user_id })
-    }
-    fetch('http://localhost:5000/visitUser', requestOptions)
   }, [id])
 
   useEffect(() => {
@@ -103,29 +47,27 @@ const ProfilePage = ({ id }) => {
     }
   }, [profile])
 
+  // This fetch if user has liked the profile
   useEffect(() => {
-    // POST request using fetch inside useEffect React hook
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ profile_id: id, user_id: user.user_id })
     }
-    //console.log(requestOptions.body)
+
+    // FIXME: Need to debug why this is not fetching the liked user.
+    console.log(requestOptions.body)
     fetch('http://localhost:5000/getLike', requestOptions)
       .then(response => response.json())
       .then(data => {
-        console.log('Like data:::::: ')
-        console.log(data)
-        // if (data.rows[0]) {
-        //   setLiked(data.rows[0])
-        // }
+        console.log('Like data Debug:::::::::::::::: ', data.rows)
+        if (data.rows[0]) {
+          setLiked(data.rows[0])
+        }
       })
-
-    // empty dependency array means this effect will only run once (like componentDidMount in classes)
   }, [])
-  //console.log(`Data now in profile: `)
-  //console.log(profile);
 
+  // This checks if the profile has liked the user!
   useEffect(() => {
     // POST request using fetch inside useEffect React hook
     const requestOptions = {
@@ -137,36 +79,33 @@ const ProfilePage = ({ id }) => {
     fetch('http://localhost:5000/getLike', requestOptions)
       .then(response => response.json())
       .then(data => {
-        console.log('Like data:::::::::::::: ')
-        console.log(data)
-        // if (data.rows[0]) {
-        //   setLikedUser(data.rows[0])
-        // }
+        //console.log('Like data: ')
+        //console.log(data.rows)
+        if (data.rows[0]) {
+          setLikedUser(data.rows[0])
+        }
       })
 
     // empty dependency array means this effect will only run once (like componentDidMount in classes)
   }, [])
 
   const likeButtonClickHandler = () => {
-    //console.log(`Like button clicked. ${user.first_name.charAt(0).toUpperCase() + user.first_name.slice(1)} likes ${profile.first_name.charAt(0).toUpperCase() + profile.first_name.slice(1)}.`)
+    console.log(
+      `Like button clicked. ${
+        user.first_name.charAt(0).toUpperCase() + user.first_name.slice(1)
+      } likes ${profile.first_name.charAt(0).toUpperCase() + profile.first_name.slice(1)}.`
+    )
+
     const formData = new FormData()
 
-    formData.append('profile_id', profile.user_id)
+    formData.append('first_name', user.user_id)
     formData.append('user_id', user.user_id)
-    formData.append('first_name', user.first_name)
-    //console.log(`id in formData: ${formData.get('profile_id')}`)
-    // dispatch the event action
+    formData.append('profile_id', profile.user_id)
+
     const values = Object.fromEntries(formData.entries())
     dispatch(likeUser(values))
     setLiked(1)
-    const messageObject = {
-      //message_text: message,
-      sender_id: user.user_id,
-      timestamp: new Date(),
-      //conversation: conversation.id,
-      partner: profile.user_id //
-    }
-    //console.log(`Message: ${messageObject.message_text}`)
+
     socketRef.current.emit('like', messageObject)
     if (likedUser !== undefined) {
       const messageObject = {
@@ -181,26 +120,19 @@ const ProfilePage = ({ id }) => {
   }
 
   const unlikeButtonClickHandler = () => {
-    //console.log(`Unlike button clicked. ${user.first_name.charAt(0).toUpperCase() + user.first_name.slice(1)} unliked ${profile.first_name.charAt(0).toUpperCase() + profile.first_name.slice(1)}.`)
+    console.log(
+      `Unlike button clicked. ${
+        user.first_name.charAt(0).toUpperCase() + user.first_name.slice(1)
+      } un-liked ${profile.first_name.charAt(0).toUpperCase() + profile.first_name.slice(1)}.`
+    )
     const formData = new FormData()
 
+    formData.append('first_name', user.first_name)
     formData.append('profile_id', profile.user_id)
     formData.append('user_id', user.user_id)
-    formData.append('first_name', user.first_name)
-    //console.log(`id in formData: ${formData.get('profile_id')}`)
-    // dispatch the event action
     const values = Object.fromEntries(formData.entries())
     dispatch(unlikeUser(values))
     setLiked()
-    const messageObject = {
-      //message_text: message,
-      sender_id: user.user_id,
-      timestamp: new Date(),
-      //conversation: conversation.id,
-      partner: profile.user_id //
-    }
-    //console.log(`Message: ${messageObject.message_text}`)
-    socketRef.current.emit('unlike', messageObject)
   }
 
   const blockButtonClickHandler = () => {
@@ -224,8 +156,7 @@ const ProfilePage = ({ id }) => {
     formData.append('user_id', user.user_id)
     const values = Object.fromEntries(formData.entries())
     dispatch(blockUser(values))
-    // add block to user data?
-    // Redirect to home.
+    // TODO: Redirect to home.
   }
 
   const reportButtonClickHandler = () => {
@@ -249,7 +180,7 @@ const ProfilePage = ({ id }) => {
     formData.append('user_id', user.user_id)
     const values = Object.fromEntries(formData.entries())
     dispatch(reportUser(values))
-    // Redirect to home.
+    // TODO: Redirect to home.
   }
 
   const uploadButtonClickHandler = () => {
@@ -265,49 +196,41 @@ const ProfilePage = ({ id }) => {
     //dispatch(galleryUpload(values))
   }
 
-  var likeButton
+  let likeButton
   if (profile && user.user_id === profile.user_id) {
     likeButton = null
   } else {
     if (liked === undefined) {
-      likeButton = (
-        <div>
-          <button onClick={likeButtonClickHandler}>Like</button>
-        </div>
-      )
+      likeButton = <button onClick={likeButtonClickHandler}>Like</button>
     }
     if (liked !== undefined) {
-      likeButton = (
-        <div>
-          <button onClick={unlikeButtonClickHandler}>Unlike</button>
-        </div>
-      )
+      likeButton = <button onClick={unlikeButtonClickHandler}>Unlike</button>
     }
   }
 
-  var blockButton
+  let blockButton
   if (profile && user.user_id === profile.user_id) {
     blockButton = null
   } else {
     blockButton = (
-      <div>
-        <button onClick={blockButtonClickHandler}>Block</button>
-      </div>
+      <button className="button" onClick={blockButtonClickHandler}>
+        Block
+      </button>
     )
   }
 
-  var reportButton
+  let reportButton
   if (profile && user.user_id === profile.user_id) {
     reportButton = null
   } else {
     reportButton = (
-      <div>
-        <button onClick={reportButtonClickHandler}>Report fake account</button>
-      </div>
+      <button className="button" onClick={reportButtonClickHandler}>
+        Report
+      </button>
     )
   }
 
-  var uploadButton
+  let uploadButton
   if (profile && user.user_id === profile.user_id) {
     uploadButton = (
       <div>
@@ -319,22 +242,20 @@ const ProfilePage = ({ id }) => {
   }
 
   var d = new Date()
-  //console.log(`d: ${d}`)
 
   function timeDiffCalc(dateFuture, dateNow) {
     let diffInMilliSeconds = Math.abs(dateFuture - dateNow) / 1000
+
     // calculate days
     const days = Math.floor(diffInMilliSeconds / 86400)
     diffInMilliSeconds -= days * 86400
-    //console.log('calculated days', days);
+
     // calculate hours
     const hours = Math.floor(diffInMilliSeconds / 3600) % 24
     diffInMilliSeconds -= hours * 3600
-    //console.log('calculated hours', hours);
-    // calculate minutes
+
     const minutes = Math.floor(diffInMilliSeconds / 60) % 60
     diffInMilliSeconds -= minutes * 60
-    //console.log('minutes', minutes);
     let difference = ''
     if (days > 0) {
       difference += days === 1 ? `${days} day, ` : `${days} days, `
@@ -378,13 +299,17 @@ const ProfilePage = ({ id }) => {
 
   let profileToShow
   let online
-  var dateLastSeen
+  let dateLastSeen
   if (profile !== undefined) {
-    console.log(profile)
+    console.log('profile', profile)
     if (profile.online === 1) {
       online = (
         <div>
-          <p>User is currently online!</p>
+          <p>
+            {profile.first_name.charAt(0).toLowerCase() + profile.first_name.slice(1)} is currently
+            online!
+          </p>
+          {/* // TODO: I can add a icon here with green light */}
         </div>
       )
     } else {
@@ -398,64 +323,60 @@ const ProfilePage = ({ id }) => {
     }
     profileToShow = (
       <div>
-        <img
-          width="150"
-          height="150"
-          src={`http://localhost:5000/uploads/user/${profile.user_id}/${profile.avatar}`}
-          alt="profile_avatar"
-        />
-        {online}
-        <h2>
-          {profile.first_name.charAt(0).toUpperCase() + profile.first_name.slice(1)}{' '}
-          {profile.last_name.charAt(0).toUpperCase() + profile.last_name.slice(1)}
-        </h2>
-        {likeButton}
-        <p>
-          {profile.gender} located{' '}
-          {getDistanceFromLatLonInKm(
-            profile.latitude,
-            profile.longitude,
-            user.latitude,
-            user.longitude
-          )}{' '}
-          km away.
-        </p>
-        {profile.interest.map(interest_sing => (
-          <li key={interest_sing}> {interest_sing}</li>
-        ))}
-        <div>
-          <p>Looking for...</p>
-          <ul>
-            {profile.sexual_orientation.map(orientation => (
-              <li key={orientation}> {orientation}</li>
-            ))}
-          </ul>
+        <div className="card">
+          <img
+            className="card__image"
+            width="150"
+            height="150"
+            src={`http://localhost:5000/uploads/user/${profile.user_id}/${profile.avatar}`}
+            alt="profile_avatar"
+          />
+          {online}
+          <h2>
+            {profile.first_name.charAt(0).toUpperCase() + profile.first_name.slice(1)}{' '}
+            {profile.last_name.charAt(0).toUpperCase() + profile.last_name.slice(1)}
+          </h2>
+
+          <p>
+            {profile.gender} located{' '}
+            {getDistanceFromLatLonInKm(
+              profile.latitude,
+              profile.longitude,
+              user.latitude,
+              user.longitude
+            )}
+            km away.
+          </p>
+          {profile.interest.map(interest_sing => (
+            <li key={interest_sing}> {interest_sing}</li>
+          ))}
+
+          <div className="skills">
+            <p>Looking for...</p>
+            <ul>
+              {profile.sexual_orientation.map(orientation => (
+                <li key={orientation}>{orientation}</li>
+              ))}
+            </ul>
+          </div>
+          <p>Fame rating: {profile.fame}</p>
+          <div class="gallery">
+            <p>
+              {profile.first_name.charAt(0).toUpperCase() + profile.first_name.slice(1)}
+              's Images
+            </p>
+            <p>{galleryImagesToShow}</p>
+            <p>{uploadButton}</p>
+          </div>
+          <div className="flex-container">
+            {blockButton}
+            {reportButton}
+            {likeButton}
+          </div>
         </div>
-        <p>Fame rating: {profile.fame}</p>
-        {blockButton}
-        {reportButton}
-        {galleryImagesToShow}
-        {uploadButton}
       </div>
     )
   }
-
-  /*const submitForm = (e) => {
-      e.preventDefault()
-      const form = { ageRangeMax, ageRangeMin, distance, gender, sexual_orientation, interest }
-      //console.log(form)
-
-      const formData = new FormData()
-
-      for (const key in form) {
-          formData.append(key, form[key])
-      }
-      //console.log(`ageRangeMax in formData: ${formData.get('ageRangeMax')}`)
-      // dispatch the event action
-      const values = Object.fromEntries(formData.entries());
-      dispatch(getMatches(values))
-      //console.log(matches)
-  }*/
 
   return (
     <div id="chat-container">

@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { logout } from "../../store/actions/auth";
 import logoImage from "../../assets/images/logo_matcha.svg";
-// Import for the user update
+
 import Modal from "../Modal/Modal";
 import GalleryModal from "../GalleryModal/GalleryModal";
 import { updateProfile } from "../../store/actions/auth";
@@ -61,13 +61,10 @@ const Navbar = () => {
   const [messageArr, setMessageArr] = useState();
 
   const [notifications, setNotifications] = useState([]);
-  const [hashtags, setHashtags] = useState([]);
 
   /**
    * Chat code starts here
    */
-  const [messages, setMessages] = useState([]);
-
   const [yourID, setYourID] = useState(user.user_id);
 
   const socketRef = useRef();
@@ -79,7 +76,7 @@ const Navbar = () => {
     alert(`Liked by ${message.sender_id}`); // Alert user to new like! WORKS!
   };
   const receivedUnlike = (message) => {
-    alert(`Unliked by ${message.sender_id}`); // Alert user to new unlike! WORKS!
+    alert(`Un-liked by ${message.sender_id}`); // Alert user to new unlike! WORKS!
   };
   const receivedMatch = (match) => {
     alert(`Match between ${match.sender_id} and ${match.partner}`); // Alert user to new unlike! WORKS!
@@ -345,7 +342,7 @@ const Navbar = () => {
     const formData = new FormData();
 
     for (const key in form) {
-      console.log(key);
+      // console.log(key);
       formData.append(key, form[key]);
     }
 
@@ -353,7 +350,6 @@ const Navbar = () => {
   };
 
   // Hashtag code
-
   const removeTag = (i) => {
     const newTags = [...interestArr];
     newTags.splice(i, 1);

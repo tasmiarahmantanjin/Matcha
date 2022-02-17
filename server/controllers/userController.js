@@ -43,8 +43,7 @@ exports.getHashtagList = async (req, res) => {
 }
 
 exports.update = async (req, res) => {
-  //console.log('Request.body in userController:')
-  //console.log(req.body)
+  //console.log('userController HIT:')
   try {
     const {
       user_id,
