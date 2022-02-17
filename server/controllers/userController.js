@@ -58,7 +58,7 @@ exports.update = async (req, res) => {
       email,
       password
     } = req.body
-    //console.log(sexual_orientation);
+
     let avatar = null
     if (req.file) {
       avatar = req.file.filename
@@ -76,11 +76,6 @@ exports.update = async (req, res) => {
       return res.status(401).json({ message: 'Incorrect password!' })
 
     //4. Update user table with new user data.
-    //const userWithToken = updateUser(user)
-    //userWithToken.user.avatar = user.avatar
-    //console.log('Now we would update user table with new data.')
-    // It updates! However, frontend has problems with default options.
-    // Transform interests into correct format
     console.log('body.interest length:')
     console.log(interest.length)
     let interest_arr
@@ -95,7 +90,7 @@ exports.update = async (req, res) => {
     } else {
       sexual_orientation_arr = []
     }
-    //console.log(sexual_orientation_arr);
+
     db.query(
       'UPDATE users SET first_name = $1, last_name = $2, gender = $3, sexual_orientation = $4, bio = $5, interest = $6, birthdate = $7, email = $8 WHERE user_id = $9',
       [
@@ -112,7 +107,7 @@ exports.update = async (req, res) => {
     )
     if (interest_arr) {
       let difference = interest_arr.filter(item => !user.interest.includes(item))
-      //console.log(`Difference.length: ${difference.length}`);
+
       if (difference.length > 0) {
         for (let i in difference) {
           console.log(`Interest: ${difference[i]}`)
@@ -156,7 +151,6 @@ exports.update = async (req, res) => {
         console.log('Nothing deleted here.')
       }
       if (avatar !== null) {
-        //console.log('Updating avatar')
         db.query('UPDATE users SET avatar = $1 WHERE email = $2', [avatar, email])
         const newImage = await db.query(
           'INSERT INTO gallery (owner_id, path) VALUES ($1, $2) RETURNING path',
