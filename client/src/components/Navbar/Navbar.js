@@ -12,12 +12,15 @@ import { uploadToGallery } from '../../store/actions/auth'
 import galleryService from '../../services/galleryService'
 import notificationsService from '../../services/notificationsService'
 
+import { useHistory } from 'react-router-dom'
+
 import chatService from '../../services/chatService'
 import io from 'socket.io-client'
 
 import './Navbar.scss'
 
 const Navbar = () => {
+  const history = useHistory()
   const dispatch = useDispatch()
   const user = useSelector(state => state.authReducer.user)
 
@@ -35,7 +38,6 @@ const Navbar = () => {
   const [email, setEmail] = useState(user.email)
   const [gender, setGender] = useState(user.gender)
 
-  // SexPref, Bio & interest update
   const [sexual_orientation, setSexual_orientation] = useState(user.sexual_orientation)
   const [bio, setBio] = useState(user.bio)
 
@@ -109,22 +111,8 @@ const Navbar = () => {
       console.log(match)
       receivedMatch(match)
     })
-    //});
-
-    /**
-     * ... until here.
-     */
-    //console.log(`Partner to use for fetching partner data: ${partner_id}`)
-
-    // empty dependency array means this effect will only run once (like componentDidMount in classes)
   }, [])
-  /**
-   * Chat code ends here.
-   */
 
-  /**
-   * Notifications code starts here.
-   */
   useEffect(() => {
     const requestObject = {
       headers: {
@@ -151,9 +139,6 @@ const Navbar = () => {
       setConversationsArr(initialConversations.rows)
     })
   }, [user])
-  /**
-   * Notifications code ends here.
-   */
 
   useEffect(() => {
     const requestObject = {
@@ -262,21 +247,22 @@ const Navbar = () => {
         setOther(true)
       }
     }
-    // empty dependency array means this effect will only run once (like componentDidMount in classes)
   }, [])
 
   useEffect(() => {
     if (interest) {
       setInterestArr(interest)
     }
-    // empty dependency array means this effect will only run once (like componentDidMount in classes)
   }, [])
+
+  useEffect(() => {
+    setAvatar(user.avatar)
+  }, [user])
 
   useEffect(() => {
     if (!bio) {
       setBio('')
     }
-    // empty dependency array means this effect will only run once (like componentDidMount in classes)
   }, [])
 
   let checked = []
@@ -329,7 +315,6 @@ const Navbar = () => {
     const formData = new FormData()
 
     for (const key in form) {
-      // console.log(key);
       formData.append(key, form[key])
     }
 
@@ -355,11 +340,8 @@ const Navbar = () => {
     return start > 0 || end < str.length ? str.substring(start, end) : str
   }
 
-  // Puts interest into array on enter press, and resets the input field. //
+  // Puts interest into array on enter press, and resets the input field.
   const inputKeyDown = e => {
-    // Doesn't update the displayed array correctly; appears to be one interest behind.
-    //console.log('Key pressed');
-    // If hashtag is input, no update it made
     if (e.target.value === '#') {
       console.log('Hashtag detected')
       return
@@ -388,9 +370,7 @@ const Navbar = () => {
 
     return
   }
-  // End of hashtag code
 
-  // Checkbox code
   function getSexOrientation(checkmark) {
     if (checked && !checked.includes(checkmark)) {
       checked.push(checkmark)
@@ -431,7 +411,6 @@ const Navbar = () => {
       return false
     }
   }
-  // End of checkbox code
 
   const imageDeleteButtonHandler = img => {
     const requestObject = {
@@ -524,7 +503,6 @@ const Navbar = () => {
             </p>
           </div>
         )
-        // Make useState variable to store an array of conversation partners (name, avatar, latest message)!!!
       })
     : null
 
@@ -535,7 +513,6 @@ const Navbar = () => {
             <p>{notification.notification}</p>
           </div>
         )
-        // Make useState variable to store an array of conversation partners (name, avatar, latest message)!!!
       })
     : null
 
@@ -577,15 +554,9 @@ const Navbar = () => {
       </div>
     )
 
-  // Start of logout function
-  const logOut = () => {
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ user_id: user.user_id })
-    }
-    fetch('http://localhost:5000/logout', requestOptions)
+  const logOut = history => {
     dispatch(logout())
+    history.push('/login')
   }
 
   return (
@@ -601,7 +572,6 @@ const Navbar = () => {
         </a>
       </div>
       <div onClick={() => setShowChatOptions(!showChatOptions)} id="chat-menu">
-        <p className="user-name">Chat</p>
         <FontAwesomeIcon icon="comment-dots" className="fa-icon" size="2x" />
         {showChatOptions && <div id="chat-options">{conversationsToShow}</div>}
       </div>
@@ -678,8 +648,6 @@ const Navbar = () => {
                   </select>
                 </div>
 
-                {/* //! TODO need to add all the needed field and connect the updated data with database */}
-
                 <div className="input-field mb-1">
                   <h3>Looking for...</h3>
                   <label htmlFor="sex-or-male">Male</label>
@@ -715,14 +683,11 @@ const Navbar = () => {
                   <input
                     onChange={e => setBio(e.target.value)}
                     value={bio}
-                    // required='required'
                     type="text"
                     placeholder="Bio"
                     autoComplete="off"
                   />
                 </div>
-
-                {/* //! TODO end of newly added code */}
 
                 <div className="input-field mb-2">
                   <input
@@ -748,30 +713,25 @@ const Navbar = () => {
                 <div className="input-tag">
                   <ul className="input-tag__tags">
                     {interest &&
-                      interest.map(
-                        (
-                          tag,
-                          i // ALWAYS DO THIS!
-                        ) => (
-                          <li key={tag}>
-                            {tag}
-                            <button
-                              type="button"
-                              onClick={() => {
-                                removeTag(i)
-                              }}
-                            >
-                              +
-                            </button>
-                          </li>
-                        )
-                      )}
+                      interest.map((tag, i) => (
+                        <li key={tag}>
+                          {tag}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              removeTag(i)
+                            }}
+                          >
+                            +
+                          </button>
+                        </li>
+                      ))}
                     <li className="input-tag__tags__input">
                       <input
                         id="input-tag"
                         type="text"
                         onKeyDown={inputKeyDown}
-                        placeholder="Interests (write one at a time and press enter...)" /*ref={c => { tagInput = c; }}*/
+                        placeholder="Interests (write one at a time and press enter...)"
                       />
                     </li>
                   </ul>
@@ -779,12 +739,9 @@ const Navbar = () => {
                 <div>
                   <h3>Blocked users</h3>
                   {user.blocked_users &&
-                    user.blocked_users.map(
-                      (
-                        blockedUser,
-                        i // ALWAYS DO THIS!
-                      ) => <li key={blockedUser}>{blockedUser}</li>
-                    )}
+                    user.blocked_users.map((blockedUser, i) => (
+                      <li key={blockedUser}>{blockedUser}</li>
+                    ))}
                 </div>
               </form>
             </Fragment>
@@ -820,8 +777,9 @@ const Navbar = () => {
           </GalleryModal>
         )}
       </div>
-      <div onClick={() => logOut()} id="chat-menu">
-        <p className="user-name">LogOut</p>
+
+      <div onClick={() => logOut(history)} id="chat-menu">
+        <p className="user-name">Logout</p>
         <FontAwesomeIcon icon="sign-out-alt" className="fa-icon" size="2x" />
       </div>
     </div>
