@@ -72,7 +72,6 @@ export const uploadToGallery = params => dispatch => {
 }
 
 export const getMatches = params => dispatch => {
-  //console.log(`Data in auth.js: ${params.get('ageRangeMax')}`) // Form data is still available here.
   return AuthService.getMatches(params)
     .then(data => {
       dispatch({ type: GET_MATCHES, payload: data })
@@ -83,7 +82,6 @@ export const getMatches = params => dispatch => {
 }
 
 export const likeUser = params => dispatch => {
-  //console.log(`Data in auth.js: ${params.get('ageRangeMax')}`) // Form data is still available here.
   return AuthService.likeUser(params)
     .then(data => {
       dispatch({ type: LIKE_USER, payload: data })
@@ -94,7 +92,6 @@ export const likeUser = params => dispatch => {
 }
 
 export const unlikeUser = params => dispatch => {
-  //console.log(`Data in auth.js: ${params.get('ageRangeMax')}`) // Form data is still available here.
   return AuthService.unlikeUser(params)
     .then(data => {
       dispatch({ type: UNLIKE_USER, payload: data })
@@ -105,7 +102,6 @@ export const unlikeUser = params => dispatch => {
 }
 
 export const getUser = params => dispatch => {
-  //console.log(`Data in auth.js: ${params.get('id')}`)
   return AuthService.getProfile(params)
     .then(data => {
       dispatch({ type: GET_MATCHES, payload: data })
@@ -116,7 +112,6 @@ export const getUser = params => dispatch => {
 }
 
 export const blockUser = params => dispatch => {
-  //console.log(`Data in auth.js: ${params.get('ageRangeMax')}`) // Form data is still available here.
   return AuthService.blockUser(params)
     .then(data => {
       dispatch({ type: BLOCK_USER, payload: data })
@@ -127,7 +122,6 @@ export const blockUser = params => dispatch => {
 }
 
 export const reportUser = params => dispatch => {
-  //console.log(`Data in auth.js: ${params.get('ageRangeMax')}`) // Form data is still available here.
   return AuthService.reportUser(params)
     .then(data => {
       dispatch({ type: REPORT_USER, payload: data })
@@ -142,7 +136,6 @@ export const forgotPassword = (params, history) => dispatch => {
     .then(data => {
       dispatch({ type: PASSWORD_RESET, payload: data })
       // Message saying email has been sent?
-      // Redirect to home.
       history.push('/')
     })
     .catch(err => {})
@@ -152,7 +145,6 @@ export const resetPassword = (params, history) => dispatch => {
   return AuthService.resetPassword(params)
     .then(data => {
       dispatch({ type: PASSWORD_RESET, payload: data })
-      // Redirect to home.
       history.push('/')
     })
     .catch(err => {})

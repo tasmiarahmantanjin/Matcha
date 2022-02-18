@@ -1,16 +1,11 @@
-// database connection
 const db = require('../config/database')
 const bcrypt = require('bcrypt')
 
 // This really should be a helper function in an import.
 const findUserInfo = async (key, value, ...args) => {
-  //console.log(`Finding user by key = ${key}, value = ${value}.`)
-
   const info = args.length == 0 ? '*' : args.join(', ')
-  //console.log(`Info = ${info}.`)
 
   const res = await db.query(`SELECT ${info} FROM users WHERE ${key} = $1`, [value])
-  //console.log(res.rows[0]);
   return res.rows[0]
 }
 
@@ -26,6 +21,7 @@ const findUserInfo = async (key, value, ...args) => {
 };*/
 
 exports.getHashtagList = async (req, res) => {
+  console.log('userController.getHashtagList HIT:')
   try {
     console.log('Getting hashtag list.')
     const hashtags = await db.query('SELECT * FROM hashtags')
@@ -43,7 +39,7 @@ exports.getHashtagList = async (req, res) => {
 }
 
 exports.update = async (req, res) => {
-  //console.log('userController HIT:')
+  console.log('userController.update HIT:')
   try {
     const {
       user_id,
@@ -90,7 +86,7 @@ exports.update = async (req, res) => {
       sexual_orientation_arr = []
     }
 
-    db.query(
+    await db.query(
       'UPDATE users SET first_name = $1, last_name = $2, gender = $3, sexual_orientation = $4, bio = $5, interest = $6, birthdate = $7, email = $8 WHERE user_id = $9',
       [
         first_name,
@@ -150,16 +146,18 @@ exports.update = async (req, res) => {
         console.log('Nothing deleted here.')
       }
       if (avatar !== null) {
-        db.query('UPDATE users SET avatar = $1 WHERE email = $2', [avatar, email])
-        const newImage = await db.query(
-          'INSERT INTO gallery (owner_id, path) VALUES ($1, $2) RETURNING path',
-          [user_id, avatar]
-        )
+        await db.query('UPDATE users SET avatar = $1 WHERE email = $2', [avatar, email])
+        await db.query('INSERT INTO gallery (owner_id, path) VALUES ($1, $2) RETURNING path', [
+          user_id,
+          avatar
+        ])
       }
       res.status(200).json({ status: 'success' })
     }
 
-    return res.status(200).json({ status: 'success' })
+    const userToReturn = await db.query('SELECT * FROM users WHERE user_id = $1', [user_id])
+
+    return res.send(userToReturn.rows[0])
   } catch (e) {
     return res.status(500).json({ message: e.message })
   }
