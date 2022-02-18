@@ -273,6 +273,10 @@ const Navbar = () => {
   }, [])
 
   useEffect(() => {
+    setAvatar(user.avatar)
+  }, [user])
+
+  useEffect(() => {
     if (!bio) {
       setBio('')
     }
