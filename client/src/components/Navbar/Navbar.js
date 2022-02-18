@@ -607,7 +607,7 @@ const Navbar = () => {
       </div>
       <div onClick={() => setShowNotificationOptions(!showNotificationOptions)} id="chat-menu">
         <FontAwesomeIcon icon="bell" className="fa-icon" size="2x" />
-        {showNotificationOptions && <div className="card">{notificationsToShow}</div>}
+        {showNotificationOptions && <div id="notify-options">{notificationsToShow}</div>}
       </div>
       <div onClick={() => setShowProfileOptions(!showProfileOptions)} id="profile-menu">
         <img
