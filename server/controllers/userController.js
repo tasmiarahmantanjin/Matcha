@@ -57,7 +57,7 @@ exports.update = async (req, res) => {
       email,
       password
     } = req.body
-
+    console.log(`USER ID: ${user_id}`);
     let avatar = null
     if (req.file) {
       avatar = req.file.filename
@@ -156,10 +156,11 @@ exports.update = async (req, res) => {
           [user_id, avatar]
         )
       }
-      res.status(200).json({ status: 'success' })
     }
-
-    return res.status(200).json({ status: 'success' })
+    const userToReturn = await db.query('SELECT * FROM users WHERE user_id = $1', [user_id])
+    console.log('userToReturn');
+    console.log(userToReturn);
+    return res.send(userToReturn.rows[0])
   } catch (e) {
     return res.status(500).json({ message: e.message })
   }
