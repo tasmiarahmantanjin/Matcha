@@ -1,118 +1,114 @@
-import React, { useState, Fragment, useEffect, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useState, Fragment, useEffect, useRef } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { logout } from "../../store/actions/auth";
-import logoImage from "../../assets/images/logo_matcha.svg";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { logout } from '../../store/actions/auth'
+import logoImage from '../../assets/images/logo_matcha.svg'
 
-import Modal from "../Modal/Modal";
-import GalleryModal from "../GalleryModal/GalleryModal";
-import { updateProfile } from "../../store/actions/auth";
-import { uploadToGallery } from "../../store/actions/auth";
-import galleryService from "../../services/galleryService";
-import notificationsService from "../../services/notificationsService";
+import Modal from '../Modal/Modal'
+import GalleryModal from '../GalleryModal/GalleryModal'
+import { updateProfile } from '../../store/actions/auth'
+import { uploadToGallery } from '../../store/actions/auth'
+import galleryService from '../../services/galleryService'
+import notificationsService from '../../services/notificationsService'
 
-import chatService from "../../services/chatService";
-import io from "socket.io-client";
+import chatService from '../../services/chatService'
+import io from 'socket.io-client'
 
-import "./Navbar.scss";
+import './Navbar.scss'
 
 const Navbar = () => {
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.authReducer.user);
+  const dispatch = useDispatch()
+  const user = useSelector(state => state.authReducer.user)
 
-  const [showProfileOptions, setShowProfileOptions] = useState(false);
-  const [showChatOptions, setShowChatOptions] = useState(false);
-  const [showNotificationOptions, setShowNotificationOptions] = useState(false);
-  const [showProfileModal, setShowProfileModal] = useState(false);
-  const [showGalleryModal, setShowGalleryModal] = useState(false);
-  const [uploadFile, setUploadFile] = useState("");
-  const [galleryImages, setGalleryImages] = useState([]);
+  const [showProfileOptions, setShowProfileOptions] = useState(false)
+  const [showChatOptions, setShowChatOptions] = useState(false)
+  const [showNotificationOptions, setShowNotificationOptions] = useState(false)
+  const [showProfileModal, setShowProfileModal] = useState(false)
+  const [showGalleryModal, setShowGalleryModal] = useState(false)
+  const [uploadFile, setUploadFile] = useState('')
+  const [galleryImages, setGalleryImages] = useState([])
 
-  const user_id = user.user_id;
-  const [first_name, setFirst_name] = useState(user.first_name);
-  const [last_name, setLast_name] = useState(user.last_name);
-  const [email, setEmail] = useState(user.email);
-  const [gender, setGender] = useState(user.gender);
+  const user_id = user.user_id
+  const [first_name, setFirst_name] = useState(user.first_name)
+  const [last_name, setLast_name] = useState(user.last_name)
+  const [email, setEmail] = useState(user.email)
+  const [gender, setGender] = useState(user.gender)
 
   // SexPref, Bio & interest update
-  const [sexual_orientation, setSexual_orientation] = useState(
-    user.sexual_orientation
-  );
-  const [bio, setBio] = useState(user.bio);
+  const [sexual_orientation, setSexual_orientation] = useState(user.sexual_orientation)
+  const [bio, setBio] = useState(user.bio)
 
-  const [password, setPassword] = useState("");
-  const [avatar, setAvatar] = useState(user.avatar);
-  const [uploadAvatar, setUploadAvatar] = useState(user.avatar);
+  const [password, setPassword] = useState('')
+  const [avatar, setAvatar] = useState(user.avatar)
+  const [uploadAvatar, setUploadAvatar] = useState(user.avatar)
 
-  const [interest, setInterest] = useState(user.interest);
-  const [birthdate, setBirthdate] = useState(
-    formatDate(new Date(user.birthdate))
-  );
+  const [interest, setInterest] = useState(user.interest)
+  const [birthdate, setBirthdate] = useState(formatDate(new Date(user.birthdate)))
 
-  const [female, setFemale] = useState(false);
-  const [male, setMale] = useState(false);
-  const [other, setOther] = useState(false);
-  const [interestArr, setInterestArr] = useState([]);
+  const [female, setFemale] = useState(false)
+  const [male, setMale] = useState(false)
+  const [other, setOther] = useState(false)
+  const [interestArr, setInterestArr] = useState([])
 
-  const [conversationsArr, setConversationsArr] = useState([]);
-  const [partnersIdArr, setPartnersIdArr] = useState([]);
-  const [partnersArr, setPartnersArr] = useState([]);
-  const [messageArr, setMessageArr] = useState();
+  const [conversationsArr, setConversationsArr] = useState([])
+  const [partnersIdArr, setPartnersIdArr] = useState([])
+  const [partnersArr, setPartnersArr] = useState([])
+  const [messageArr, setMessageArr] = useState()
 
-  const [notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState([])
 
   /**
    * Chat code starts here
    */
-  const [yourID, setYourID] = useState(user.user_id);
+  const [yourID, setYourID] = useState(user.user_id)
 
-  const socketRef = useRef();
+  const socketRef = useRef()
 
-  const receivedMessage = (message) => {
-    alert(message.message_text); // Alert user to new message!
-  };
-  const receivedLike = (message) => {
-    alert(`Liked by ${message.sender_id}`); // Alert user to new like! WORKS!
-  };
-  const receivedUnlike = (message) => {
-    alert(`Un-liked by ${message.sender_id}`); // Alert user to new unlike! WORKS!
-  };
-  const receivedMatch = (match) => {
-    alert(`Match between ${match.sender_id} and ${match.partner}`); // Alert user to new unlike! WORKS!
-  };
+  const receivedMessage = message => {
+    alert(message.message_text) // Alert user to new message!
+  }
+  const receivedLike = message => {
+    alert(`Liked by ${message.sender_id}`) // Alert user to new like! WORKS!
+  }
+  const receivedUnlike = message => {
+    alert(`Un-liked by ${message.sender_id}`) // Alert user to new unlike! WORKS!
+  }
+  const receivedMatch = match => {
+    alert(`Match between ${match.sender_id} and ${match.partner}`) // Alert user to new unlike! WORKS!
+  }
 
   useEffect(() => {
-    socketRef.current = io.connect("localhost:3001/");
-    socketRef.current.emit("create", user.user_id);
-    socketRef.current.on("your id", (id) => {
-      setYourID(id);
-      console.log(`yourID: ${yourID}`);
-    });
+    socketRef.current = io.connect('localhost:3001/')
+    socketRef.current.emit('create', user.user_id)
+    socketRef.current.on('your id', id => {
+      setYourID(id)
+      console.log(`yourID: ${yourID}`)
+    })
 
-    socketRef.current.on("message", (message) => {
-      console.log("Message.");
-      console.log(message);
-      receivedMessage(message);
-    });
+    socketRef.current.on('message', message => {
+      console.log('Message.')
+      console.log(message)
+      receivedMessage(message)
+    })
 
-    socketRef.current.on("like", (like) => {
-      console.log("Received like.");
-      console.log(like);
-      receivedLike(like);
-    });
+    socketRef.current.on('like', like => {
+      console.log('Received like.')
+      console.log(like)
+      receivedLike(like)
+    })
 
-    socketRef.current.on("unlike", (unlike) => {
-      console.log("Received unlike.");
-      console.log(unlike);
-      receivedUnlike(unlike);
-    });
+    socketRef.current.on('unlike', unlike => {
+      console.log('Received unlike.')
+      console.log(unlike)
+      receivedUnlike(unlike)
+    })
 
-    socketRef.current.on("match", (match) => {
-      console.log("Match!");
-      console.log(match);
-      receivedMatch(match);
-    });
+    socketRef.current.on('match', match => {
+      console.log('Match!')
+      console.log(match)
+      receivedMatch(match)
+    })
     //});
 
     /**
@@ -121,7 +117,7 @@ const Navbar = () => {
     //console.log(`Partner to use for fetching partner data: ${partner_id}`)
 
     // empty dependency array means this effect will only run once (like componentDidMount in classes)
-  }, []);
+  }, [])
   /**
    * Chat code ends here.
    */
@@ -132,185 +128,176 @@ const Navbar = () => {
   useEffect(() => {
     const requestObject = {
       headers: {
-        "Content-type": "application/json; charset=UTF-8",
-        Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        'Content-type': 'application/json; charset=UTF-8',
+        Authorization: `Bearer ${localStorage.getItem('token') || ''}`
       },
 
-      user: user,
-    };
-    console.log("User: ");
-    console.log(user);
-    notificationsService
-      .getNotifications(requestObject)
-      .then((initialNotifications) => {
-        console.log(initialNotifications);
-        setNotifications(initialNotifications);
-      });
-  }, [user]);
+      user: user
+    }
+    console.log('User: ')
+    console.log(user)
+    notificationsService.getNotifications(requestObject).then(initialNotifications => {
+      console.log(initialNotifications)
+      setNotifications(initialNotifications)
+    })
+  }, [user])
 
   useEffect(() => {
     const requestObject = {
-      user: user,
-    };
-    chatService
-      .getConversationsArray(requestObject)
-      .then((initialConversations) => {
-        console.log(initialConversations);
-        setConversationsArr(initialConversations.rows);
-      });
-  }, [user]);
+      user: user
+    }
+    chatService.getConversationsArray(requestObject).then(initialConversations => {
+      console.log(initialConversations)
+      setConversationsArr(initialConversations.rows)
+    })
+  }, [user])
   /**
    * Notifications code ends here.
    */
 
   useEffect(() => {
     const requestObject = {
-      user: user,
-    };
-    galleryService.getUserGallery(requestObject).then((initialImages) => {
-      console.log(initialImages);
-      setGalleryImages(initialImages.rows);
-    });
-  }, [user]);
+      user: user
+    }
+    galleryService.getUserGallery(requestObject).then(initialImages => {
+      console.log(initialImages)
+      setGalleryImages(initialImages.rows)
+    })
+  }, [user])
 
   useEffect(() => {
-    console.log("Notifications:");
-    console.log(notifications);
-  }, [notifications]);
+    console.log('Notifications:')
+    console.log(notifications)
+  }, [notifications])
 
   useEffect(() => {
     const requestObject = {
-      user: user,
-    };
-    chatService
-      .getConversationsArray(requestObject)
-      .then((initialConversations) => {
-        console.log(initialConversations);
-        setConversationsArr(initialConversations.rows);
-      });
-  }, [user]);
+      user: user
+    }
+    chatService.getConversationsArray(requestObject).then(initialConversations => {
+      console.log(initialConversations)
+      setConversationsArr(initialConversations.rows)
+    })
+  }, [user])
 
   // For each conversation fetched, make an array of objects with conversation ID and partner ID.
   useEffect(() => {
-    let conversationPartners = [];
+    let conversationPartners = []
     for (let i = 0; i < conversationsArr.length; i++) {
       if (conversationsArr[i].user_one_id === user.user_id) {
-        console.log("User is user one.");
+        console.log('User is user one.')
         let currentConversation = {
           conversation: conversationsArr[i].id,
-          partnerId: conversationsArr[i].user_two_id,
-        };
-        conversationPartners.push(currentConversation);
+          partnerId: conversationsArr[i].user_two_id
+        }
+        conversationPartners.push(currentConversation)
       } else {
-        console.log("User is user two.");
+        console.log('User is user two.')
         let currentConversation = {
           conversation: conversationsArr[i].id,
-          partnerId: conversationsArr[i].user_one_id,
-        };
-        conversationPartners.push(currentConversation);
+          partnerId: conversationsArr[i].user_one_id
+        }
+        conversationPartners.push(currentConversation)
       }
     }
-    setPartnersIdArr(conversationPartners);
-  }, [conversationsArr, user]);
+    setPartnersIdArr(conversationPartners)
+  }, [conversationsArr, user])
 
   // For each conversation fetched, make an array of objects with partner name, partner ID, partner avatar, conversation ID.
   useEffect(() => {
-    let partners = [];
+    let partners = []
     for (let i = 0; i < partnersIdArr.length; i++) {
       const requestObject = {
-        profile_id: partnersIdArr[i].partnerId,
-      };
-      chatService.getPartnerProfile(requestObject).then((returnedPartner) => {
+        profile_id: partnersIdArr[i].partnerId
+      }
+      chatService.getPartnerProfile(requestObject).then(returnedPartner => {
         let currentPartner = {
           name:
             returnedPartner.rows[0].first_name.charAt(0).toUpperCase() +
             returnedPartner.rows[0].first_name.slice(1),
           partner_id: partnersIdArr[i].partnerId,
           avatar: returnedPartner.rows[0].avatar,
-          conversation: partnersIdArr[i].conversation,
-        };
-        console.log(currentPartner);
-        partners.push(currentPartner);
-      });
+          conversation: partnersIdArr[i].conversation
+        }
+        console.log(currentPartner)
+        partners.push(currentPartner)
+      })
     }
-    setPartnersArr(partners);
-  }, [partnersIdArr, messageArr]);
+    setPartnersArr(partners)
+  }, [partnersIdArr, messageArr])
 
   // For each conversation fetched, make an array of recent messages.
   useEffect(() => {
-    let recentMessages = [];
+    let recentMessages = []
     for (let i = 0; i < conversationsArr.length; i++) {
       const requestObject = {
-        conversation_id: conversationsArr[i].id,
-      };
-      chatService.getMessages(requestObject).then((returnedMessages) => {
+        conversation_id: conversationsArr[i].id
+      }
+      chatService.getMessages(requestObject).then(returnedMessages => {
         if (returnedMessages.rows > 0) {
           let currentMessage = {
             conversation: conversationsArr[i].id,
-            mostRecentMessage:
-              returnedMessages.rows[returnedMessages.rows.length - 1]
-                .message_text,
-            sender:
-              returnedMessages.rows[returnedMessages.rows.length - 1].sender_id,
-          };
-          recentMessages.push(currentMessage);
+            mostRecentMessage: returnedMessages.rows[returnedMessages.rows.length - 1].message_text,
+            sender: returnedMessages.rows[returnedMessages.rows.length - 1].sender_id
+          }
+          recentMessages.push(currentMessage)
         }
-      });
+      })
     }
-    setMessageArr(recentMessages);
-  }, [conversationsArr, user]);
+    setMessageArr(recentMessages)
+  }, [conversationsArr, user])
 
   useEffect(() => {
     if (sexual_orientation) {
-      if (inArray("female")) {
-        console.log("Female preference detected.");
-        setFemale(true);
+      if (inArray('female')) {
+        console.log('Female preference detected.')
+        setFemale(true)
       }
-      if (inArray("male")) {
-        console.log("Male preference detected.");
-        setMale(true);
+      if (inArray('male')) {
+        console.log('Male preference detected.')
+        setMale(true)
       }
-      if (inArray("other")) {
-        console.log("Other preference detected.");
-        setOther(true);
+      if (inArray('other')) {
+        console.log('Other preference detected.')
+        setOther(true)
       }
     }
     // empty dependency array means this effect will only run once (like componentDidMount in classes)
-  }, []);
+  }, [])
 
   useEffect(() => {
     if (interest) {
-      setInterestArr(interest);
+      setInterestArr(interest)
     }
     // empty dependency array means this effect will only run once (like componentDidMount in classes)
-  }, []);
+  }, [])
 
   useEffect(() => {
     if (!bio) {
-      setBio("");
+      setBio('')
     }
     // empty dependency array means this effect will only run once (like componentDidMount in classes)
-  }, []);
+  }, [])
 
-  let checked = [];
+  let checked = []
   if (sexual_orientation !== null) {
-    checked = sexual_orientation;
+    checked = sexual_orientation
   }
 
   function formatDate(date) {
     let d = new Date(date),
-      month = "" + (d.getMonth() + 1),
-      day = "" + d.getDate(),
-      year = d.getFullYear();
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear()
 
-    if (month.length < 2) month = "0" + month;
-    if (day.length < 2) day = "0" + day;
+    if (month.length < 2) month = '0' + month
+    if (day.length < 2) day = '0' + day
 
-    return [year, month, day].join("-");
+    return [year, month, day].join('-')
   }
 
-  const submitForm = (e) => {
-    e.preventDefault();
+  const submitForm = e => {
+    e.preventDefault()
 
     const form = {
       user_id,
@@ -322,164 +309,156 @@ const Navbar = () => {
       bio,
       interest,
       birthdate,
-      uploadAvatar,
-    };
-    if (password.length > 0) form.password = password;
+      uploadAvatar
+    }
+    if (password.length > 0) form.password = password
 
-    const formData = new FormData();
+    const formData = new FormData()
 
     for (const key in form) {
-      formData.append(key, form[key]);
+      formData.append(key, form[key])
     }
-    dispatch(updateProfile(formData)).then(() => setShowProfileModal(false));
-  };
+    dispatch(updateProfile(formData)).then(() => setShowProfileModal(false))
+  }
 
-  const submitGalleryForm = (e) => {
-    e.preventDefault();
+  const submitGalleryForm = e => {
+    e.preventDefault()
 
-    const form = { uploadFile };
+    const form = { uploadFile }
 
-    const formData = new FormData();
+    const formData = new FormData()
 
     for (const key in form) {
       // console.log(key);
-      formData.append(key, form[key]);
+      formData.append(key, form[key])
     }
 
-    dispatch(uploadToGallery(formData)).then(() => setShowGalleryModal(false));
-  };
+    dispatch(uploadToGallery(formData)).then(() => setShowGalleryModal(false))
+  }
 
   // Hashtag code
-  const removeTag = (i) => {
-    const newTags = [...interestArr];
-    newTags.splice(i, 1);
+  const removeTag = i => {
+    const newTags = [...interestArr]
+    newTags.splice(i, 1)
 
     // Call the defined function setTags which will replace tags with the new value.
-    setInterestArr(newTags);
-    setInterest(interestArr);
-  };
+    setInterestArr(newTags)
+    setInterest(interestArr)
+  }
 
   // Trims character from string; in this case hashtags from interests input
   function trim(str, ch) {
     var start = 0,
-      end = str.length;
-    while (start < end && str[start] === ch) ++start;
-    while (end > start && str[end - 1] === ch) --end;
-    return start > 0 || end < str.length ? str.substring(start, end) : str;
+      end = str.length
+    while (start < end && str[start] === ch) ++start
+    while (end > start && str[end - 1] === ch) --end
+    return start > 0 || end < str.length ? str.substring(start, end) : str
   }
 
   // Puts interest into array on enter press, and resets the input field. //
-  const inputKeyDown = (e) => {
+  const inputKeyDown = e => {
     // Doesn't update the displayed array correctly; appears to be one interest behind.
     //console.log('Key pressed');
     // If hashtag is input, no update it made
-    if (e.target.value === "#") {
-      console.log("Hashtag detected");
-      return;
+    if (e.target.value === '#') {
+      console.log('Hashtag detected')
+      return
     }
-    const val = "#" + trim(e.target.value, "#");
-    console.log(`val = ${val}`);
-    if (e.key === "Enter" && val !== "#") {
-      if (
-        interest &&
-        interestArr.find(
-          (interest) => interest.toLowerCase() === val.toLowerCase()
-        )
-      ) {
-        console.log("Duplicate detected.");
-        return;
+    const val = '#' + trim(e.target.value, '#')
+    console.log(`val = ${val}`)
+    if (e.key === 'Enter' && val !== '#') {
+      if (interest && interestArr.find(interest => interest.toLowerCase() === val.toLowerCase())) {
+        console.log('Duplicate detected.')
+        return
       }
-      console.log(val);
-      setInterestArr([...interestArr, val]);
-      setInterest([...interestArr, val]);
-      console.log("InterestArr:");
-      console.log(interestArr);
-      console.log("Interest:");
-      console.log(interest);
-      var inputTag = document.getElementById("input-tag");
-      inputTag.value = "";
-    } else if (e.key === "Backspace" && val === "#") {
-      removeTag(interestArr.length - 1);
+      console.log(val)
+      setInterestArr([...interestArr, val])
+      setInterest([...interestArr, val])
+      console.log('InterestArr:')
+      console.log(interestArr)
+      console.log('Interest:')
+      console.log(interest)
+      var inputTag = document.getElementById('input-tag')
+      inputTag.value = ''
+    } else if (e.key === 'Backspace' && val === '#') {
+      removeTag(interestArr.length - 1)
     }
-    console.log(interestArr);
-    console.log(interest);
+    console.log(interestArr)
+    console.log(interest)
 
-    return;
-  };
+    return
+  }
   // End of hashtag code
 
   // Checkbox code
   function getSexOrientation(checkmark) {
     if (checked && !checked.includes(checkmark)) {
-      checked.push(checkmark);
-      if (checkmark === "female") {
-        setFemale(true);
+      checked.push(checkmark)
+      if (checkmark === 'female') {
+        setFemale(true)
       }
-      if (checkmark === "male") {
-        setMale(true);
+      if (checkmark === 'male') {
+        setMale(true)
       }
-      if (checkmark === "other") {
-        setOther(true);
+      if (checkmark === 'other') {
+        setOther(true)
       }
     } else {
       for (var j = 0; j < checked.length; j++) {
         if (checked[j] === checkmark) {
-          checked.splice(j, 1);
-          j--;
+          checked.splice(j, 1)
+          j--
         }
-        if (checkmark === "female") {
-          setFemale(false);
+        if (checkmark === 'female') {
+          setFemale(false)
         }
-        if (checkmark === "male") {
-          setMale(false);
+        if (checkmark === 'male') {
+          setMale(false)
         }
-        if (checkmark === "other") {
-          setOther(false);
+        if (checkmark === 'other') {
+          setOther(false)
         }
       }
     }
 
-    setSexual_orientation(checked);
+    setSexual_orientation(checked)
   }
 
-  const inArray = (option) => {
+  const inArray = option => {
     if (sexual_orientation.includes(option)) {
-      return true;
+      return true
     } else {
-      return false;
+      return false
     }
-  };
+  }
   // End of checkbox code
 
-  const imageDeleteButtonHandler = (img) => {
+  const imageDeleteButtonHandler = img => {
     const requestObject = {
       user: user,
-      image: img,
-    };
-    galleryService.deleteGalleryImage(requestObject).then((returnedImages) => {
-      setGalleryImages(returnedImages.rows);
-    });
-  };
+      image: img
+    }
+    galleryService.deleteGalleryImage(requestObject).then(returnedImages => {
+      setGalleryImages(returnedImages.rows)
+    })
+  }
 
-  const makeAvatarButtonHandler = (img) => {
-    console.log("Image avatar button clicked.");
-    console.log(`image path: ${img.path}`);
+  const makeAvatarButtonHandler = img => {
+    console.log('Image avatar button clicked.')
+    console.log(`image path: ${img.path}`)
 
     const requestObject = {
       user: user,
-      image: img,
-    };
-    galleryService.makeAvatarImage(requestObject);
-  };
+      image: img
+    }
+    galleryService.makeAvatarImage(requestObject)
+  }
 
   const galleryImagesToShow = galleryImages
     ? galleryImages.map((image, index) => {
         if (image.path === user.avatar) {
           return (
-            <div
-              key={`${image.path}_container`}
-              className="gallery-image-container"
-            >
+            <div key={`${image.path}_container`} className="gallery-image-container">
               <img
                 width="25%"
                 height="25%"
@@ -496,13 +475,10 @@ const Navbar = () => {
                 X
               </button>
             </div>
-          );
+          )
         }
         return (
-          <div
-            key={`${image.path}_container`}
-            className="gallery-image-container"
-          >
+          <div key={`${image.path}_container`} className="gallery-image-container">
             <img
               width="25%"
               height="25%"
@@ -526,9 +502,9 @@ const Navbar = () => {
               *
             </button>
           </div>
-        );
+        )
       })
-    : null;
+    : null
 
   const conversationsToShow = partnersArr
     ? partnersArr.map((conversation, index) => {
@@ -543,18 +519,14 @@ const Navbar = () => {
             />
             <p>{conversation.name}</p>
             <p>
-              Link:{" "}
-              <a
-                href={`http://localhost:3000/conversations/${conversation.conversation}`}
-              >
-                link
-              </a>
+              Link:{' '}
+              <a href={`http://localhost:3000/conversations/${conversation.conversation}`}>link</a>
             </p>
           </div>
-        );
+        )
         // Make useState variable to store an array of conversation partners (name, avatar, latest message)!!!
       })
-    : null;
+    : null
 
   const notificationsToShow = notifications
     ? notifications.map((notification, index) => {
@@ -562,10 +534,10 @@ const Navbar = () => {
           <div key={index}>
             <p>{notification.notification}</p>
           </div>
-        );
+        )
         // Make useState variable to store an array of conversation partners (name, avatar, latest message)!!!
       })
-    : null;
+    : null
 
   const galleryImagePicker =
     galleryImages && galleryImages.length < 5 ? (
@@ -573,7 +545,7 @@ const Navbar = () => {
         <div className="input-field mb-2">
           <label htmlFor="gallery-upload-input">Upload image to gallery:</label>
           <input
-            onChange={(e) => setUploadFile(e.target.files[0])}
+            onChange={e => setUploadFile(e.target.files[0])}
             type="file"
             name="gallery-upload-input"
             id="gallery-upload-input"
@@ -582,17 +554,15 @@ const Navbar = () => {
         </div>
       </form>
     ) : (
-      <p className="delete-img-msg">
-        5 images in gallery; delete at least one to make space!
-      </p>
-    );
+      <p className="delete-img-msg">5 images in gallery; delete at least one to make space!</p>
+    )
 
   const avatarImagePicker =
     galleryImages.length < 5 ? (
       <div className="input-field mb-2">
         <label htmlFor="avatar">Profile picture:</label>
         <input
-          onChange={(e) => setUploadAvatar(e.target.files[0])}
+          onChange={e => setUploadAvatar(e.target.files[0])}
           type="file"
           id="avatar"
           name="avatar"
@@ -605,18 +575,18 @@ const Navbar = () => {
           5 images in gallery; delete at least one to make space!
         </p>
       </div>
-    );
+    )
 
   // Start of logout function
   const logOut = () => {
     const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user_id: user.user_id }),
-    };
-    fetch("http://localhost:5000/logout", requestOptions);
-    dispatch(logout());
-  };
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: user.user_id })
+    }
+    fetch('http://localhost:5000/logout', requestOptions)
+    dispatch(logout())
+  }
 
   return (
     <div id="navbar" className="card-shadow">
@@ -625,34 +595,21 @@ const Navbar = () => {
           <img width="100" height="80" src={logoImage} alt="Logo" />
         </a>
       </div>
-
       <div id="chat-menu">
         <a className="user-name" href="http://localhost:3000/matches">
           Find match
         </a>
       </div>
-
       <div onClick={() => setShowChatOptions(!showChatOptions)} id="chat-menu">
         <p className="user-name">Chat</p>
-        <FontAwesomeIcon icon="caret-down" className="fa-icon" />
+        <FontAwesomeIcon icon="comment-dots" className="fa-icon" size="2x" />
         {showChatOptions && <div id="chat-options">{conversationsToShow}</div>}
       </div>
-
-      <div
-        onClick={() => setShowNotificationOptions(!showNotificationOptions)}
-        id="chat-menu"
-      >
-        <p className="user-name">Notifications</p>
-        <FontAwesomeIcon icon="caret-down" className="fa-icon" />
-        {showNotificationOptions && (
-          <div className="card">{notificationsToShow}</div>
-        )}
+      <div onClick={() => setShowNotificationOptions(!showNotificationOptions)} id="chat-menu">
+        <FontAwesomeIcon icon="bell" className="fa-icon" size="2x" />
+        {showNotificationOptions && <div className="card">{notificationsToShow}</div>}
       </div>
-
-      <div
-        onClick={() => setShowProfileOptions(!showProfileOptions)}
-        id="profile-menu"
-      >
+      <div onClick={() => setShowProfileOptions(!showProfileOptions)} id="profile-menu">
         <img
           className="avatar"
           width="40"
@@ -680,7 +637,7 @@ const Navbar = () => {
               <form>
                 <div className="input-field mb-1">
                   <input
-                    onChange={(e) => setFirst_name(e.target.value)}
+                    onChange={e => setFirst_name(e.target.value)}
                     value={first_name}
                     required="required"
                     type="text"
@@ -690,7 +647,7 @@ const Navbar = () => {
 
                 <div className="input-field mb-1">
                   <input
-                    onChange={(e) => setLast_name(e.target.value)}
+                    onChange={e => setLast_name(e.target.value)}
                     value={last_name}
                     required="required"
                     type="text"
@@ -700,7 +657,7 @@ const Navbar = () => {
 
                 <div className="input-field mb-1">
                   <input
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={e => setEmail(e.target.value)}
                     value={email}
                     required="required"
                     type="text"
@@ -711,7 +668,7 @@ const Navbar = () => {
                 <div className="input-field mb-1">
                   <h3>I am ...</h3>
                   <select
-                    onChange={(e) => setGender(e.target.value)}
+                    onChange={e => setGender(e.target.value)}
                     value={gender}
                     required="required"
                   >
@@ -732,7 +689,7 @@ const Navbar = () => {
                     id="sex-or-male"
                     name="sex-or-male"
                     checked={male}
-                    onChange={(e) => getSexOrientation(e.target.value)}
+                    onChange={e => getSexOrientation(e.target.value)}
                   />
                   <label htmlFor="sex-or-female">Female</label>
                   <input
@@ -741,7 +698,7 @@ const Navbar = () => {
                     id="sex-or-female"
                     name="sex-or-female"
                     checked={female}
-                    onChange={(e) => getSexOrientation(e.target.value)}
+                    onChange={e => getSexOrientation(e.target.value)}
                   />
                   <label htmlFor="sex-or-other">Other</label>
                   <input
@@ -750,13 +707,13 @@ const Navbar = () => {
                     id="sex-or-other"
                     name="sex-or-other"
                     checked={other}
-                    onChange={(e) => getSexOrientation(e.target.value)}
+                    onChange={e => getSexOrientation(e.target.value)}
                   />
                 </div>
 
                 <div className="input-field mb-1">
                   <input
-                    onChange={(e) => setBio(e.target.value)}
+                    onChange={e => setBio(e.target.value)}
                     value={bio}
                     // required='required'
                     type="text"
@@ -769,7 +726,7 @@ const Navbar = () => {
 
                 <div className="input-field mb-2">
                   <input
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={e => setPassword(e.target.value)}
                     value={password}
                     required="required"
                     type="password"
@@ -782,7 +739,7 @@ const Navbar = () => {
                   <input
                     type="date"
                     id="birthdate"
-                    onChange={(e) => setBirthdate(e.target.value)}
+                    onChange={e => setBirthdate(e.target.value)}
                     name="birthdate"
                     value={birthdate}
                   ></input>
@@ -801,7 +758,7 @@ const Navbar = () => {
                             <button
                               type="button"
                               onClick={() => {
-                                removeTag(i);
+                                removeTag(i)
                               }}
                             >
                               +
@@ -863,12 +820,12 @@ const Navbar = () => {
           </GalleryModal>
         )}
       </div>
-
       <div onClick={() => logOut()} id="chat-menu">
-        <p className="user-name">Logout</p>
+        <p className="user-name">LogOut</p>
+        <FontAwesomeIcon icon="sign-out-alt" className="fa-icon" size="2x" />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar
