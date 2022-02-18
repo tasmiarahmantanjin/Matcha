@@ -1,5 +1,3 @@
-// Modal component for update profile section
-
 import React from 'react'
 import '../Modal/Modal.scss'
 
