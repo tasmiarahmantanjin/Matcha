@@ -12,12 +12,17 @@ import { uploadToGallery } from "../../store/actions/auth";
 import galleryService from "../../services/galleryService";
 import notificationsService from "../../services/notificationsService";
 
+import { useHistory } from "react-router-dom";
+
+
 import chatService from "../../services/chatService";
 import io from "socket.io-client";
 
 import "./Navbar.scss";
 
 const Navbar = () => {
+  const history = useHistory();
+
   const dispatch = useDispatch();
   const user = useSelector((state) => state.authReducer.user);
 
@@ -176,10 +181,7 @@ const Navbar = () => {
     });
   }, [user]);
 
-  useEffect(() => {
-    console.log("Notifications:");
-    console.log(notifications);
-  }, [notifications]);
+
 
   useEffect(() => {
     const requestObject = {
@@ -612,14 +614,9 @@ const Navbar = () => {
     );
 
   // Start of logout function
-  const logOut = () => {
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user_id: user.user_id }),
-    };
-    fetch("http://localhost:5000/logout", requestOptions);
+  const logOut = ( history ) => {
     dispatch(logout());
+    history.push("/login");
   };
 
   return (
@@ -868,7 +865,7 @@ const Navbar = () => {
         )}
       </div>
 
-      <div onClick={() => logOut()} id="chat-menu">
+      <div onClick={() => logOut(history)} id="chat-menu">
         <p className="user-name">Logout</p>
       </div>
     </div>
