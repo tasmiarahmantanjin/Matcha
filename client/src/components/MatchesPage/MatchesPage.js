@@ -104,7 +104,7 @@ const MatchesPage = () => {
         dist <= distance &&
         !user.blocked_users.includes(match.user_id) &&
         age >= ageRangeMin &&
-        age <= ageRangeMax
+        age <= ageRangeMax && match.user_id !== user.user_id
       ) {
         return <Match key={match.user_id} person={match} user={user} distance={dist} age={age} />
       } else {

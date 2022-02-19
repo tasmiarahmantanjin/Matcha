@@ -579,7 +579,7 @@ const Navbar = () => {
               className="avatar"
               width="40"
               height="40"
-              src={`http://localhost:5000/uploads/user/${user.user_id}/${avatar}`}
+              src={`http://localhost:5000/uploads/user/${user.avatar === 'default.png' ? '/default.png' : `${user.user_id}/${avatar}`}`}
               alt="Avatar"
             />
             <p className="user-name">{user.user_name}</p>
