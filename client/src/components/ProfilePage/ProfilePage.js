@@ -135,6 +135,7 @@ const ProfilePage = ({ id }) => {
     setLiked(1)
     const messageObject = {
       sender_id: user.user_id,
+      sender_name: user.first_name,
       timestamp: new Date(),
       partner: profile.user_id
     }
@@ -142,9 +143,12 @@ const ProfilePage = ({ id }) => {
     if (likedUser !== undefined) {
       const messageObject = {
         sender_id: user.user_id,
+        sender_name: user.first_name,
         timestamp: new Date(),
-        partner: profile.user_id
+        partner: profile.user_id,
+        partner_name: profile.first_name
       }
+      console.log(messageObject);
       socketRef.current.emit('match', messageObject)
     }
   }
@@ -166,6 +170,7 @@ const ProfilePage = ({ id }) => {
     setLiked()
     const messageObject = {
       sender_id: user.user_id,
+      sender_name: user.first_name,
       timestamp: new Date(),
       partner: profile.user_id
     }

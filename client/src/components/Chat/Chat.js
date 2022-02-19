@@ -39,6 +39,7 @@ const Chat = ({ id }) => {
     const messageObject = {
       message_text: message,
       sender_id: user.user_id,
+      sender_name: user.first_name,
       timestamp: new Date(),
       conversation: conversation.id,
       partner: partner.user_id,

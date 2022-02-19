@@ -152,10 +152,10 @@ const MatchesPage = () => {
     console.log('Matches:', matches)
   }
   return (
-    <div id="chat-container">
+    <div id="matches-container">
       <div>
         <form>
-          <div className="input-field mb-1">
+          <div className="input-field mb-1 tm-1">
             <label htmlFor="ageRangeMax">Age range maximum (between 18 and 120):</label>
             <input
               onChange={e => setAgeRangeMax(e.target.value)}
@@ -206,7 +206,7 @@ const MatchesPage = () => {
           />
         </form>
         <button className="btn-success" onClick={submitForm}>
-          GET MATCHES
+          Get matches!
         </button>
       </div>
 

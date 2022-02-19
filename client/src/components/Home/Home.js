@@ -9,12 +9,12 @@ const Home = () => {
   const user = useSelector(state => state.authReducer.user)
 
   const container = {
-    marginTop: '10px',
-    borderRadius: '5px'
+    // marginTop: '10px',
+    // borderRadius: '5px'
   }
 
   return (
-    <div id="chat-container">
+    <div id="home-container">
       <div id="chat-wrap">
         <Navbar />
       </div>

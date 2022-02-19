@@ -1,6 +1,9 @@
 import React, { useState, Fragment, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { logout } from '../../store/actions/auth'
 import logoImage from '../../assets/images/logo_matcha.svg'
@@ -20,6 +23,7 @@ import io from 'socket.io-client'
 import './Navbar.scss'
 
 const Navbar = () => {
+  const notify = () => toast("Wow so easy!");
   const history = useHistory()
   const dispatch = useDispatch()
   const user = useSelector(state => state.authReducer.user)
@@ -68,16 +72,16 @@ const Navbar = () => {
   const socketRef = useRef()
 
   const receivedMessage = message => {
-    alert(message.message_text) // Alert user to new message!
+    toast(`${message.sender_name.charAt(0).toUpperCase() + message.sender_name.slice(1)} says: ${message.message_text}`) // Alert user to new message!
   }
   const receivedLike = message => {
-    alert(`Liked by ${message.sender_id}`) // Alert user to new like! WORKS!
+    toast(`Liked by ${message.sender_name.charAt(0).toUpperCase() + message.sender_name.slice(1)}`) // Alert user to new like! WORKS!
   }
   const receivedUnlike = message => {
-    alert(`Un-liked by ${message.sender_id}`) // Alert user to new unlike! WORKS!
+    toast(`Un-liked by ${message.sender_name.charAt(0).toUpperCase() + message.sender_name.slice(1)}`) // Alert user to new unlike! WORKS!
   }
   const receivedMatch = match => {
-    alert(`Match between ${match.sender_id} and ${match.partner}`) // Alert user to new unlike! WORKS!
+    toast(`Match between ${match.sender_name.charAt(0).toUpperCase() + match.sender_name.slice(1)} and ${match.partner_name.charAt(0).toUpperCase() + match.partner_name.slice(1)}`) // Alert user to new unlike! WORKS!
   }
 
   useEffect(() => {
@@ -483,8 +487,8 @@ const Navbar = () => {
   const conversationsToShow = partnersArr
     ? partnersArr.map((conversation, index) => {
         return (
-          <a href={`http://localhost:3000/conversations/${conversation.conversation}`}>
-            <div key={index} className="chat-items">
+          <a key={index} href={`http://localhost:3000/conversations/${conversation.conversation}`}>
+            <div className="chat-items">
               <img
                 className="avatar"
                 width="40"
@@ -553,25 +557,17 @@ const Navbar = () => {
   }
 
   return (
-    <div>
-      <div style={{ width: '70%', float: 'left', background: '#42b983' }}>
-        <div id="navbar" className="card-shadow">
+    <div style={{display: 'flex', justifyContent: 'space-between',  background: '#42b983' }} className="card-shadow">
+      <div>
+        <div id="navbar" className="nav-child-1">
           <a className="nav-title" href="http://localhost:3000">
             <img width="100" height="80" src={logoImage} alt="Logo" />
           </a>
         </div>
       </div>
 
-      <div style={{ width: '30%', float: 'right', background: '#42b983' }}>
-        <div id="navbar" className="card-shadow">
-          <div onClick={() => setShowChatOptions(!showChatOptions)} id="chat-menu">
-            <FontAwesomeIcon icon="comment-dots" className="fa-icon" size="2x" />
-            {showChatOptions && <div id="chat-options">{conversationsToShow}</div>}
-          </div>
-          <div onClick={() => setShowNotificationOptions(!showNotificationOptions)} id="chat-menu">
-            <FontAwesomeIcon icon="bell" className="fa-icon" size="2x" />
-            {showNotificationOptions && <div id="notify-options">{notificationsToShow}</div>}
-          </div>
+      <div>
+        <div id="navbar" className="nav-child-2">
           <div onClick={() => setShowProfileOptions(!showProfileOptions)} id="profile-menu">
             <img
               className="avatar"
@@ -772,10 +768,18 @@ const Navbar = () => {
               </GalleryModal>
             )}
           </div>
-
+          <div onClick={() => setShowChatOptions(!showChatOptions)} id="chat-menu">
+            <FontAwesomeIcon icon="comment-dots" className="fa-icon" size="2x" />
+            {showChatOptions && <div id="chat-options">{conversationsToShow}</div>}
+          </div>
+          <div onClick={() => setShowNotificationOptions(!showNotificationOptions)} id="chat-menu">
+            <FontAwesomeIcon icon="bell" className="fa-icon" size="2x" />
+            {showNotificationOptions && <div id="notify-options">{notificationsToShow}</div>}
+          </div>
+          <ToastContainer />
           <div onClick={() => logOut(history)} id="chat-menu">
-            <p className="user-name">LogOut</p>
-            <FontAwesomeIcon icon="sign-out-alt" className="fa-icon" size="2x" />
+            {/* <p className="user-name">LogOut</p> */}
+            <FontAwesomeIcon icon="sign-out-alt" className="fa-icon" size="2x" title="Log out" />
           </div>
         </div>
       </div>
