@@ -353,20 +353,20 @@ const Navbar = () => {
         console.log('Duplicate detected.')
         return
       }
-      console.log(val)
+      // console.log(val)
       setInterestArr([...interestArr, val])
       setInterest([...interestArr, val])
-      console.log('InterestArr:')
-      console.log(interestArr)
-      console.log('Interest:')
-      console.log(interest)
+      // console.log('InterestArr:')
+      // console.log(interestArr)
+      // console.log('Interest:')
+      // console.log(interest)
       var inputTag = document.getElementById('input-tag')
       inputTag.value = ''
     } else if (e.key === 'Backspace' && val === '#') {
       removeTag(interestArr.length - 1)
     }
-    console.log(interestArr)
-    console.log(interest)
+    // console.log(interestArr)
+    // console.log(interest)
 
     return
   }
@@ -566,11 +566,7 @@ const Navbar = () => {
           <img width="100" height="80" src={logoImage} alt="Logo" />
         </a>
       </div>
-      <div id="chat-menu">
-        <a className="user-name" href="http://localhost:3000/matches">
-          Find match
-        </a>
-      </div>
+
       <div onClick={() => setShowChatOptions(!showChatOptions)} id="chat-menu">
         <FontAwesomeIcon icon="comment-dots" className="fa-icon" size="2x" />
         {showChatOptions && <div id="chat-options">{conversationsToShow}</div>}
