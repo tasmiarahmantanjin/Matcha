@@ -483,20 +483,18 @@ const Navbar = () => {
   const conversationsToShow = partnersArr
     ? partnersArr.map((conversation, index) => {
         return (
-          <div key={index}>
-            <img
-              className="avatar"
-              width="40"
-              height="40"
-              src={`http://localhost:5000/uploads/user/${conversation.partner_id}/${conversation.avatar}`}
-              alt="partner-avatar"
-            />
-            <p>{conversation.name}</p>
-            <p>
-              Link:{' '}
-              <a href={`http://localhost:3000/conversations/${conversation.conversation}`}>link</a>
-            </p>
-          </div>
+          <a href={`http://localhost:3000/conversations/${conversation.conversation}`}>
+            <div key={index} className="chat-items">
+              <img
+                className="avatar"
+                width="40"
+                height="40"
+                src={`http://localhost:5000/uploads/user/${conversation.partner_id}/${conversation.avatar}`}
+                alt="partner-avatar"
+              />
+              <p>{conversation.name}</p>
+            </div>
+          </a>
         )
       })
     : null
@@ -579,7 +577,9 @@ const Navbar = () => {
               className="avatar"
               width="40"
               height="40"
-              src={`http://localhost:5000/uploads/user/${user.avatar === 'default.png' ? '/default.png' : `${user.user_id}/${avatar}`}`}
+              src={`http://localhost:5000/uploads/user/${
+                user.avatar === 'default.png' ? '/default.png' : `${user.user_id}/${avatar}`
+              }`}
               alt="Avatar"
             />
             <p className="user-name">{user.user_name}</p>
