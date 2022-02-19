@@ -1,13 +1,17 @@
-import React from "react";
+import React from 'react'
 
 // import useSelector to connect the store with the component
-import { useSelector } from "react-redux";
-import MatchesPage from "../MatchesPage/MatchesPage";
-import Navbar from "../Navbar/Navbar";
-// import Nav from "../Nav";
+import { useSelector } from 'react-redux'
+import MatchesPage from '../MatchesPage/MatchesPage'
+import Navbar from '../Navbar/Navbar'
 
 const Home = () => {
-  const user = useSelector((state) => state.authReducer.user);
+  const user = useSelector(state => state.authReducer.user)
+
+  const container = {
+    marginTop: '10px',
+    borderRadius: '5px'
+  }
 
   return (
     <div id="chat-container">
@@ -15,10 +19,11 @@ const Home = () => {
         <Navbar />
       </div>
 
-      {/* <MatchesPage /> */}
-      {/* <Nav /> */}
+      <div style={container}>
+        <MatchesPage />
+      </div>
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
