@@ -152,11 +152,8 @@ exports.update = async (req, res) => {
           avatar
         ])
       }
-      res.status(200).json({ status: 'success' })
     }
-
     const userToReturn = await db.query('SELECT * FROM users WHERE user_id = $1', [user_id])
-
     return res.send(userToReturn.rows[0])
   } catch (e) {
     return res.status(500).json({ message: e.message })

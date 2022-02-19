@@ -151,11 +151,6 @@ const Navbar = () => {
   }, [user])
 
   useEffect(() => {
-    console.log('Notifications:')
-    console.log(notifications)
-  }, [notifications])
-
-  useEffect(() => {
     const requestObject = {
       user: user
     }
