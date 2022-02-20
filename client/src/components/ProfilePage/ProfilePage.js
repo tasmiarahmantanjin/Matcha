@@ -399,7 +399,7 @@ const ProfilePage = ({ id }) => {
             </ul>
           </div>
           <p>Fame rating: {profile.fame}</p>
-          <div class="gallery">
+          <div className="gallery">
             <p>
               {profile.first_name.charAt(0).toUpperCase() + profile.first_name.slice(1)}
               's Images

@@ -6,7 +6,7 @@ import "./Match.scss";
 const Match = ({ person, distance, age }) => {
   console.log("person: ", person);
   return (
-    <div class="card">
+    <div className="card">
       <img
         className="card__image"
         src={`http://localhost:5000/uploads/user/${person.user_id}/${person.avatar}`}

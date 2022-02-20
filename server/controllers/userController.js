@@ -56,6 +56,8 @@ exports.update = async (req, res) => {
 
     if (!req.body.blockedUsers) {
       var blockedUsers = []
+    } else {
+      blockedUsers = req.body.blockedUsers.split(",")
     }
     let avatar = null
     if (req.file) {

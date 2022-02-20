@@ -102,7 +102,7 @@ const MatchesPage = () => {
       let age = new Date(new Date() - new Date(match.birthdate)).getFullYear() - 1970
       if (
         dist <= distance &&
-        !user.blocked_users.includes(match.user_id) &&
+        !user?.blocked_users?.includes(match.user_id) &&
         age >= ageRangeMin &&
         age <= ageRangeMax && match.user_id !== user.user_id
       ) {

@@ -66,7 +66,7 @@ const Navbar = () => {
 
   const unblockUser = (unblockedUser) => {
     console.log('Unblock button clicked.');
-    const newBlockedUsers = blockedUsers.filter(function(value, index, arr){ 
+    const newBlockedUsers = blockedUsers.filter(function(value){ 
       return value !== unblockedUser;
     })
     console.log(newBlockedUsers);
@@ -313,6 +313,9 @@ const Navbar = () => {
     }
     if (password.length > 0) form.password = password
 
+    console.log('FORM: ');
+    console.log(form);
+
     const formData = new FormData()
 
     for (const key in form) {
@@ -445,6 +448,24 @@ const Navbar = () => {
       image: img
     }
     galleryService.makeAvatarImage(requestObject)
+  }
+
+  constant showNotificationHandler = () => {
+    setShowNotificationOptions(!showNotificationOptions)
+    // set notification as read, send off to backend that notifications have been read; set read from 0 to 1.
+    const requestObject = {
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+        Authorization: `Bearer ${localStorage.getItem('token') || ''}`
+      },
+      user: user
+    }
+    console.log('User: ')
+    console.log(user)
+    notificationsService.setNotificationsAsRead(requestObject).then(initialNotifications => {
+      console.log(initialNotifications)
+      setNotifications(initialNotifications)
+    })
   }
 
   const galleryImagesToShow = galleryImages
