@@ -54,6 +54,9 @@ exports.update = async (req, res) => {
       password
     } = req.body
 
+    if (!req.body.blockedUsers) {
+      var blockedUsers = []
+    }
     let avatar = null
     if (req.file) {
       avatar = req.file.filename
@@ -87,7 +90,7 @@ exports.update = async (req, res) => {
     }
 
     await db.query(
-      'UPDATE users SET first_name = $1, last_name = $2, gender = $3, sexual_orientation = $4, bio = $5, interest = $6, birthdate = $7, email = $8 WHERE user_id = $9',
+      'UPDATE users SET first_name = $1, last_name = $2, gender = $3, sexual_orientation = $4, bio = $5, interest = $6, birthdate = $7, email = $8, blocked_users = $9 WHERE user_id = $10',
       [
         first_name,
         last_name,
@@ -97,6 +100,7 @@ exports.update = async (req, res) => {
         interest_arr,
         birthdate,
         email,
+        blockedUsers,
         user_id
       ]
     )

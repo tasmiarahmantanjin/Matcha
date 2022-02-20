@@ -23,7 +23,6 @@ import io from 'socket.io-client'
 import './Navbar.scss'
 
 const Navbar = () => {
-  const notify = () => toast("Wow so easy!");
   const history = useHistory()
   const dispatch = useDispatch()
   const user = useSelector(state => state.authReducer.user)
@@ -49,6 +48,7 @@ const Navbar = () => {
   const [avatar, setAvatar] = useState(user.avatar)
   const [uploadAvatar, setUploadAvatar] = useState(user.avatar)
 
+  const [blockedUsers, setBlockedUsers] = useState(user.blocked_users)
   const [interest, setInterest] = useState(user.interest)
   const [birthdate, setBirthdate] = useState(formatDate(new Date(user.birthdate)))
 
@@ -63,6 +63,15 @@ const Navbar = () => {
   const [messageArr, setMessageArr] = useState()
 
   const [notifications, setNotifications] = useState([])
+
+  const unblockUser = (unblockedUser) => {
+    console.log('Unblock button clicked.');
+    const newBlockedUsers = blockedUsers.filter(function(value, index, arr){ 
+      return value !== unblockedUser;
+    })
+    console.log(newBlockedUsers);
+    setBlockedUsers(newBlockedUsers)
+    }
 
   /**
    * Chat code starts here
@@ -259,10 +268,15 @@ const Navbar = () => {
   }, [user])
 
   useEffect(() => {
+    setBlockedUsers(user.blocked_users)
+  }, [user])
+  
+
+  useEffect(() => {
     if (!bio) {
       setBio('')
     }
-  }, [])
+  }, [user])
 
   let checked = []
   if (sexual_orientation !== null) {
@@ -294,7 +308,8 @@ const Navbar = () => {
       bio,
       interest,
       birthdate,
-      uploadAvatar
+      uploadAvatar,
+      blockedUsers
     }
     if (password.length > 0) form.password = password
 
@@ -729,9 +744,11 @@ const Navbar = () => {
                     </div>
                     <div>
                       <h3>Blocked users</h3>
-                      {user.blocked_users &&
-                        user.blocked_users.map((blockedUser, i) => (
-                          <li key={blockedUser}>{blockedUser}</li>
+                      {blockedUsers &&
+                        blockedUsers.map((blockedUser, i) => (
+                          <li key={blockedUser}>{blockedUser} <button onClick={() => unblockUser(blockedUser)}>
+                          Unblock user
+                        </button></li>
                         ))}
                     </div>
                   </form>
