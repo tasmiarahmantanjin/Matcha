@@ -31,5 +31,5 @@ const setNotificationsAsRead = (reqObject) => {
 	return request.then(response => response.data)
 }
 
-const exp = { getNotifications }
+const exp = { getNotifications, setNotificationsAsRead }
 export default exp
