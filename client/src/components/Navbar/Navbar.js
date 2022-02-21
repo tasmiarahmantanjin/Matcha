@@ -65,11 +65,11 @@ const Navbar = () => {
   const [notifications, setNotifications] = useState([])
 
   const unblockUser = (unblockedUser) => {
-    console.log('Unblock button clicked.');
+    //console.log('Unblock button clicked.');
     const newBlockedUsers = blockedUsers.filter(function(value){ 
       return value !== unblockedUser;
     })
-    console.log(newBlockedUsers);
+    //console.log(newBlockedUsers);
     setBlockedUsers(newBlockedUsers)
     }
 
@@ -90,7 +90,8 @@ const Navbar = () => {
     toast(`Un-liked by ${message.sender_name.charAt(0).toUpperCase() + message.sender_name.slice(1)}`) // Alert user to new unlike! WORKS!
   }
   const receivedMatch = match => {
-    toast(`Match between ${match.sender_name.charAt(0).toUpperCase() + match.sender_name.slice(1)} and ${match.partner_name.charAt(0).toUpperCase() + match.partner_name.slice(1)}`) // Alert user to new unlike! WORKS!
+    toast(`Match between ${match.sender_name.charAt(0).toUpperCase() + match.sender_name.slice(1)} and ${match.partner_name.charAt(0).toUpperCase() + match.partner_name.slice(1)}`)
+    
   }
 
   useEffect(() => {
@@ -98,30 +99,30 @@ const Navbar = () => {
     socketRef.current.emit('create', user.user_id)
     socketRef.current.on('your id', id => {
       setYourID(id)
-      console.log(`yourID: ${yourID}`)
+      //console.log(`yourID: ${yourID}`)
     })
 
     socketRef.current.on('message', message => {
-      console.log('Message.')
-      console.log(message)
+      //console.log('Message.')
+      //console.log(message)
       receivedMessage(message)
     })
 
     socketRef.current.on('like', like => {
-      console.log('Received like.')
-      console.log(like)
+      //console.log('Received like.')
+      //console.log(like)
       receivedLike(like)
     })
 
     socketRef.current.on('unlike', unlike => {
-      console.log('Received unlike.')
-      console.log(unlike)
+      //console.log('Received unlike.')
+      //console.log(unlike)
       receivedUnlike(unlike)
     })
 
     socketRef.current.on('match', match => {
-      console.log('Match!')
-      console.log(match)
+      //console.log('Match!')
+      //console.log(match)
       receivedMatch(match)
     })
   }, [])
@@ -135,10 +136,10 @@ const Navbar = () => {
 
       user: user
     }
-    console.log('User: ')
-    console.log(user)
+    //console.log('User: ')
+    //console.log(user)
     notificationsService.getNotifications(requestObject).then(initialNotifications => {
-      console.log(initialNotifications)
+      //console.log(initialNotifications)
       setNotifications(initialNotifications)
     })
   }, [user])
@@ -148,7 +149,7 @@ const Navbar = () => {
       user: user
     }
     chatService.getConversationsArray(requestObject).then(initialConversations => {
-      console.log(initialConversations)
+      //console.log(initialConversations)
       setConversationsArr(initialConversations.rows)
     })
   }, [user])
@@ -158,7 +159,7 @@ const Navbar = () => {
       user: user
     }
     galleryService.getUserGallery(requestObject).then(initialImages => {
-      console.log(initialImages)
+      //console.log(initialImages)
       setGalleryImages(initialImages.rows)
     })
   }, [user])
@@ -168,7 +169,7 @@ const Navbar = () => {
       user: user
     }
     chatService.getConversationsArray(requestObject).then(initialConversations => {
-      console.log(initialConversations)
+      //console.log(initialConversations)
       setConversationsArr(initialConversations.rows)
     })
   }, [user])
@@ -178,14 +179,14 @@ const Navbar = () => {
     let conversationPartners = []
     for (let i = 0; i < conversationsArr.length; i++) {
       if (conversationsArr[i].user_one_id === user.user_id) {
-        console.log('User is user one.')
+        //console.log('User is user one.')
         let currentConversation = {
           conversation: conversationsArr[i].id,
           partnerId: conversationsArr[i].user_two_id
         }
         conversationPartners.push(currentConversation)
       } else {
-        console.log('User is user two.')
+        //console.log('User is user two.')
         let currentConversation = {
           conversation: conversationsArr[i].id,
           partnerId: conversationsArr[i].user_one_id
@@ -212,7 +213,7 @@ const Navbar = () => {
           avatar: returnedPartner.rows[0].avatar,
           conversation: partnersIdArr[i].conversation
         }
-        console.log(currentPartner)
+        //console.log(currentPartner)
         partners.push(currentPartner)
       })
     }
@@ -243,15 +244,15 @@ const Navbar = () => {
   useEffect(() => {
     if (sexual_orientation) {
       if (inArray('female')) {
-        console.log('Female preference detected.')
+        //console.log('Female preference detected.')
         setFemale(true)
       }
       if (inArray('male')) {
-        console.log('Male preference detected.')
+        //console.log('Male preference detected.')
         setMale(true)
       }
       if (inArray('other')) {
-        console.log('Other preference detected.')
+        //console.log('Other preference detected.')
         setOther(true)
       }
     }
@@ -268,9 +269,12 @@ const Navbar = () => {
   }, [user])
 
   useEffect(() => {
+    console.log('Updated new notifications.');
+  }, [notifications])
+
+  useEffect(() => {
     setBlockedUsers(user.blocked_users)
   }, [user])
-  
 
   useEffect(() => {
     if (!bio) {
@@ -313,8 +317,8 @@ const Navbar = () => {
     }
     if (password.length > 0) form.password = password
 
-    console.log('FORM: ');
-    console.log(form);
+    //console.log('FORM: ');
+    //console.log(form);
 
     const formData = new FormData()
 
@@ -360,30 +364,30 @@ const Navbar = () => {
   // Puts interest into array on enter press, and resets the input field.
   const inputKeyDown = e => {
     if (e.target.value === '#') {
-      console.log('Hashtag detected')
+      //console.log('Hashtag detected')
       return
     }
     const val = '#' + trim(e.target.value, '#')
-    console.log(`val = ${val}`)
+    //console.log(`val = ${val}`)
     if (e.key === 'Enter' && val !== '#') {
       if (interest && interestArr.find(interest => interest.toLowerCase() === val.toLowerCase())) {
-        console.log('Duplicate detected.')
+        //console.log('Duplicate detected.')
         return
       }
-      // console.log(val)
+      // //console.log(val)
       setInterestArr([...interestArr, val])
       setInterest([...interestArr, val])
-      // console.log('InterestArr:')
-      // console.log(interestArr)
-      // console.log('Interest:')
-      // console.log(interest)
+      // //console.log('InterestArr:')
+      // //console.log(interestArr)
+      // //console.log('Interest:')
+      // //console.log(interest)
       var inputTag = document.getElementById('input-tag')
       inputTag.value = ''
     } else if (e.key === 'Backspace' && val === '#') {
       removeTag(interestArr.length - 1)
     }
-    // console.log(interestArr)
-    // console.log(interest)
+    // //console.log(interestArr)
+    // //console.log(interest)
 
     return
   }
@@ -440,8 +444,8 @@ const Navbar = () => {
   }
 
   const makeAvatarButtonHandler = img => {
-    console.log('Image avatar button clicked.')
-    console.log(`image path: ${img.path}`)
+    //console.log('Image avatar button clicked.')
+    //console.log(`image path: ${img.path}`)
 
     const requestObject = {
       user: user,
@@ -450,21 +454,21 @@ const Navbar = () => {
     galleryService.makeAvatarImage(requestObject)
   }
 
-  constant showNotificationHandler = () => {
-    setShowNotificationOptions(!showNotificationOptions)
+  const setNotificationAsRead = (id, user_id) => {
     // set notification as read, send off to backend that notifications have been read; set read from 0 to 1.
     const requestObject = {
       headers: {
         'Content-type': 'application/json; charset=UTF-8',
         Authorization: `Bearer ${localStorage.getItem('token') || ''}`
       },
-      user: user
+      user_id: user_id,
+      id: id
     }
-    console.log('User: ')
-    console.log(user)
-    notificationsService.setNotificationsAsRead(requestObject).then(initialNotifications => {
-      console.log(initialNotifications)
-      setNotifications(initialNotifications)
+    console.log('User ID: ')
+    console.log(user_id)
+    notificationsService.setNotificationAsRead(requestObject).then(newNotifications => {
+      console.log(newNotifications.rows)
+      setNotifications(newNotifications.rows)
     })
   }
 
@@ -541,6 +545,13 @@ const Navbar = () => {
 
   const notificationsToShow = notifications
     ? notifications.map((notification, index) => {
+      if (notification.read === 0) {
+        return(
+        <div key={index} style={{ backgroundColor: 'red' }} onClick={() => setNotificationAsRead(notification.id, notification.user_id)}>
+            <p>UNREAD: {notification.notification}</p>
+          </div>
+          )
+      }
         return (
           <div key={index}>
             <p>{notification.notification}</p>

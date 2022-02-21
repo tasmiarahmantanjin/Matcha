@@ -1,10 +1,11 @@
 const router = require('express').Router()
-const { getNotifications, notification1, notification2, notification3, notification4 } = require('../controllers/notificationController')
+const { getNotifications, setNotificationAsRead, notification1, notification2, notification3, notification4 } = require('../controllers/notificationController')
 const { auth } = require('../middleware/auth')
 
 //router.get('/', [auth], notification1)
 
 router.post('/getNotifications', /*[auth],*/ getNotifications)
+router.post('/setNotificationAsRead', /*[auth],*/ setNotificationAsRead)
 
 //router.get('/', [auth], notification1)
 

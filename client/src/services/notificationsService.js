@@ -17,11 +17,11 @@ const getNotifications = (reqObject) => {
 	return request.then(response => response.data)
 }
 
-const setNotificationsAsRead = (reqObject) => {
+const setNotificationAsRead = (reqObject) => {
   //console.log('In notifications service.');
   //console.log(reqObject);
 	//const request = axios.post(`${baseUrl}/notifications/getNotifications`, reqObject)
-   const request = axios.post(`${baseUrl}/notifications/setNotificationsAsRead`,
+   const request = axios.post(`${baseUrl}/notifications/setNotificationAsRead`,
     reqObject, {
     headers: {
       "Content-type": "application/json; charset=UTF-8",
@@ -31,5 +31,5 @@ const setNotificationsAsRead = (reqObject) => {
 	return request.then(response => response.data)
 }
 
-const exp = { getNotifications, setNotificationsAsRead }
+const exp = { getNotifications, setNotificationAsRead }
 export default exp

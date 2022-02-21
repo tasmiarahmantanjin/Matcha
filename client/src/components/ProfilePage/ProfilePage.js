@@ -32,18 +32,18 @@ const ProfilePage = ({ id }) => {
     socketRef.current.emit('create', user.user_id)
     socketRef.current.on('your id', id => {
       setYourID(id)
-      console.log(`yourID: ${yourID}`)
+      //console.log(`yourID: ${yourID}`)
     })
 
     socketRef.current.on('message', message => {
-      console.log('Message.')
-      console.log(message)
+      //console.log('Message.')
+      //console.log(message)
       //receivedMessage(message);
     })
 
     socketRef.current.on('like', like => {
-      console.log('Received like.')
-      console.log(like)
+      //console.log('Received like.')
+      //console.log(like)
       //receivedMessage(message);
     })
   }, [])
@@ -92,7 +92,7 @@ const ProfilePage = ({ id }) => {
     fetch('http://localhost:5000/getLike', requestOptions)
       .then(response => response.json())
       .then(data => {
-        console.log('getLike HIT', data)
+        //console.log('getLike HIT', data)
         // FIXME: May be i need to comment two lines below
         if (data.rows[0]) {
           setLiked(data.rows[0])
@@ -118,11 +118,6 @@ const ProfilePage = ({ id }) => {
   }, [])
 
   const likeButtonClickHandler = () => {
-    console.log(
-      `Like button clicked. ${
-        user.first_name.charAt(0).toUpperCase() + user.first_name.slice(1)
-      } likes ${profile.first_name.charAt(0).toUpperCase() + profile.first_name.slice(1)}.`
-    )
 
     const formData = new FormData()
 
@@ -137,7 +132,8 @@ const ProfilePage = ({ id }) => {
       sender_id: user.user_id,
       sender_name: user.first_name,
       timestamp: new Date(),
-      partner: profile.user_id
+      partner: profile.user_id,
+      partner_name: profile.first_name
     }
     socketRef.current.emit('like', messageObject)
     if (likedUser !== undefined) {
@@ -148,17 +144,13 @@ const ProfilePage = ({ id }) => {
         partner: profile.user_id,
         partner_name: profile.first_name
       }
-      console.log(messageObject);
+      //console.log(messageObject);
       socketRef.current.emit('match', messageObject)
     }
   }
 
   const unlikeButtonClickHandler = () => {
-    console.log(
-      `Unlike button clicked. ${
-        user.first_name.charAt(0).toUpperCase() + user.first_name.slice(1)
-      } unliked ${profile.first_name.charAt(0).toUpperCase() + profile.first_name.slice(1)}.`
-    )
+    
     const formData = new FormData()
 
     formData.append('profile_id', profile.user_id)
@@ -172,7 +164,8 @@ const ProfilePage = ({ id }) => {
       sender_id: user.user_id,
       sender_name: user.first_name,
       timestamp: new Date(),
-      partner: profile.user_id
+      partner: profile.user_id,
+      partner_name: profile.first_name
     }
     socketRef.current.emit('unlike', messageObject)
   }
@@ -340,7 +333,7 @@ const ProfilePage = ({ id }) => {
   let online
   let dateLastSeen
   if (profile !== undefined) {
-    console.log('profile', profile)
+    //console.log('profile', profile)
     if (profile.online === 1) {
       online = (
         <div>

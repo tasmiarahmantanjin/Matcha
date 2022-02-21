@@ -31,7 +31,7 @@ const Chat = ({ id }) => {
 
   const receivedMessage = (message) => {
     setMessages((oldMsgs) => [...oldMsgs, message]);
-    console.log(messages);
+    //console.log(messages);
   };
 
   const sendMessage = (e) => {
@@ -44,7 +44,7 @@ const Chat = ({ id }) => {
       conversation: conversation.id,
       partner: partner.user_id,
     };
-    console.log(`Message: ${messageObject.message_text}`);
+    //console.log(`Message: ${messageObject.message_text}`);
     setMessage("");
     socketRef.current.emit("send message", messageObject);
   };
@@ -54,14 +54,14 @@ const Chat = ({ id }) => {
     const requestObject = {
       id: id,
     };
-    //console.log('Getting conversation.');
+    ////console.log('Getting conversation.');
     chatService
       .getConversation(requestObject) // Getting conversation
       .then((data) => {
-        //console.log('Data: ')
-        //console.log(data.rows)
+        ////console.log('Data: ')
+        ////console.log(data.rows)
         setConversation(data.rows[0]);
-        //console.log(conversation)
+        ////console.log(conversation)
         if (data.rows[0].user_one_id === user.user_id) {
           // Getting partner where user is user one.
           let partner_id = data.rows[0].user_two_id;
@@ -70,16 +70,16 @@ const Chat = ({ id }) => {
           };
           chatService
             .getPartnerProfile(requestObject)
-            //console.log(`User ID matched: ${data.rows[0].user_one_id}`)
+            ////console.log(`User ID matched: ${data.rows[0].user_one_id}`)
             .then((data) => {
-              //console.log(data.rows)
+              ////console.log(data.rows)
               setPartner(data.rows[0]);
-              //console.log('Partner after fetching:');
-              //console.log(`${data.rows[0]}`)
+              ////console.log('Partner after fetching:');
+              ////console.log(`${data.rows[0]}`)
             });
         } else {
           // Getting partner where user is user two.
-          //console.log(`Partner after checking: ${data.rows[0].user_two_id}`);
+          ////console.log(`Partner after checking: ${data.rows[0].user_two_id}`);
           //setPartner(data.rows[0].user_one_id)
           let partner_id = data.rows[0].user_one_id;
           const requestObject = {
@@ -87,12 +87,12 @@ const Chat = ({ id }) => {
           };
           chatService
             .getPartnerProfile(requestObject)
-            //console.log(`User ID matched: ${data.rows[0].user_one_id}`)
+            ////console.log(`User ID matched: ${data.rows[0].user_one_id}`)
             .then((data) => {
-              //console.log(data.rows)
+              ////console.log(data.rows)
               setPartner(data.rows[0]);
-              //console.log('Partner after fetching:');
-              //console.log(`${data.rows[0]}`)
+              ////console.log('Partner after fetching:');
+              ////console.log(`${data.rows[0]}`)
             });
         }
         const requestObject = {
@@ -101,7 +101,7 @@ const Chat = ({ id }) => {
         chatService
           .getMessages(requestObject) // Getting messages.
           .then((data) => {
-            //console.log(data.rows)
+            ////console.log(data.rows)
             setMessages(data.rows);
           });
 
@@ -115,17 +115,17 @@ const Chat = ({ id }) => {
 
         /*socketRef.current.on('connection', socket => {
         socket.join(conversation);
-        console.log(`socket.rooms: ${socket.rooms}`);
+        //console.log(`socket.rooms: ${socket.rooms}`);
       });*/
 
         socketRef.current.on("your id", (id) => {
           setYourID(id);
-          console.log(`yourID: ${yourID}`);
+          //console.log(`yourID: ${yourID}`);
         });
 
         socketRef.current.on("message", (message) => {
-          console.log("Message.");
-          console.log(message);
+          //console.log("Message.");
+          //console.log(message);
           receivedMessage(message);
         });
       });
@@ -133,7 +133,7 @@ const Chat = ({ id }) => {
     /**
      * ... until here.
      */
-    //console.log(`Partner to use for fetching partner data: ${partner_id}`)
+    ////console.log(`Partner to use for fetching partner data: ${partner_id}`)
 
     // empty dependency array means this effect will only run once (like componentDidMount in classes)
   }, []);
