@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
-    "setup_db": "node startup.js"
+    "setup_db": "node startup.js && node createUserFolders.js"
   },
   "keywords": [],
   "author": "",

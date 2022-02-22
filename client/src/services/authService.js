@@ -16,7 +16,7 @@ const AuthService = {
   register: data => {
     return API.post('/register', data)
       .then(({ data }) => {
-        setHeadersAndStorage(data)
+        //setHeadersAndStorage(data)
         return data
       })
       .catch(err => {

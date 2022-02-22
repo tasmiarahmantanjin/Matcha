@@ -49,8 +49,9 @@ const authReducer = (state = initialState, action) => {
     case REGISTER:
       return {
         ...state,
-        user: payload.user,
-        token: payload.token
+        user: {},
+        token: '',
+        isLoggedIn: false
       }
 
     case LOGOUT:

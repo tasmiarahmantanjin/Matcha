@@ -92,7 +92,8 @@ const Register = ({ history }) => {
                                     value={password}
                                     required='required'
                                     type='password'
-                                    placeholder='Password' />
+                                    placeholder='Password'
+                                    autoComplete="off" />
                             </div>
 
                             <button>REGISTER</button>

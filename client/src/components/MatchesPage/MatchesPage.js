@@ -14,7 +14,7 @@ const MatchesPage = () => {
   const matches = useSelector(state => state.authReducer.matches)
   const [ageRangeMax, setAgeRangeMax] = useState(100)
   const [ageRangeMin, setAgeRangeMin] = useState(22)
-  const [distance, setDistance] = useState(20)
+  const [distance, setDistance] = useState(100)
   const [fame, setFame] = useState(50)
   const gender = user.gender
   const sexual_orientation = user.sexual_orientation
@@ -198,7 +198,7 @@ const MatchesPage = () => {
               id="distance"
               name="distance"
               min="1"
-              max="100"
+              max="500"
               value={distance}
               required="required"
               type="range"

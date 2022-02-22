@@ -3,12 +3,12 @@ const jwt = require("jsonwebtoken");
 const config = require("../config/app");
 
 exports.getNotifications = async (req, resp) => {
-  //console.log("Endpoint hit: getNotifications");
-  //console.log(req.body.user.user_id);
+  console.log("Endpoint hit: getNotifications");
+  console.log(req.body.user.user_id);
 
   try {
     const user_id = req.body.user.user_id;
-    //console.log(`user ID = ${user_id}`);
+    console.log(`user ID = ${user_id}`);
     //1. Get the user's token
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
@@ -22,29 +22,18 @@ exports.getNotifications = async (req, resp) => {
       return resp.status(401).json({ error: "token missing or invalid" });
 
     //3. Database query to get the data from notification table if user_id exists
-    if (user_id) {
       //console.log("We have a user ID.");
-      pool.query(
+      const results = await pool.query(
         `SELECT * FROM notifications WHERE user_id = $1 ORDER BY date DESC`,
-        [user_id],
-        (err, result) => {
-          if (err) {
-            return resp.status(500).json({ error: err });
-          }
-          resp.json(result.rows);
-        }
+        [user_id]
       );
-    } else
-      pool.query(
-        "SELECT * FROM notifications ORDER BY date DESC",
-        [],
-        (err, res) => {
-          if (err) return resp.status(500).send({ error: err.detail });
-          resp.status(200).send(res.rows);
-        }
-      );
+      console.log(results.rowCount);
+      if (results.rowCount > 0) {
+        resp.status(200).json(results.rows);
+      } else {
+        resp.status(200)
+      }
   } catch (err) {
-    //console.log(err);
     resp.status(500).json({ error: err });
   }
 };

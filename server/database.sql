@@ -37,7 +37,7 @@ CREATE TABLE likes
     liked_user character varying(255) NOT NULL
 );
 
-CREATE TABLE fake_account_reports 
+CREATE TABLE fake_account_reports
 (
     report_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id VARCHAR(255) NOT NULL,
@@ -74,6 +74,27 @@ CREATE TABLE hashtags
     interest character varying(255) NOT NULL,
     number integer NOT NULL
 );
+
+CREATE TABLE notifications (
+	id uuid PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+	"read" int2 NOT NULL DEFAULT '0'::smallint,
+	notification text NULL,
+	"date" timestamptz NULL DEFAULT CURRENT_TIMESTAMP,
+	user_id varchar(255) NULL,
+	from_id varchar(255) NULL
+);
+
+insert into hashtags (interest, number) values ('#cats', 72);
+insert into hashtags (interest, number) values ('#startrek', 72);
+insert into hashtags (interest, number) values ('#karate', 71);
+insert into hashtags (interest, number) values ('#javascript', 71);
+insert into hashtags (interest, number) values ('#dogs', 65);
+insert into hashtags (interest, number) values ('#fishing', 65); 
+insert into hashtags (interest, number) values ('#debugging', 74); 
+insert into hashtags (interest, number) values ('#starwars', 74);
+insert into hashtags (interest, number) values ('#cuddles', 74);
+insert into hashtags (interest, number) values ('#jazz', 86);
+insert into hashtags (interest, number) values ('#lindyhop', 86);
 
 --Insert predifined users for admin use
 insert into users (user_id, first_name, last_name, user_name, email, gender, password, token, verified, avatar, bio, interest, latitude, longitude, birthdate, fame, last_online, online, sexual_orientation, blocked_users) values ('a0d6c7f1-c6fa-4c5c-a1ea-b0522c4d62c3', 'Janifer', 'Chipps', 'jchipps0', 'jchipps0@home.pl', 'male', '$2b$10$HuzHBjlCqZ2Hr8f6HbzQduTgbP9Oo4lVjXhrep8q8zeIKCBlb8CVO', 'b5979cb8-281e-4996-b971-cea98662fb3d', 1, 'default.png', 'Buteo jamaicensis', '{#cats,#champagne,#startrek}', 59, 24, '1967-06-20 12:04:45', 85, '2006-06-18 19:21:57', 0, '{male, female}', '{}');

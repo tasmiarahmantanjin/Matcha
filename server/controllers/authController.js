@@ -4,7 +4,7 @@ const sendEmail = require('../utils/email')
 const { getLocation } = require('../utils/location')
 const { updateAccount } = require('./authControllerHelper');
 const { updateTime } = require('./authControllerHelper');
-
+const fs = require('fs')
 
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
@@ -85,10 +85,19 @@ exports.register = async (req, res) => {
 		//4. generating RANDOM token for validation with crypto or jwt
 		const jwtToken = crypto.randomBytes(42).toString('hex');
 
+    
+
 		//5. create & enter the new user info with generated token inside my database
 		const newUser = await pool.query("INSERT INTO users (first_name, last_name, user_name, email, gender, password, token, avatar, blocked_users, interest, fame) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *", [first_name, last_name, user_name, email, gender, bcryptPassword, jwtToken, 'default.png', '{}', '{}', 50]);
-		res.json(newUser.rows[0]);
-
+		fs.mkdir(`./uploads/user/${newUser.rows[0].user_id}`, { recursive: true }, (err) => { 
+      fs.copyFile('./uploads/user/default.png', `./uploads/user/${newUser.rows[0].user_id}/default.png`, (err) => {
+        if (err) throw err;
+        console.log('source image was copied to destination image');
+      })
+      if (err) throw err; 
+    });
+    res.json(newUser.rows[0]);
+  
 		//6. Finally send the email to verify the registration
 		return res.json(sendEmail(email, jwtToken))
 	} catch (err) {

@@ -11,8 +11,8 @@ import "./Auth.scss";
 const Login = ({ history }) => {
   const dispatch = useDispatch();
 
-  const [user_name, setUser_name] = useState("adminn");
-  const [password, setPassword] = useState("1234aA");
+  const [user_name, setUser_name] = useState("");
+  const [password, setPassword] = useState("");
 
   const submitForm = (e) => {
     e.preventDefault();
