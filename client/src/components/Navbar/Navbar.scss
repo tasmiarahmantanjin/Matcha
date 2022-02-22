@@ -173,7 +173,7 @@
     // make it scrollable
     overflow-y: scroll;
     height: 30rem;
-    width: 16rem;
+    width: 18rem;
     padding: 0 5px;
     // right: 5px;
     border: 1px solid #d9d9d9;
@@ -182,8 +182,13 @@
     box-shadow: rgba(0, 0, 0, 0.7);
 
     p {
-      margin: 10px 5px;
+      margin-top: 1rem;
       color: black;
+      margin-left: 1rem;
+    }
+
+    .icon {
+      margin-right: 1rem;
     }
   }
 
@@ -209,6 +214,10 @@
     font-weight: 600;
   }
 }
+
+// .notification-box {
+//   box-shadow: rgba(4, 4, 4, 0.7);
+// }
 
 /**
 * End of chat stuff.
@@ -292,5 +301,15 @@
 }
 
 .nav-child-2 {
+  
+}
+
+.trending-container {
+  display: flex;
+  justify-content: space-evenly;
+  padding-bottom: 1rem;
+}
+
+.trending-hashtag {
   
 }

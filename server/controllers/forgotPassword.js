@@ -5,7 +5,7 @@ const resetEmail = require('../utils/resetEmail');
 exports.resetPassword = async (req, res) => {
 	// De-structure the req.body
 	const { email } = req.body;
-  console.log(`In forgotPassword.js: ${req.body}`);
+  //console.log(`In forgotPassword.js: ${req.body}`);
 	// Check if user entered any email or not
 	if (!email) {
 		return res.status(400).json('Field can not be empty');

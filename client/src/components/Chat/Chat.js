@@ -3,11 +3,8 @@ import React, { useState, useEffect, useRef } from "react";
 // import useSelector to connect the store with the component
 import { useSelector } from "react-redux";
 import Navbar from "../Navbar/Navbar";
-//import Match from './Match'
 import { withRouter } from "react-router";
 import "./Chat.scss";
-
-import { useDispatch } from "react-redux";
 
 import chatService from "../../services/chatService";
 import Form from "./Form/Form";
@@ -15,20 +12,16 @@ import UserRow from "./UserRow/UserRow";
 import PartnerRow from "./PartnerRow/PartnerRow";
 import io from "socket.io-client";
 
-//import { getUserById } from '../../../../server/controllers/profileController';
-
 const Chat = ({ id }) => {
   const [conversation, setConversation] = useState();
   const [partner, setPartner] = useState();
-  const dispatch = useDispatch();
   const user = useSelector((state) => state.authReducer.user);
   //var partner_id
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
-  const [yourID, setYourID] = useState(user.user_id);
 
   const socketRef = useRef();
-
+  
   const receivedMessage = (message) => {
     setMessages((oldMsgs) => [...oldMsgs, message]);
     //console.log(messages);
@@ -113,16 +106,6 @@ const Chat = ({ id }) => {
       socketRef.current.emit('setSocketId', data);*/
         socketRef.current.emit("create", data.rows[0].id);
 
-        /*socketRef.current.on('connection', socket => {
-        socket.join(conversation);
-        //console.log(`socket.rooms: ${socket.rooms}`);
-      });*/
-
-        socketRef.current.on("your id", (id) => {
-          setYourID(id);
-          //console.log(`yourID: ${yourID}`);
-        });
-
         socketRef.current.on("message", (message) => {
           //console.log("Message.");
           //console.log(message);
@@ -130,13 +113,7 @@ const Chat = ({ id }) => {
         });
       });
 
-    /**
-     * ... until here.
-     */
-    ////console.log(`Partner to use for fetching partner data: ${partner_id}`)
-
-    // empty dependency array means this effect will only run once (like componentDidMount in classes)
-  }, []);
+  }, [user, id]);
 
   const handleChange = (e) => {
     setMessage(e.target.value);
@@ -150,8 +127,9 @@ const Chat = ({ id }) => {
 
       <div>
         {messages.map((message, index) => {
+          let ret
           if (message.sender_id === user.user_id) {
-            return (
+            ret =
               <UserRow
                 image={`${user.user_id}/${user.avatar}`}
                 key={index}
@@ -159,9 +137,8 @@ const Chat = ({ id }) => {
                 timestamp={message.timestamp}
                 message={message.message_text}
               />
-            );
           } else if (partner) {
-            return (
+            ret =
               <PartnerRow
                 key={index}
                 image={`${partner.user_id}/${partner.avatar}`}
@@ -169,8 +146,8 @@ const Chat = ({ id }) => {
                 timestamp={message.timestamp}
                 message={message.message_text}
               />
-            );
           }
+          return ret
         })}
       </div>
       <Form

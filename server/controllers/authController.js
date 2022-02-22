@@ -40,13 +40,13 @@ exports.login = async (req, res) => {
 		location.online = 1;
 		await updateAccount(user.user_id, location)
     const time = new Date().toISOString().slice(0, 19).replace('T', ' ')
-    console.log(time)
+    //console.log(time)
     await updateTime(user.user_id, time)
 
 		//4. Generate auth token
 		const userWithToken = generateToken(user)
 		userWithToken.user.avatar = user.avatar
-    console.log(userWithToken)
+    //console.log(userWithToken)
 
 		return res.send(userWithToken)
 	} catch (e) {
@@ -86,7 +86,7 @@ exports.register = async (req, res) => {
 		const jwtToken = crypto.randomBytes(42).toString('hex');
 
 		//5. create & enter the new user info with generated token inside my database
-		const newUser = await pool.query("INSERT INTO users (first_name, last_name, user_name, email, gender, password, token, avatar, blocked_users, interest) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *", [first_name, last_name, user_name, email, gender, bcryptPassword, jwtToken, 'default.png', '{}', '{}']);
+		const newUser = await pool.query("INSERT INTO users (first_name, last_name, user_name, email, gender, password, token, avatar, blocked_users, interest, fame) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *", [first_name, last_name, user_name, email, gender, bcryptPassword, jwtToken, 'default.png', '{}', '{}', 50]);
 		res.json(newUser.rows[0]);
 
 		//6. Finally send the email to verify the registration
@@ -117,18 +117,18 @@ exports.registrationVerify = ('/registrationVerify', (req, resp) => {
 // @access  Private
 exports.logout = async (req, res) => {
 	try {
-    console.log(`User ID: `)
-    console.log(req.body);
+    //console.log(`User ID: `)
+    //console.log(req.body);
 		const { user_id } = req.body
 		//1. Find the user
 		const user = await findUserInfo('user_id', user_id);
-    console.log(user.online)
+    //console.log(user.online)
 		//2. Check if user found
 		if (!user) return res.status(404).json({ message: 'User not found!' })
 		if (user.online === 0) return res.status(404).json({ message: 'User already logged out!' })
 
 
-    console.log('Here we log out user.');
+    //console.log('Here we log out user.');
 		//!TODO: NEED TO SET THE USER ONLINE ONCE LOGIN & get the user location
 		//const location = await getLocation(req);
 		// Once login user will be in online
@@ -136,7 +136,7 @@ exports.logout = async (req, res) => {
 		await pool.query(
       `UPDATE users SET online = 0 WHERE user_id = $1`, [user_id]);
     const time = new Date().toISOString().slice(0, 19).replace('T', ' ')
-    console.log(time)
+    //console.log(time)
     await updateTime(user_id, time)
 
 		return res.sendStatus(200)

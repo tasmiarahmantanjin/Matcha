@@ -57,8 +57,8 @@ exports.getConversationById = async (req, res) => {
     }
 
     exports.insertMessageIntoConversation = async (message) => {
-      console.log('Message in insertMessageIntoConversation:')
-      console.log(message)
+      //console.log('Message in insertMessageIntoConversation:')
+      //console.log(message)
       try {
         const { message_text, sender_id, timestamp, conversation, partner } = message
         

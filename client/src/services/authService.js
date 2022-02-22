@@ -33,14 +33,13 @@ const AuthService = {
   },
 
   updateProfile: data => {
-    console.log('In authService.js updateProfile HIT')
+    //console.log('In authService.js updateProfile HIT')
     const headers = {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     }
     return API.post('/users/update', data, headers)
       .then(({ data }) => {
-        console.log('In authService.js updateProfile HIT 02')
-
+        //console.log('In authService.js updateProfile HIT 02')
         localStorage.setItem('user', JSON.stringify(data))
         return data
       })
@@ -85,7 +84,7 @@ const AuthService = {
   },
 
   likeUser: data => {
-    console.log(`Data in likeUser (authService): ${data}`)
+    //console.log(`Data in likeUser (authService): ${data}`)
     //console.log(`Data in authService: ${data.get('ageRangeMax')}`) // Form data is still available here; header problem?
     /*const headers = {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -103,7 +102,7 @@ const AuthService = {
   },
 
   unlikeUser: data => {
-    console.log(`Data in unlikeUser (authService): ${data}`)
+    //console.log(`Data in unlikeUser (authService): ${data}`)
     //console.log(`Data in authService: ${data.get('ageRangeMax')}`) // Form data is still available here; header problem?
     /*const headers = {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -139,7 +138,7 @@ const AuthService = {
   },
 
   blockUser: data => {
-    console.log(`Data in blockUser (authService): ${data}`)
+    //console.log(`Data in blockUser (authService): ${data}`)
     //console.log(`Data in authService: ${data.get('ageRangeMax')}`) // Form data is still available here; header problem?
     /*const headers = {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -158,7 +157,7 @@ const AuthService = {
   },
 
   reportUser: data => {
-    console.log(`Data in reportUser (authService): ${data}`)
+    //console.log(`Data in reportUser (authService): ${data}`)
     //console.log(`Data in authService: ${data.get('ageRangeMax')}`) // Form data is still available here; header problem?
     /*const headers = {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }

@@ -4,9 +4,11 @@ import '../Modal/Modal.scss'
 const Modal = props => {
   const findByKey = name =>
     props.children.map(child => {
+      let ret
       if (child.key === name) {
-        return child
+        ret = child
       }
+      return ret
     })
 
   const closeModal = e => {

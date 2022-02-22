@@ -20,22 +20,22 @@ const io = require("socket.io")(server, {
 });
 
 app.get("/", (req, res) => {
-  console.log("Endpoint hit: Chat home");
+ //console.log("Endpoint hit: Chat home");
   return res.send("Chat home is working");
 });
 
 io.on("connection", (socket) => {
-  console.log("Connection.");
-  console.log(socket.id);
+ //console.log("Connection.");
+ //console.log(socket.id);
   socket.on("create", function (room) {
     socket.join(room);
-    console.log(`Created room:`);
-    console.log(room);
+   //console.log(`Created room:`);
+   //console.log(room);
   });
   //console.log(socket);
   socket.emit("your id", socket.id);
   socket.on("send message", (message) => {
-    console.log(message);
+   //console.log(message);
     //io.emit("message", message)
     /*// to individual socketid (private message)
   io.to(socketId).emit([message]);*/
@@ -46,7 +46,7 @@ io.on("connection", (socket) => {
     io.to(message.partner).emit("message", message);
   });
   socket.on("like", (like) => {
-    console.log(like);
+   //console.log(like);
     //io.emit("message", message)
     /*// to individual socketid (private message)
   io.to(socketId).emit([message]);*/
@@ -57,7 +57,7 @@ io.on("connection", (socket) => {
     //io.to(message.partner).emit("message", message);
   });
   socket.on("unlike", (unlike) => {
-    console.log(unlike);
+   //console.log(unlike);
     //io.emit("message", message)
     /*// to individual socketid (private message)
   io.to(socketId).emit([message]);*/
@@ -68,7 +68,7 @@ io.on("connection", (socket) => {
     //io.to(message.partner).emit("message", message);
   });
   socket.on("match", (match) => {
-    console.log(match);
+   //console.log(match);
     //io.emit("message", message)
     /*// to individual socketid (private message)
   io.to(socketId).emit([message]);*/
@@ -86,9 +86,9 @@ io.on('setSocketId', data => {
     var userName = data.name;
     var userId = data.userId;
     userNames[userName] = userId;
-    console.log(`user names: ${userNames}`);
+   //console.log(`user names: ${userNames}`);
 });*/
 
 const PORT = 3001;
 
-server.listen(PORT, () => console.log(`Chat server running on port ${PORT}.`));
+server.listen(PORT, () =>console.log(`Chat server running on port ${PORT}.`));

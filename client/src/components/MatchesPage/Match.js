@@ -4,12 +4,14 @@ import "./Match.scss";
 // To-do: account for distance and age range filters, and for any ordering.
 // getDistanceFromLatLonInKm(person.longitude, person.latitude, user.longitude, user.latitude)
 const Match = ({ person, distance, age }) => {
-  console.log("person: ", person);
+  //console.log("person: ", person);
   return (
     <div className="card">
       <img
         className="card__image"
-        src={`http://localhost:5000/uploads/user/${person.user_id}/${person.avatar}`}
+        src={`http://localhost:5000/uploads/user/${
+                person.avatar === 'default.png' ? '/default.png' : `${person.user_id}/${person.avatar}`
+              }`}
         alt="match_avatar"
       />
       <p className="card__name">
@@ -29,6 +31,10 @@ const Match = ({ person, distance, age }) => {
         {person.sexual_orientation.map((orientation) => (
           <p key={orientation}>{orientation}</p>
         ))}
+      </div>
+
+      <div className="grid-container-skills">
+        <p>Fame: {person.fame}</p>
       </div>
 
       <div className="skills">

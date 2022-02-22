@@ -14,6 +14,7 @@ import { updateProfile } from '../../store/actions/auth'
 import { uploadToGallery } from '../../store/actions/auth'
 import galleryService from '../../services/galleryService'
 import notificationsService from '../../services/notificationsService'
+import hashtagsService from '../../services/hashtagsService'
 
 import { useHistory } from 'react-router-dom'
 
@@ -63,6 +64,7 @@ const Navbar = () => {
   const [messageArr, setMessageArr] = useState()
 
   const [notifications, setNotifications] = useState([])
+  const [hashtags, setHashtags] = useState([])
 
   const unblockUser = (unblockedUser) => {
     //console.log('Unblock button clicked.');
@@ -76,8 +78,6 @@ const Navbar = () => {
   /**
    * Chat code starts here
    */
-  const [yourID, setYourID] = useState(user.user_id)
-
   const socketRef = useRef()
 
   const receivedMessage = message => {
@@ -91,16 +91,11 @@ const Navbar = () => {
   }
   const receivedMatch = match => {
     toast(`Match between ${match.sender_name.charAt(0).toUpperCase() + match.sender_name.slice(1)} and ${match.partner_name.charAt(0).toUpperCase() + match.partner_name.slice(1)}`)
-    
   }
 
   useEffect(() => {
     socketRef.current = io.connect('localhost:3001/')
     socketRef.current.emit('create', user.user_id)
-    socketRef.current.on('your id', id => {
-      setYourID(id)
-      //console.log(`yourID: ${yourID}`)
-    })
 
     socketRef.current.on('message', message => {
       //console.log('Message.')
@@ -109,23 +104,59 @@ const Navbar = () => {
     })
 
     socketRef.current.on('like', like => {
-      //console.log('Received like.')
-      //console.log(like)
+      const requestObject2 = {
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+          Authorization: `Bearer ${localStorage.getItem('token') || ''}`
+        },
+  
+        user: user
+      }
+      //console.log('User: ')
+      //console.log(user)
+      notificationsService.getNotifications(requestObject2).then(initialNotifications => {
+        //console.log(initialNotifications)
+        setNotifications(initialNotifications)
+      })
       receivedLike(like)
     })
 
     socketRef.current.on('unlike', unlike => {
-      //console.log('Received unlike.')
-      //console.log(unlike)
+      const requestObject2 = {
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+          Authorization: `Bearer ${localStorage.getItem('token') || ''}`
+        },
+  
+        user: user
+      }
+      //console.log('User: ')
+      //console.log(user)
+      notificationsService.getNotifications(requestObject2).then(initialNotifications => {
+        //console.log(initialNotifications)
+        setNotifications(initialNotifications)
+      })
       receivedUnlike(unlike)
     })
 
     socketRef.current.on('match', match => {
-      //console.log('Match!')
-      //console.log(match)
+      const requestObject2 = {
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+          Authorization: `Bearer ${localStorage.getItem('token') || ''}`
+        },
+  
+        user: user
+      }
+      //console.log('User: ')
+      //console.log(user)
+      notificationsService.getNotifications(requestObject2).then(initialNotifications => {
+        //console.log(initialNotifications)
+        setNotifications(initialNotifications)
+      })
       receivedMatch(match)
     })
-  }, [])
+  }, [user])
 
   useEffect(() => {
     const requestObject = {
@@ -141,6 +172,21 @@ const Navbar = () => {
     notificationsService.getNotifications(requestObject).then(initialNotifications => {
       //console.log(initialNotifications)
       setNotifications(initialNotifications)
+    })
+  }, [user])
+
+  useEffect(() => {
+    const requestObject = {
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+        Authorization: `Bearer ${localStorage.getItem('token') || ''}`
+      }
+    }
+    //console.log('User: ')
+    //console.log(user)
+    hashtagsService.getHashtags(requestObject).then(initialHashtags => {
+      //console.log(initialHashtags)
+      setHashtags(initialHashtags)
     })
   }, [user])
 
@@ -241,7 +287,17 @@ const Navbar = () => {
     setMessageArr(recentMessages)
   }, [conversationsArr, user])
 
+
+  
+
   useEffect(() => {
+    const inArray = option => {
+      if (sexual_orientation.includes(option)) {
+        return true
+      } else {
+        return false
+      }
+    }
     if (sexual_orientation) {
       if (inArray('female')) {
         //console.log('Female preference detected.')
@@ -256,21 +312,17 @@ const Navbar = () => {
         setOther(true)
       }
     }
-  }, [])
+  }, [sexual_orientation])
 
   useEffect(() => {
     if (interest) {
       setInterestArr(interest)
     }
-  }, [])
+  }, [interest])
 
   useEffect(() => {
     setAvatar(user.avatar)
   }, [user])
-
-  useEffect(() => {
-    console.log('Updated new notifications.');
-  }, [notifications])
 
   useEffect(() => {
     setBlockedUsers(user.blocked_users)
@@ -280,7 +332,7 @@ const Navbar = () => {
     if (!bio) {
       setBio('')
     }
-  }, [user])
+  }, [user, bio])
 
   let checked = []
   if (sexual_orientation !== null) {
@@ -425,14 +477,6 @@ const Navbar = () => {
     setSexual_orientation(checked)
   }
 
-  const inArray = option => {
-    if (sexual_orientation.includes(option)) {
-      return true
-    } else {
-      return false
-    }
-  }
-
   const imageDeleteButtonHandler = img => {
     const requestObject = {
       user: user,
@@ -464,11 +508,25 @@ const Navbar = () => {
       user_id: user_id,
       id: id
     }
-    console.log('User ID: ')
-    console.log(user_id)
+    //console.log('User ID: ')
+    //console.log(user_id)
     notificationsService.setNotificationAsRead(requestObject).then(newNotifications => {
-      console.log(newNotifications.rows)
-      setNotifications(newNotifications.rows)
+      // console.log(newNotifications.rows)
+      // setNotifications(newNotifications.rows)
+    })
+    const requestObject2 = {
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+        Authorization: `Bearer ${localStorage.getItem('token') || ''}`
+      },
+
+      user: user
+    }
+    //console.log('User: ')
+    //console.log(user)
+    notificationsService.getNotifications(requestObject2).then(initialNotifications => {
+      //console.log(initialNotifications)
+      setNotifications(initialNotifications)
     })
   }
 
@@ -547,19 +605,27 @@ const Navbar = () => {
     ? notifications.map((notification, index) => {
       if (notification.read === 0) {
         return(
-        <div key={index} style={{ backgroundColor: 'red' }} onClick={() => setNotificationAsRead(notification.id, notification.user_id)}>
-            <p>UNREAD: {notification.notification}</p>
+        <div className='shadow-light' key={index} style={{ display: 'flex', justifyContent: 'space-between' }} onClick={() => setNotificationAsRead(notification.id, notification.user_id)}>
+            <p>{notification.notification}</p><FontAwesomeIcon className='icon fa-icon' style={{ color: '#42b983', alignSelf: 'center' }}  icon="circle" />
           </div>
           )
       }
         return (
-          <div key={index}>
+          <div  key={index}>
             <p>{notification.notification}</p>
           </div>
         )
       })
     : null
 
+    const hashtagsToShow = hashtags
+    ? hashtags.map((hashtag, index) => {
+        return (
+            <div className='trending-hashtag' key={index}>{hashtag.interest} ({hashtag.number})</div>
+        )
+      })
+    : null
+    
   const galleryImagePicker =
     galleryImages && galleryImages.length < 5 ? (
       <form>
@@ -597,6 +663,24 @@ const Navbar = () => {
         </p>
       </div>
     )
+
+  const showNotificationsHandler = ( noficationBoolean ) => {
+    const requestObject2 = {
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+        Authorization: `Bearer ${localStorage.getItem('token') || ''}`
+      },
+
+      user: user
+    }
+    //console.log('User: ')
+    //console.log(user)
+    notificationsService.getNotifications(requestObject2).then(initialNotifications => {
+      //console.log(initialNotifications)
+      setNotifications(initialNotifications)
+    })
+    setShowNotificationOptions(noficationBoolean)
+  }
 
   const logOut = history => {
     dispatch(logout())
@@ -748,6 +832,10 @@ const Navbar = () => {
                       ></input>
                     </div>
                     {avatarImagePicker}
+                    <p>Trending interests:</p>
+                    <div className="trending-container">
+                      {hashtagsToShow}
+                    </div>
                     <div className="input-tag">
                       <ul className="input-tag__tags">
                         {interest &&
@@ -821,7 +909,7 @@ const Navbar = () => {
             <FontAwesomeIcon icon="comment-dots" className="fa-icon" size="2x" />
             {showChatOptions && <div id="chat-options">{conversationsToShow}</div>}
           </div>
-          <div onClick={() => setShowNotificationOptions(!showNotificationOptions)} id="chat-menu">
+          <div onClick={() => showNotificationsHandler(!showNotificationOptions) /* setShowNotificationOptions(!showNotificationOptions) */} id="chat-menu">
             <FontAwesomeIcon icon="bell" className="fa-icon" size="2x" />
             {showNotificationOptions && <div id="notify-options">{notificationsToShow}</div>}
           </div>

@@ -18,9 +18,9 @@ const ResetPassword = ({ history }) => {
   
   const dispatch = useDispatch()
   var query = window.location.search.substring(1);
-  console.log(query)//"token=..."
+  //console.log(query)//"token=..."
   var pair = query.split("=");
-  console.log(pair)
+  //console.log(pair)
   if (pair[0] === 'token') {
     var token = pair[1]
   }

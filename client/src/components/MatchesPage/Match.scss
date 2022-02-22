@@ -33,9 +33,8 @@
 .card_continer {
   display: flex;
   justify-content: space-around;
-  flex-direction: row;
+  flex-wrap: wrap;
   gap: 5px;
-  flex-wrap: nowrap;
   padding-top: 40px;
 }
 

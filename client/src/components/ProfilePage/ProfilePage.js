@@ -20,20 +20,14 @@ const ProfilePage = ({ id }) => {
   const [profile, setProfile] = useState()
   const [liked, setLiked] = useState()
   const [likedUser, setLikedUser] = useState()
-  const [uploadFile, setUploadFile] = useState('')
   const [galleryImages, setGalleryImages] = useState([])
   const dispatch = useDispatch()
   const user = useSelector(state => state.authReducer.user)
-  const [yourID, setYourID] = useState(user.user_id)
   const socketRef = useRef()
 
   useEffect(() => {
     socketRef.current = io.connect('localhost:3001/')
     socketRef.current.emit('create', user.user_id)
-    socketRef.current.on('your id', id => {
-      setYourID(id)
-      //console.log(`yourID: ${yourID}`)
-    })
 
     socketRef.current.on('message', message => {
       //console.log('Message.')
@@ -46,7 +40,7 @@ const ProfilePage = ({ id }) => {
       //console.log(like)
       //receivedMessage(message);
     })
-  }, [])
+  }, [user])
 
   useEffect(() => {
     const requestOptions = {
@@ -68,7 +62,7 @@ const ProfilePage = ({ id }) => {
       body: JSON.stringify({ profile_id: id, user_id: user.user_id })
     }
     fetch('http://localhost:5000/visitUser', requestOptions)
-  }, [id])
+  }, [user.user_id, id])
 
   useEffect(() => {
     if (profile) {
@@ -98,7 +92,7 @@ const ProfilePage = ({ id }) => {
           setLiked(data.rows[0])
         }
       })
-  }, [])
+  }, [user.user_id, id])
 
   // This checks if the profile has liked the user!
   useEffect(() => {
@@ -115,13 +109,13 @@ const ProfilePage = ({ id }) => {
           setLikedUser(data.rows[0])
         }
       })
-  }, [])
+  }, [user.user_id, id])
 
   const likeButtonClickHandler = () => {
 
     const formData = new FormData()
 
-    formData.append('first_name', user.user_id)
+    formData.append('first_name', user.first_name)
     formData.append('user_id', user.user_id)
     formData.append('profile_id', profile.user_id)
 
@@ -178,11 +172,7 @@ const ProfilePage = ({ id }) => {
         '? You will no longer be able to see them in your matches, nor receive messages from them. They will also be unable to see your profile.'
     )
     if (confirm === true) {
-      console.log(
-        `${user.first_name.charAt(0).toUpperCase() + user.first_name.slice(1)} blocked ${
-          profile.first_name.charAt(0).toUpperCase() + profile.first_name.slice(1)
-        }.`
-      )
+      
     }
     const formData = new FormData()
 
@@ -201,11 +191,11 @@ const ProfilePage = ({ id }) => {
         ' as a fake account. Do you wish to proceed?'
     )
     if (confirm === true) {
-      console.log(
+      /* console.log(
         `${user.first_name.charAt(0).toUpperCase() + user.first_name.slice(1)} reported ${
           profile.first_name.charAt(0).toUpperCase() + profile.first_name.slice(1)
         } as a fake account.`
-      )
+      ) */
     }
     const formData = new FormData()
 
@@ -219,7 +209,7 @@ const ProfilePage = ({ id }) => {
   const uploadButtonClickHandler = () => {
     var confirm = window.confirm('Are you sure you want to upload this image?')
     if (confirm === true) {
-      console.log(`Photo upload button clicked and confirmed.`)
+      //console.log(`Photo upload button clicked and confirmed.`)
     }
     //const formData = new FormData()
 

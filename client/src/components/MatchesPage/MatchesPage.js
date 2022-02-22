@@ -15,6 +15,7 @@ const MatchesPage = () => {
   const [ageRangeMax, setAgeRangeMax] = useState(100)
   const [ageRangeMin, setAgeRangeMin] = useState(22)
   const [distance, setDistance] = useState(20)
+  const [fame, setFame] = useState(50)
   const gender = user.gender
   const sexual_orientation = user.sexual_orientation
   const interest = user.interest
@@ -37,6 +38,12 @@ const MatchesPage = () => {
         let ageOfA = new Date(new Date() - new Date(a.birthdate)).getFullYear() - 1970
         let ageOfB = new Date(new Date() - new Date(b.birthdate)).getFullYear() - 1970
         return ageOfB - ageOfA
+      })
+      return ret
+    }
+    if (option === 'fame') {
+      ret.sort((a, b) => {
+        return b.fame - a.fame
       })
       return ret
     }
@@ -104,7 +111,8 @@ const MatchesPage = () => {
         dist <= distance &&
         !user?.blocked_users?.includes(match.user_id) &&
         age >= ageRangeMin &&
-        age <= ageRangeMax && match.user_id !== user.user_id
+        age <= ageRangeMax && match.user_id !== user.user_id &&
+        match.fame >= fame
       ) {
         return <Match key={match.user_id} person={match} user={user} distance={dist} age={age} />
       } else {
@@ -140,7 +148,7 @@ const MatchesPage = () => {
       sexual_orientation,
       interest
     }
-    console.log('Logging form:', form)
+    //console.log('Logging form:', form)
 
     const formData = new FormData()
 
@@ -149,7 +157,7 @@ const MatchesPage = () => {
     }
     const values = Object.fromEntries(formData.entries())
     dispatch(getMatches(values))
-    console.log('Matches:', matches)
+    //console.log('Matches:', matches)
   }
   return (
     <div id="matches-container">
@@ -197,6 +205,20 @@ const MatchesPage = () => {
             />
             <span>{distance}</span>
           </div>
+          <div className="input-field mb-1">
+            <label htmlFor="fame">Fame (between 1 and 100):</label>
+            <input
+              onChange={e => setFame(e.target.value)}
+              id="fame"
+              name="fame"
+              min="1"
+              max="100"
+              value={fame}
+              required="required"
+              type="range"
+            />
+            <span>{fame}</span>
+          </div>
           <input id="gender" name="gender" value={gender} type="hidden" />
           <input
             id="sexual_orientation"
@@ -217,6 +239,7 @@ const MatchesPage = () => {
         <option value="youngest">youngest</option>
         <option value="oldest">oldest</option>
         <option value="proximity">proximity</option>
+        <option value="fame">fame</option>
       </select>
 
       <div className="card_continer">{matchList}</div>

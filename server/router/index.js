@@ -1,13 +1,8 @@
 const router = require("express").Router();
 
 router.get("/home", (req, res) => {
-  console.log("Endpoint hit: home screen");
+ //console.log("Endpoint hit: home screen");
   return res.send("Home Screen is working");
-});
-
-router.get("/bullshit", (req, res) => {
-  console.log("Endpoint hit: bullshit");
-  return res.send("Bullshit is working");
 });
 
 router.get("/profile/:id", function (req, res) {
@@ -15,7 +10,7 @@ router.get("/profile/:id", function (req, res) {
 });
 
 /*router.post('/matches', (req, res) => {
-  console.log('Endpoint hit: matches')
+ //console.log('Endpoint hit: matches')
 	return res.send('Matches is working, kinda.');
 })*/
 
@@ -44,10 +39,13 @@ router.use("/users", require("./user"));
 // @access	Private
 router.use("/notifications", require("./notification"));
 
+router.use("/hashtags", require("./hashtags"));
+
+
 /*router.post('/matches', function(req, res){
-  console.log(`Request body in router/index: `)
-  console.log(req.body)
-  console.log('Endpoint hit: Matches');
+ //console.log(`Request body in router/index: `)
+ //console.log(req.body)
+ //console.log('Endpoint hit: Matches');
 })*/
 // @route	POST localhost:5000/matches
 // @desc	API end-point for getting matches
@@ -86,7 +84,7 @@ const { getHashtagList } = require("../controllers/userController");
 router.get("/getHashtagList", function (req, res) {
   //console.log(`Request body in router/index: `)
   //console.log(req.body)
-  console.log("Endpoint hit: getHashtagList");
+ //console.log("Endpoint hit: getHashtagList");
   return getHashtagList(req, res);
 });
 
@@ -156,9 +154,9 @@ router.post("/messages", function (req, res) {
 //const pool = require('../config/database');
 const { logout } = require("../controllers/authController");
 router.post("/logout", function (req, res) {
-  console.log(`Request body in router/index for logout: `);
-  console.log(req.body);
-  console.log("Endpoint hit: Logout");
+  //console.log(`Request body in router/index for logout: `);
+  //console.log(req.body);
+  //console.log("Endpoint hit: Logout");
   return logout(req, res);
 });
 

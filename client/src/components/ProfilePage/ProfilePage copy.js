@@ -56,11 +56,11 @@ const ProfilePage = ({ id }) => {
     }
 
     // FIXME: Need to debug why this is not fetching the liked user.
-    console.log(requestOptions.body)
+    //console.log(requestOptions.body)
     fetch('http://localhost:5000/getLike', requestOptions)
       .then(response => response.json())
       .then(data => {
-        console.log('Like data Debug:::::::::::::::: ', data.rows)
+        //console.log('Like data Debug:::::::::::::::: ', data.rows)
         if (data.rows[0]) {
           setLiked(data.rows[0])
         }

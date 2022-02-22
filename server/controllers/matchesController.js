@@ -15,15 +15,15 @@ const findUserInfo = async (key, value, ...args) => {
 };
 
 exports.match = async (req, res) => {
-  console.log('Request.body in matchesController:')
-  console.log(req.body)
+  //console.log('Request.body in matchesController:')
+  //console.log(req.body)
   try {
 		const { ageRangeMax, ageRangeMin, distance, gender, sexual_orientation, interest } = req.body
     let interestArr = interest.split(",")
     let sexualOrientationArr = sexual_orientation.split(",")
 
     const results = await db.query(`SELECT * FROM users WHERE gender = ANY($1) AND $2 = ANY(sexual_orientation) AND interest && $3 ORDER BY first_name ASC`, [sexualOrientationArr, gender, interestArr]);
-    console.log(results)
+    //console.log(results)
 		return res.send(results)
 	} catch (e) {
 		return res.status(500).json({ message: e.message })
@@ -31,13 +31,13 @@ exports.match = async (req, res) => {
 	}
 
   exports.getUserLikes = async (req, res) => {
-    console.log('Request.body in matchesController:')
-    console.log(req.body)
+    //console.log('Request.body in matchesController:')
+    //console.log(req.body)
     try {
       const { user_id } = req.body
       
       const results = await db.query(`SELECT * FROM likes WHERE user_id = $1`, [user_id]);
-      console.log(results)
+      //console.log(results)
       return res.send(results)
     } catch (e) {
       return res.status(500).json({ message: e.message })

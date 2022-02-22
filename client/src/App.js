@@ -27,7 +27,8 @@ import {
   faUpload,
   faTimes,
   faBell,
-  faCommentDots
+  faCommentDots,
+  faCircle
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -42,7 +43,8 @@ library.add(
   faUpload,
   faTimes,
   faBell,
-  faCommentDots
+  faCommentDots,
+  faCircle
 )
 
 function App() {

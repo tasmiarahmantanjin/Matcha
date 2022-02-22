@@ -2,7 +2,6 @@ import AuthService from '../../services/authService'
 
 import {
   LOGIN,
-  GET_NOTIFICATIONS,
   REGISTER,
   LOGOUT,
   UPDATE_PROFILE,
@@ -23,17 +22,6 @@ export const login = (params, history) => dispatch => {
     })
     .catch(err => {})
 }
-
-/* export const getNotifications = (params, history) => dispatch => {
-  return AuthService.getNotifications(params)
-      .then(data => {
-          dispatch({ type: GET_NOTIFICATIONS, payload: data })
-          //history.push('/')
-      })
-      .catch(err => {
-
-      })
-} */
 
 export const register = (params, history) => dispatch => {
   return AuthService.register(params)
@@ -61,7 +49,7 @@ export const updateProfile = params => dispatch => {
 }
 
 export const uploadToGallery = params => dispatch => {
-  console.log('In actions/auth.uploadToGallery')
+  //console.log('In actions/auth.uploadToGallery')
   return AuthService.uploadToGallery(params)
     .then(data => {
       dispatch({ type: UPLOAD_TO_GALLERY, payload: data })
