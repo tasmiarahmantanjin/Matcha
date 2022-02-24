@@ -47,9 +47,20 @@ exports.galleryUpload = async (req, res) => {
     //db.query("UPDATE users SET first_name = $1, last_name = $2, gender = $3, sexual_orientation = $4, bio = $5, interest = $6, birthdate = $7, email = $8 WHERE user_id = $9", [first_name, last_name, gender, sexual_orientation_arr, bio, interest_arr, birthdate, email, user_id]);
     
     const newImage = await db.query("INSERT INTO gallery (owner_id, path) VALUES ($1, $2) RETURNING path", [user_id, image]);
-   
-    
-    
+     const galleryImages = await db.query('SELECT * FROM gallery WHERE owner_id = $1', [user_id])
+    //console.log('Gallery image: ');
+    //console.log(galleryImages.rowCount);
+    let fame
+    if (galleryImages.rowCount > 1) {
+      fame = 100
+      await db.query(
+        'UPDATE users SET fame = $1 WHERE user_id = $2',
+        [
+          fame,
+          user_id
+        ]
+      )
+    }
     return res.send(newImage)
     //return res.status(200)
   } catch (e) {
